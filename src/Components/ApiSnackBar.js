@@ -1,35 +1,25 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Snackbar from 'material-ui/Snackbar';
-/*
-This Component relies on a piece of state passed down in props.
-Should contain, an error & fetching boolean.
-*/
+
+const { objectOf, any } = PropTypes;
+
 export default class apiSnackBar extends Component {
-  static propTypes = {
-    apiStatus: PropTypes.objectOf(PropTypes.any),
-  };
+  static propTypes = { apiStatus: objectOf(any).isRequired };
   constructor(props) {
     super(props);
+
     this.state = {
       show: false,
       message: '',
-      error: null,
-      fetching: null,
+      error: props.apiStatus.error,
+      fetching: props.apiStatus.fetching,
     };
   }
 
-  componentWillMount() {
-    this.setState({
-      error: this.props.apiStatus.error,
-      fetching: this.props.apiStatus.fetching,
-    });
-  }
-
   componentWillReceiveProps(nextProps) {
-    const error = this.state.error;
-    const fetching = this.state.fetching;
-    const apiError = nextProps.apiStatus.error;
-    const apiFetching = nextProps.apiStatus.fetching;
+    const { error, fetching } = this.state;
+    const { apiError, apiFetching } = nextProps.apiStatus;
 
     if (!error && fetching && !apiError && !apiFetching) {
       // If fetching was successfully completed
@@ -62,16 +52,17 @@ export default class apiSnackBar extends Component {
     return true;
   }
 
+  onRequestClose = () => this.setState({ show: false });
+
   render() {
-    const PROPS = {
-      open: this.state.show,
-      message: this.state.message,
-      autoHideDuration: 2000,
-      onRequestClose: () => this.setState({ show: false }),
-    };
     return (
       <div>
-        <Snackbar {...PROPS} />
+        <Snackbar
+          open={this.state.show}
+          message={this.state.message}
+          autoHideDuration={3000}
+          onRequestClose={this.onRequestClose}
+        />
       </div>
     );
   }
