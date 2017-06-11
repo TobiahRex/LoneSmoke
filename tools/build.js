@@ -1,9 +1,8 @@
-/* eslint-disable import/imports-first, no-unused-vars */
 import webpack from 'webpack';
+import colors from 'colors'; //eslint-disable-line
 import webpackConfig from '../webpack.config';
-import colors from 'colors';
 
-process.stdout.write('⏲  Generating minified bundle for production via Webpack. This will take a moment...\n'.white.bold);
+process.stdout.write('\n⏲  Generating minified bundle for production via Webpack. This will take a moment...\n'.white.bold);
 
 webpack(webpackConfig).run((err, stats) => {
   if (err) {
@@ -14,7 +13,7 @@ webpack(webpackConfig).run((err, stats) => {
   const jsonStats = stats.toJson();
 
   if (jsonStats.hasErrors) {
-    process.stdout.write('Webpakc generated the following errors: '.red.bold);
+    process.stdout.write('\nWebpack generated the following errors: '.red.bold);
     return jsonStats.errors.map(error => process.stdout.write(`
       ❌ ${error}
     `.red));
@@ -29,7 +28,10 @@ webpack(webpackConfig).run((err, stats) => {
   }
   process.stdout.write(`
     Webpack stats: ${stats}
-  `.cyan);
-  process.stdout.write('✅  Your app has been compiled in production mode and written to "/dist".\n'.green.bold);
+  `);
+  process.stdout.write(`
+    ✅  Your app has been compiled in production mode and written to "/dist".
+  `.green.bold);
+
   return 0;
 });
