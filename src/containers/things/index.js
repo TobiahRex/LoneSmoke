@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Card, CardHeader, CardText } from 'material-ui';
-import thingActions from '../redux/ThingRedux';
-import apiActions from '../redux/ApiRedux';
-import ThingList from '../components/ThingList';
-import InputNewThing from '../components/InputNewThing';
+import thingActions from '../../redux/ThingRedux';
+import apiActions from '../../redux/ApiRedux';
+import ThingList from '../../components/thingList/';
+import InputNewThing from '../../components/inputNewThing/';
 
 const Things = ({ fetching, createThing, editThing, removeThing, things, apiStatus }) => {
   const propsThingList = {

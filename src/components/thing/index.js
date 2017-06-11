@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { TextField, RaisedButton } from 'material-ui';
 import uuid from 'uuid';
-import styles from './styles/thingStyles';
+import styles from './assets/thingStyles';
 
 const { func, objectOf, shape, string, any } = PropTypes;
 

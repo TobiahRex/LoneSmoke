@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import Thing from './Thing';
-import SnackBar from '../components/ApiSnackBar';
+import Thing from '../thing/';
+import SnackBar from '../snackbar/';
 
 const ThingList = ({ fetching, removeThing, editThing, things, apiStatus }) => {
   const eachThing = things.map((thing) => {
