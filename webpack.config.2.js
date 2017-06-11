@@ -1,3 +1,7 @@
+/* eslint-disable no-use-before-define, max-len, import/imports-first */
+
+dotenv.load({ silent: true });
+
 import path from 'path';
 import dotenv from 'dotenv';
 import webpack from 'webpack';
@@ -7,11 +11,8 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import WebpackMd5Hash from 'webpack-md5-hash';
 import analyzer from 'webpack-bundle-analyzer';
 import autoprefixer from 'autoprefixer';
-
 import CommonsChunkPlugin from './node_modules/webpack/lib/optimize/CommonsChunkPlugin';
 import webpackEnvs from './tools/webpack_envs';
-
-dotenv.load({ silent: true });
 
 const devConfig = {
   resolve: {
@@ -87,7 +88,7 @@ const devConfig = {
     ],
   },
 };
-// -----------------------------------------------------------------------------
+// -------------------------------------------------------------------
 const prodConfig = {
   resolve: {
     extensions: ['*', '.js', '.jsx', '.json'],
@@ -97,10 +98,6 @@ const prodConfig = {
     reasons: true,
     chunks: true,
   },
-  // entry: [
-  //   // './src/styles.scss',
-  //   './src/index.js',
-  // ],
   entry: {
     app: path.resolve('./src/index'),
   },
