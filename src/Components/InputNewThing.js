@@ -36,9 +36,9 @@ export default class InputNewThing extends Component {
         onSubmit: this.submitNewThing,
       },
       tf: {
-        hintText: "Thing Name",
-        type: "text",
-        floatingLabelText: "New Thing Input",
+        hintText: 'Thing Name',
+        type: 'text',
+        floatingLabelText: 'New Thing Input',
         onChange: e => this.onInputChange(e),
         required: true,
         value: this.state.newData,
@@ -46,14 +46,14 @@ export default class InputNewThing extends Component {
       rb1: {
         style: styles.lftMargin,
         primary: true,
-        label: "add",
-        type: "submit",
+        label: 'add',
+        type: 'submit',
       },
       rb2: {
         style: styles.lftMargin,
         secondary: true,
-        label: "clear",
-        type: "button",
+        label: 'clear',
+        type: 'button',
         onClick: () => this.clearInput(),
       },
     };

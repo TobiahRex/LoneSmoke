@@ -71,6 +71,7 @@
     "seamless-immutable": "^7.1.2",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
+    "uuid": "^3.0.1",
     "webpack": "^2.2.1",
     "webpack-bundle-analyzer": "^2.3.1",
     "webpack-dev-middleware": "^1.8.3",

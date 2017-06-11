@@ -34,7 +34,7 @@ export default class apiSnackBar extends Component {
     if (!error && fetching && !apiError && !apiFetching) {
       // If fetching was successfully completed
       this.setState({
-        message: "Database updated SUCCESSFULLY!",
+        message: 'Database updated SUCCESSFULLY!',
         error: false,
         fetching: false,
         show: true,
@@ -43,7 +43,7 @@ export default class apiSnackBar extends Component {
     } else if (!apiError && apiFetching) {
       // If we just started fetching
       this.setState({
-        message: "API Request in Progress",
+        message: 'API Request in Progress',
         error: false,
         fetching: true,
         show: true,
@@ -52,7 +52,7 @@ export default class apiSnackBar extends Component {
     } else if (!error && apiError) {
       // if fetching yielded an error
       this.setState({
-        message: "Database update FAILED!",
+        message: 'Database update FAILED!',
         error: true,
         fetching: false,
         show: true,

@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
-import uuid from 'uuid';
 import Thing from './Thing';
-import SnackBar from '../Components/ApiSnackBar';
+import SnackBar from '../components/ApiSnackBar';
 
 const ThingList = ({ fetching, removeThing, editThing, things, apiStatus }) => {
   const eachThing = things.map((thing) => {
@@ -12,7 +11,10 @@ const ThingList = ({ fetching, removeThing, editThing, things, apiStatus }) => {
       apiStatus,
       data: thing,
     };
-    return (<div key={uuid()}><Thing {...PROPS} /></div>);
+    return (
+      <div key={new Buffer(thing.name, 'utf8').toString('base64')}>
+        <Thing {...PROPS} />
+      </div>);
   });
 
   return (
