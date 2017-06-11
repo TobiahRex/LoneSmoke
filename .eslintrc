@@ -54,7 +54,6 @@ rules:
   linebreak-style: 0
   no-underscore-dangle:
     - 0
-    - allow: _id
   no-use-before-define:
     - 2
     - functions: false
