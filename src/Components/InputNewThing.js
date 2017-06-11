@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { TextField, RaisedButton } from 'material-ui';
-import styles from './Styles/InputStyles';
+import styles from './styles/inputStyles';
 
 export default class InputNewThing extends Component {
   static propTypes = {
