@@ -1,8 +1,5 @@
-# _React Boilerplate:_ [DEMO](https://trex-rbp.herokuapp.com/)
-Full-Stack REACT & Redux - Created: 6 October 2016
-<!-- ### Deployed on Heroku [here](https://itiner-ez.herokuapp.com/). -->
-<img src="http://imgur.com/dTXjfrU.png" />
-
+# _Lone Smoke:_ [Deployed Here](http://lonesmoke-react.s3-website-ap-northeast-1.amazonaws.com/)
+Full-Stack REACT & Redux - Created: 11 June 2017
 
 ## DESCRIPTION:
 Cannibalized from Templates and Boilerplates from around the web.
@@ -44,18 +41,10 @@ Cannibalized from Templates and Boilerplates from around the web.
 * [redux-sauce](https://github.com/skellock/reduxsauce)
 * [seamless-immutable](https://github.com/rtfeldman/seamless-immutable)
 
-## Influences:
-* [Ignite Infinite Red's React Native Boilerplate](https://github.com/infinitered/ignite).
-* [Cory House's React Slingshot Boilerplate](https://github.com/coryhouse/react-slingshot).
-* [Matthew Broatch's React Template](https://github.com/mnbroatch/react-template).
-* [David Durbina's React/Express Boilerplate](https://github.com/WindUpDurb/React-Express-Boilerplate).
-
 ## Updates:
-* December 1st 2016:
-  - Extensive refactor to entire project.  WARNING in the process of re-factoring package.json and webpack.config for smoother deployment however process is not yet complete.  Will update here when it's finished and GTG.
-* December 2nd 2016:
-  - Finished major refactor and deployment. Click the "DEMO" link above to check out the latest working version.  Thanks for the interest.
+* June 11th, 2017:
+  - Created.
 
 ## ScreenShots:
-* Terminal
-  - <img src="http://i.imgur.com/RjJ7yfA.png" />
+* Menu Page
+  - <img src="foobar" alt="Menu"/>
