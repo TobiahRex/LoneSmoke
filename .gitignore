@@ -1,0 +1,4 @@
+npm-debug.log
+bin/
+.env
+node_modules
