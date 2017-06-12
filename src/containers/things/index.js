@@ -1,8 +1,9 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Card, CardHeader, CardText } from 'material-ui';
-import thingActions from '../../redux/ThingRedux';
-import apiActions from '../../redux/ApiRedux';
+import thingActions from '../../redux/thing';
+import apiActions from '../../redux/api';
 import ThingList from '../../components/thingList/';
 import InputNewThing from '../../components/inputNewThing/';
 

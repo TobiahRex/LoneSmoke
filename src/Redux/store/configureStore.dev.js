@@ -6,8 +6,8 @@ import { browserHistory } from 'react-router';
 import createLogger from 'redux-logger';
 import RehydrationServices from '../../services/utils/rehydrationServices';
 
-import thingActions from '../Redux/ThingRedux';
-import apiActions from '../Redux/ApiRedux';
+import thingActions from '../thing/';
+import apiActions from '../api/';
 
 export default (rootReducer, rootSaga) => {
   const enhancers = [];

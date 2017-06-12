@@ -24,7 +24,6 @@ const devConfig = {
   },
   devtool: 'source-map',
   target: 'web',
-  debug: true,
   entry: {
     app: [
       'webpack-hot-middleware/client?reload=true',
@@ -64,7 +63,6 @@ const devConfig = {
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: false,
-      debug: true,
       noInfo: true,
       options: {
         sassLoader: {
