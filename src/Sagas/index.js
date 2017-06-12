@@ -1,4 +1,4 @@
-import { takeLatest } from 'redux-saga';
+import { takeLatest, all } from 'redux-saga/effects';
 import API from '../services/API';
 
 // ----- Sagas ----- //
@@ -13,10 +13,10 @@ import { ThingTypes } from '../redux/thing';
 const api = API.createAPI();
 
 export default function* rootSaga() {
-  yield [
+  yield all([
     takeLatest(ThingTypes.GET_ALL_THINGS, GetAllThings, api),
     takeLatest(ThingTypes.CREATE_THING, CreateThing, api),
     takeLatest(ThingTypes.REMOVE_THING, RemoveThing, api),
     takeLatest(ThingTypes.EDIT_THING, EditThing, api),
-  ];
+  ]);
 }

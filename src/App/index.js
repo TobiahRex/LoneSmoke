@@ -12,9 +12,9 @@ const App = ({ children }) => (
     </div>
   </MuiThemeProvider>
 );
-
+const { objectOf, any } = PropTypes;
 App.propTypes = {
-  children: PropTypes.objectOf(PropTypes.any),
+  children: objectOf(any),
 };
 
 export default App;

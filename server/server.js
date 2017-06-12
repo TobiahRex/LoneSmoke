@@ -4,6 +4,7 @@ require('dotenv').config({ silent: true });
 import express from 'express';
 import path from 'path';
 import morgan from 'morgan';
+import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import webpack from 'webpack';
 import hotMiddleware from 'webpack-hot-middleware';
@@ -11,7 +12,9 @@ import devMiddleware from 'webpack-dev-middleware';
 import webpackConfig from '../webpack.config';
 import api from './api';
 
+mongoose.Promise = Promise;
 const PORT = process.env.PORT || 3000;
+const MONGO = process.env.MONGODB_URI || 'mongodb://localhost/loneSmoke';
 const app = express();
 const compiler = webpack(webpackConfig);
 app.use(devMiddleware(compiler, {
@@ -59,6 +62,6 @@ app.listen(PORT, err =>
   process.stdout.write(JSON.stringify(err, null, 2) || `
   ==> 📡  Server @ ${PORT}
 `));
-// mongoose.connect(MONGO, err =>
-//   process.stdout.write(err || `==> 📜  MONGO @ ${MONGO}
-// `));
+mongoose.connect(MONGO, err =>
+  process.stdout.write(err || `==> 📜  MONGO @ ${MONGO}
+`));

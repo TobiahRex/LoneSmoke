@@ -2,7 +2,7 @@ import localForage from 'localforage';
 
 const reduxLocalForage = localForage.createInstance({
   name: 'LocalSmoke',
-  storeName: 'localForage-redux-persist',
+  storeName: 'LocalSmoke-redux-persist',
   description: 'Contains persisted values for redux store.',
 });
 

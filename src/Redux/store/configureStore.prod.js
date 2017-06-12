@@ -5,8 +5,8 @@ import { autoRehydrate } from 'redux-persist';
 import { browserHistory } from 'react-router';
 import RehydrationServices from '../../services/utils/rehydrationServices';
 
-import thingActions from '../ThingRedux';
-import apiActions from '../ApiRedux';
+import thingActions from '../thing/';
+import apiActions from '../api/';
 
 export default (rootReducer, rootSaga) => {
   const enhancers = [];

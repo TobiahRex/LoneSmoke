@@ -3,11 +3,11 @@ import createSagaMiddleware from 'redux-saga';
 import { routerMiddleware, syncHistoryWithStore } from 'react-router-redux';
 import { autoRehydrate } from 'redux-persist';
 import { browserHistory } from 'react-router';
-import createLogger from 'redux-logger';
+import { createLogger } from 'redux-logger';
 import RehydrationServices from '../../services/utils/rehydrationServices';
 
-import thingActions from '../thing/';
-import apiActions from '../api/';
+import thingActions from '../thing';
+import apiActions from '../api';
 
 export default (rootReducer, rootSaga) => {
   const enhancers = [];
@@ -19,15 +19,15 @@ export default (rootReducer, rootSaga) => {
   ];
 
   enhancers.push(
-    applyMiddleware(...middlewares),
     autoRehydrate(),
+    applyMiddleware(...middlewares),
     window.devToolsExtension ? window.devToolsExtension() : _ => _,
   );
 
   const store = createStore(rootReducer, compose(...enhancers));
+  RehydrationServices.updateReducers(store);
   const history = syncHistoryWithStore(browserHistory, store);
   sagaMiddleware.run(rootSaga);
-  RehydrationServices.updateReducers(store);
 
   store.dispatch(apiActions.fetching());
   store.dispatch(thingActions.getAllThings());

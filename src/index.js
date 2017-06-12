@@ -5,8 +5,9 @@ import { Provider } from 'react-redux';
 import Perf from 'react-addons-perf';
 import { Router } from 'react-router';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import createStore from './redux/store/index';
+import createStore from './redux';
 import routes from './navigation/main';
+import './styles/style.scss';
 
 window.Perf = Perf;
 injectTapEventPlugin();
