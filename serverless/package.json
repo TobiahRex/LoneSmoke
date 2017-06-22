@@ -1,0 +1,49 @@
+{
+  "name": "serverless-lonesmoke",
+  "version": "0.0.1",
+  "description": "A serverless configuration for LoneSmoke",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tobiahrex/LoneSmoke.git"
+  },
+  "keywords": [
+    "graphql",
+    "serverless",
+    "react",
+    "redux",
+    "aws",
+    "lambda"
+  ],
+  "author": "Tobiah Rex",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tobiahrex/LoneSmoke/issues"
+  },
+  "homepage": "https://github.com/tobiahrex/LoneSmoke#readme",
+  "dependencies": {
+    "axios": "^0.16.1",
+    "babel-polyfill": "^6.23.0",
+    "babel-runtime": "^6.23.0",
+    "bluebird": "^3.5.0",
+    "dotenv": "^4.0.0",
+    "graphql": "^0.9.6"
+  },
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-es2016": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "json-loader": "^0.5.4",
+    "serverless-webpack": "^1.0.0-rc.4",
+    "webpack": "^2.4.1",
+    "webpack-node-externals": "^1.6.0"
+  }
+}
