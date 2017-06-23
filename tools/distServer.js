@@ -26,7 +26,7 @@ app.use('/api', api);
 app.get('*', (req, res) => res.sendFile(path.resolve('dist/index.html')));
 
 // --------------------------- Listeners ---------------------------------------
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 const MONGO = process.env.MONGODB_URI || 'mongodb://localhost/template';
 app.listen(PORT, err =>
   process.stdout.write(err || `==> 📡  Server @ ${PORT}

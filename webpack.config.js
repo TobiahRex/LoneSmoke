@@ -33,7 +33,7 @@ const devConfig = {
     ],
   },
   output: {
-    path: path.resolve('src'),
+    path: path.resolve('dist'),
     publicPath: '/',
     filename: 'bundle.[name].js',
   },

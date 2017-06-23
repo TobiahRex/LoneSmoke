@@ -28,10 +28,10 @@ webpack(webpackConfig).run((err, stats) => {
   }
   process.stdout.write(`
     Webpack stats: ${stats}
-  `);
+  `.cyan);
   process.stdout.write(`
     ✅  Your app has been compiled in production mode and written to "/dist".
-  `.green.bold);
+  `.white.bold);
 
   return 0;
 });

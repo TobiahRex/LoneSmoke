@@ -1,5 +1,10 @@
 service: lonesmoke
 
+package:
+  exclude:
+    - db.ref/**
+    - handler.ref.js
+
 provider:
   name: aws
   runtime: nodejs6.10
@@ -34,8 +39,8 @@ custom:
       plugins: [transform-runtime]
 
 functions:
-  graphql:
-    handler: handler.graphql
+  discount:
+    handler: handler.discount
     vpc:
       securityGroupIds:
         - ${file(./config.yml):securityGroupId}
@@ -54,7 +59,7 @@ functions:
           - logs:PutLogEvents
     events:
       - http:
-          path: graphql
+          path: discount
           method: post
           integration: lambda
           memorySize: 256
