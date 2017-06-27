@@ -3,15 +3,15 @@ import { closeDB } from './db/mongo/connection';
 
 export default ({
   event,
-  dbModels: { MarketHero },
+  dbModels: { MarketHero, Email },
   db,
 }) => new Promise((resolve, reject) => {
   const { userEmail } = event.body;
 
-  MarketHero.checkForUser(userEmail)
+  MarketHero.checkForLead(userEmail)
   .then((dbUser) => {
-    if (dbUser) return MarketHero.rejectUserEmail(userEmail);
-    return MarketHero.saveUserEmail(userEmail);
+    if (dbUser) return Email.sendNastyGram(userEmail, { type: 'beachDiscount' });
+    return MarketHero.createLead(userEmail);
   })
   .then((dbResponse) => {
     console.log(`

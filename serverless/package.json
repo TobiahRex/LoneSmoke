@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/tobiahrex/LoneSmoke#readme",
   "dependencies": {
-    "axios": "^0.16.1",
+    "axios": "^0.16.2",
     "babel-polyfill": "^6.23.0",
     "babel-runtime": "^6.23.0",
     "bluebird": "^3.5.0",

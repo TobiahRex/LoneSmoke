@@ -1,10 +1,11 @@
-/* eslint-disable no-use-before-define, no-console */
+/* eslint-disable no-use-before-define, no-console, import/newline-after-import */
+import axios from 'axios';
 import { Promise as bbPromise } from 'bluebird';
-import marketHero from '../schemas/marketHero';
+import marketHeroSchema from '../schemas/marketHero';
 require('dotenv').load({ silent: true });
 
 export default (db) => {
-  marketHero.statics.checkForUser = userEmail =>
+  marketHeroSchema.statics.checkForLead = userEmail =>
   new Promise((resolve, reject) => {
     MarketHero.findOne({ 'lead.email': userEmail })
     .exec()
@@ -12,28 +13,49 @@ export default (db) => {
     .catch(reject);
   });
 
-  marketHero.statics.saveUserEmail = userEmaild =>
+  marketHeroSchema.statics.createLead = userEmail =>
   new Promise((resolve, reject) => {
-    MarketHero.create({
+    bbPromise.fromCallback(cb => MarketHero.create({
       lead: { userEmail },
       tags: [{
         name: '!beachDiscount',
-        description: 'User signed up '
+        description: 'User signed up for 10% discount at Zushi Beach.',
       }],
+    }, cb))
+    .then((newLead) => {
+      console.log(`
+        Created new lead in Mongo Database.
+        New Lead: ${newLead}
+      `);
+      resolve(newLead);
+    })
+    .catch((error) => {
+      console.log(`
+        Could not create new Lead in Mongo Database.
+        ERROR: ${error}
+      `);
+      reject(error);
     });
   });
 
-  marketHero.statics.addTagToUser = (userEmail, { name, description }) =>
+  marketHeroSchema.statics.addTagToUser = (userEmail, { name, description }) =>
+  // First adds tags to Market Hero lead.  If successful adds tags to Mongo Lead document.
   new Promise((resolve, reject) => {
-    MarketHero.find({ 'lead.email': userEmail })
+    let dbUserRef;
+
+    MarketHero
+    .find({ 'lead.email': userEmail })
     .exec()
     .then((dbUser) => {
+      dbUserRef = dbUser;
       let tags;
 
-      if (Array.isArray(name)) {  // create tags array if adding multipls tags to lead
+      // create tags array if adding multipls tags to lead.
+      if (Array.isArray(name)) {
         tags = [...name];
       } else {
-        tags = name;  // create single tag if only adding 1 tag to lead.s
+      // create single tag if only adding 1 tag to lead.
+        tags = name;
       }
 
       const reqBody = {
@@ -42,65 +64,47 @@ export default (db) => {
         lastName: dbUser.lead.lastName,
         email: dbUser.lead.email,
         tags,
-      }
+      };
 
-      axios.post('https://private-anon-9aba81438f-markethero2.apiary-mock.com/v1/api/tag-lead',
-      JSON.stringify(reqBody), {
-        headers: { 'Content-Type': 'application/json'
-      },
+      return axios
+      .post('https://private-anon-9aba81438f-markethero2.apiary-mock.com/v1/api/tag-lead', JSON.stringify(reqBody), { headers: { 'Content-Type': 'application/json' } });
     })
-    .then((response) => {
-      if (response.status !== 200) {
+    .then(({ status, data }) => {
+      if (status !== 200) {
         console.log(`
-          Error updating lead# ${user.email};
-          Response: ${JSON.stringify(response.data, null, 2)}
+          Market Hero API Error:
+          Cannot update lead# ${userEmail};
+          Response: ${data}
         `);
+        reject(data);
       }
       console.log(`
-        Successfully updated ${user.email} on Market Hero.
-        Response: ${response.data}
+        Market Hero API Success:
+        Updated ${userEmail}.
+        Response: ${data}
       `);
+      return dbUserRef
+      .tags
+      .push({ name, description, date: new Date() })
+      .save({ new: true });
+    })
+    .then((savedUser) => {
+      console.log(`
+        Mongo Save Success
+        Lead# ${savedUser.lead.email} successfully updated in db.
+        New Tags: ${savedUser.tags}.
+        `);
+      resolve(savedUser);
     })
     .catch((error) => {
       console.log(`
-        ERROR = Market Hero API request failed.
-        description: ${error}.
-        `);
-        reject(error);
-      })
-      dbUser.tags.push({ name, description });
-      return dbUser.save({ new: true });
-    })
-    .then(resolve)
-    .catch(reject);
+        ERROR in "addTagToUser"
+        Error: ${error}.
+      `);
+      reject(error);
+    });
   });
 
-  marketHero.statics.rejectUserEmail = userEmail =>
-  new Promise((resolve, reject) => {
-    User
-    .findOne({ 'contactInfo.email': userEmail })
-    .exec()
-    .then((dbUser) => {
-      if (dbUser) return User.rejectUserEmail();
-      return User.saveUserEmail(userEmail);
-    })
-    .then(() => )
-  });
-
-  const MarketHero = db.model('MarketHero', marketHero);
+  const MarketHero = db.model('MarketHero', marketHeroSchema);
   return MarketHero;
 };
-
-
-request({
-  method: 'POST',
-  url: 'https://private-anon-9aba81438f-markethero2.apiary-mock.com/v1/api/tag-lead',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: "{  \"apiKey\": \"b12a19f4521d44abc8d613efca7f9c23c88\",  \"firstName\": \"John\",  \"lastName\": \"Doe\",  \"email\": \"John@doe.com\",  \"tags\": [    \"!Tag1\"  ]}"
-}, function (error, response, body) {
-  console.log('Status:', response.statusCode);
-  console.log('Headers:', JSON.stringify(response.headers));
-  console.log('Response:', body);
-});
