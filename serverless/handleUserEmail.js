@@ -6,13 +6,7 @@ export default ({
   dbModels: { User },
   db,
 }) => new Promise((resolve, reject) => {
-  User
-  .findOne({ 'contactInfo.email': userEmail })
-  .exec()
-  .then((dbUser) => {
-    if (dbUser) return User.rejectUserEmail();
-    return User.saveUserEmail(userEmail);
-  })
+
   .then((result) => {
     console.log(`
       Results = ${result} -
@@ -20,10 +14,15 @@ export default ({
     `);
     closeDB(db);
   })
-  .catch(reject);
+  .catch((error) => {
+    console.log(`
+      Error = ${error}
+    `);
+    reject(error);
+  });
 });
 // 1a. check users email in the database.
-// User.find({  })
+// User.findOne({  })
 // 1b. if a matching email is found - respond with an email that says - You've already received a discount for signing up.
 // 1c. If there is no match found...
 // 2a. Save the user's email into the database.
