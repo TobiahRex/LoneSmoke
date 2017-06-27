@@ -3,25 +3,23 @@ import { Promise as bbPromise } from 'bluebird';
 import marketHero from '../schemas/marketHero';
 
 export default (db) => {
-  marketHero.statics.fetchUserProfile = userId =>
+  marketHero.statics.checkForUser = userEmail =>
   new Promise((resolve, reject) => {
-    User.findById(userId).exec()
-    .then((dbUser) => {
-      console.log(`
-        User Found: ${dbUser._id}
-        Sending updated profile to Client.
-      `);
-      resolve(dbUser);
-    })
-    .catch(error => reject(`
-      Could Not find a user with this is: ${userId}
-
-      Mongo ERROR: ${error}
-      `),
-    );
+    MarketHero.find({})
+    .exec()
+    .then((dbResults) => {
+      if (!dbResults.length) {
+        resolve('');
+      } else {
+        const results = dbResults
+        .leads
+        .filter(({ email }) => email === userEmail);
+        resolve(results);
+      }
+    });
   });
 
-  marketHero.statics.saveUserEmail = (userEmail) =>
+  marketHero.statics.saveUserEmail = userEmaild =>
   new Promise((resolve, reject) => {
     User.create({
 
@@ -37,9 +35,9 @@ export default (db) => {
       if (dbUser) return User.rejectUserEmail();
       return User.saveUserEmail(userEmail);
     })
-    .then(())
+    .then(() => )
   });
 
-  const User = db.model('User', marketHero);
-  return User;
+  const MarketHero = db.model('MarketHero', marketHero);
+  return MarketHero;
 };

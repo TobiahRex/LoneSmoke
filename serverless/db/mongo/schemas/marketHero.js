@@ -4,10 +4,7 @@ export const ObjectId = Schema.Types.ObjectId;
 const marketHeroSchema = new Schema({
   leads: [{
     email: { type: String },
-    date: {
-      type: Date,
-      default: Date.now,
-    },
+    date: { type: Date, default: Date.now },
   }],
   tags: [{
     name: { type: String },
