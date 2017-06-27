@@ -2,12 +2,13 @@
 if (!global._babelPolyfill) require('babel-polyfill');
 
 import handleUserEmail from './handleUserEmail';
-// import { startDB } from './db/mongo/connection';
+import { startDB } from './db/mongo/connection';
 
 module.exports.discount = (event, context, cb) => {
   console.log('\nEVENT: ', event);
   // 3a. Send user a 200 status code and an email that says - "Thank you for signing up with LoneSmoke.  Show this email when you pay and receive 10% off your meal.".
-  handleUserEmail(event)
+  startDB()
+  .then(dbResults => handleUserEmail({ event, ...dbResults }))
   .then((results) => {
     console.log('\n >> FINAL Lambda SUCCESS response: \n', JSON.stringify(results, null, 2));
     context.succeed && context.succeed(results);

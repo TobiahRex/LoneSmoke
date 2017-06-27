@@ -11,12 +11,6 @@
         "LogGroupName": "/aws/lambda/lonesmoke-development-discount"
       }
     },
-    "WakeupLogGroup": {
-      "Type": "AWS::Logs::LogGroup",
-      "Properties": {
-        "LogGroupName": "/aws/lambda/lonesmoke-development-wakeup"
-      }
-    },
     "IamRoleLambdaExecution": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -59,9 +53,6 @@
                   "Resource": [
                     {
                       "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lonesmoke-development-discount:*"
-                    },
-                    {
-                      "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lonesmoke-development-wakeup:*"
                     }
                   ]
                 },
@@ -73,9 +64,6 @@
                   "Resource": [
                     {
                       "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lonesmoke-development-discount:*:*"
-                    },
-                    {
-                      "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lonesmoke-development-wakeup:*:*"
                     }
                   ]
                 },
@@ -120,7 +108,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/lonesmoke/development/1498207039924-2017-06-23T08:37:19.924Z/lonesmoke.zip"
+          "S3Key": "serverless/lonesmoke/development/1498312311828-2017-06-24T13:51:51.828Z/lonesmoke.zip"
         },
         "FunctionName": "lonesmoke-development-discount",
         "Handler": "handler.discount",
@@ -135,17 +123,15 @@
         "Timeout": 20,
         "Environment": {
           "Variables": {
-            "SLS_ENV": "development",
-            "MONGO_URI": "mongodb://lonesmoke:kSNEeF3iV38WXRRr@lonesmoke-mongo-cluster-shard-00-00-wqafo.mongodb.net:27017,lonesmoke-mongo-cluster-shard-00-01-wqafo.mongodb.net:27017,lonesmoke-mongo-cluster-shard-00-02-wqafo.mongodb.net:27017/lonesmoke-development?ssl=true&replicaSet=lonesmoke-mongo-cluster-shard-0&authSource=admin",
-            "WAKE_UP_URL": "https://gccqem4cld.execute-api.ap-northeast-1.amazonaws.com/development"
+            "MONGO_URI": "mongodb://stackinet:odV9WmWq1Tm752KO@stackinet-cluster-shard-00-00-wqafo.mongodb.net:27017,stackinet-cluster-shard-00-01-wqafo.mongodb.net:27017,stackinet-cluster-shard-00-02-wqafo.mongodb.net:27017/lonesmoke-development?ssl=true&replicaSet=stackinet-cluster-shard-0&authSource=admin"
           }
         },
         "VpcConfig": {
           "SecurityGroupIds": [
-            "sg-75f53413"
+            "sg-151ac173"
           ],
           "SubnetIds": [
-            "subnet-10464166"
+            "subnet-708fc428"
           ]
         }
       },
@@ -154,94 +140,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "DiscountLambdaVersionvmJ3Xw552maJC3zkrHbFfWD1CqCL1DjdIarMLKV7c": {
+    "DiscountLambdaVersion4DVG4SvTdawygN9rKpSGZ8Qbl4JUJPzIRVZ722m3Q": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "DiscountLambdaFunction"
         },
-        "CodeSha256": "/vmJ3Xw552maJC3zkrHbFfWD1CqCL1DjdIarML+KV7c="
-      }
-    },
-    "WakeupLambdaFunction": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Ref": "ServerlessDeploymentBucket"
-          },
-          "S3Key": "serverless/lonesmoke/development/1498207039924-2017-06-23T08:37:19.924Z/lonesmoke.zip"
-        },
-        "FunctionName": "lonesmoke-development-wakeup",
-        "Handler": "handler.wakeup",
-        "MemorySize": 1024,
-        "Role": {
-          "Fn::GetAtt": [
-            "IamRoleLambdaExecution",
-            "Arn"
-          ]
-        },
-        "Runtime": "nodejs6.10",
-        "Timeout": 20,
-        "Environment": {
-          "Variables": {
-            "SLS_ENV": "development",
-            "MONGO_URI": "mongodb://lonesmoke:kSNEeF3iV38WXRRr@lonesmoke-mongo-cluster-shard-00-00-wqafo.mongodb.net:27017,lonesmoke-mongo-cluster-shard-00-01-wqafo.mongodb.net:27017,lonesmoke-mongo-cluster-shard-00-02-wqafo.mongodb.net:27017/lonesmoke-development?ssl=true&replicaSet=lonesmoke-mongo-cluster-shard-0&authSource=admin",
-            "WAKE_UP_URL": "https://gccqem4cld.execute-api.ap-northeast-1.amazonaws.com/development"
-          }
-        }
-      },
-      "DependsOn": [
-        "WakeupLogGroup",
-        "IamRoleLambdaExecution"
-      ]
-    },
-    "WakeupLambdaVersionvmJ3Xw552maJC3zkrHbFfWD1CqCL1DjdIarMLKV7c": {
-      "Type": "AWS::Lambda::Version",
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "WakeupLambdaFunction"
-        },
-        "CodeSha256": "/vmJ3Xw552maJC3zkrHbFfWD1CqCL1DjdIarML+KV7c="
-      }
-    },
-    "WakeupEventsRuleSchedule1": {
-      "Type": "AWS::Events::Rule",
-      "Properties": {
-        "ScheduleExpression": "rate(20 minutes)",
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Fn::GetAtt": [
-                "WakeupLambdaFunction",
-                "Arn"
-              ]
-            },
-            "Id": "wakeupSchedule"
-          }
-        ]
-      }
-    },
-    "WakeupLambdaPermissionEventsRuleSchedule1": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "WakeupLambdaFunction",
-            "Arn"
-          ]
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "WakeupEventsRuleSchedule1",
-            "Arn"
-          ]
-        }
+        "CodeSha256": "4DVG4SvTdawygN9/rKpSGZ/8Qbl4JUJPzIRVZ722m3Q="
       }
     },
     "ApiGatewayRestApi": {
@@ -492,7 +398,7 @@
         ]
       }
     },
-    "ApiGatewayDeployment1498207039956": {
+    "ApiGatewayDeployment1498312311851": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -547,13 +453,7 @@
     "DiscountLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "DiscountLambdaVersionvmJ3Xw552maJC3zkrHbFfWD1CqCL1DjdIarMLKV7c"
-      }
-    },
-    "WakeupLambdaFunctionQualifiedArn": {
-      "Description": "Current Lambda function version",
-      "Value": {
-        "Ref": "WakeupLambdaVersionvmJ3Xw552maJC3zkrHbFfWD1CqCL1DjdIarMLKV7c"
+        "Ref": "DiscountLambdaVersion4DVG4SvTdawygN9rKpSGZ8Qbl4JUJPzIRVZ722m3Q"
       }
     },
     "ServiceEndpoint": {

@@ -1,8 +1,26 @@
+/* eslint-disable no-console */
+import { closeDB } from './db/mongo/connection';
 
-export default event =>
-new Promise((resolve) => {
-  console.log('\n@handleUserEmail: \n event: ', JSON.stringify(event, null, 2));
-  resolve();
+export default ({
+  event: { userEmail },
+  dbModels: { User },
+  db,
+}) => new Promise((resolve, reject) => {
+  User
+  .findOne({ 'contactInfo.email': userEmail })
+  .exec()
+  .then((dbUser) => {
+    if (dbUser) return User.rejectUserEmail();
+    return User.saveUserEmail(userEmail);
+  })
+  .then((result) => {
+    console.log(`
+      Results = ${result} -
+      Closing database.
+    `);
+    closeDB(db);
+  })
+  .catch(reject);
 });
 // 1a. check users email in the database.
 // User.find({  })
