@@ -9,10 +9,8 @@ export default ({
   const { userEmail } = event.body;
 
   MarketHero.checkForUser(userEmail)
-  .then((results) => {
-    if (Array.isArray(results) && results.length) {
-      return MarketHero.rejectUserEmail(userEmail);
-    }
+  .then((dbUser) => {
+    if (dbUser) return MarketHero.rejectUserEmail(userEmail);
     return MarketHero.saveUserEmail(userEmail);
   })
   .then((dbResponse) => {
