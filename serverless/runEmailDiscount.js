@@ -2,21 +2,31 @@
 import { closeDB } from './db/mongo/connection';
 
 export default ({
-  event: { userEmail },
-  dbModels: { User },
+  event,
+  dbModels: { MarketHero },
   db,
 }) => new Promise((resolve, reject) => {
+  const { userEmail } = event.body;
 
-  .then((result) => {
-    console.log(`
-      Results = ${result} -
-      Closing database.
-    `);
-    closeDB(db);
+  MarketHero.checkForUser(userEmail)
+  .then((results) => {
+    if (Array.isArray(results) && results.length) {
+      return MarketHero.rejectUserEmail(userEmail);
+    }
+    return MarketHero.saveUserEmail(userEmail);
   })
+  .then((dbResponse) => {
+    console.log(`
+    (runEmailDiscount.js @ checkForUser.resolve)
+    Results = ${dbResponse}
+    `);
+    return closeDB(db, dbResponse);
+  })
+  .then(resolve)
   .catch((error) => {
     console.log(`
-      Error = ${error}
+    (runEmailDiscount.js @ checkForUser.catch)
+    Error = ${error}
     `);
     reject(error);
   });
