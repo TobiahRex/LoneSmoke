@@ -1,32 +1,30 @@
 /* eslint-disable no-console */
-import { closeDB } from './db/mongo/connection';
-
-export default ({
-  event,
-  dbModels: { MarketHero, Email },
-  db,
-}) => new Promise((resolve, reject) => {
+export default ({ event, dbModels: { MarketHero, Email } }) =>
+new Promise((resolve, reject) => {
   const { userEmail } = event.body;
 
   MarketHero.checkForLead(userEmail)
   .then((dbUser) => {
-    if (dbUser) return Email.sendNastyGram(userEmail, { type: 'beachDiscount' });
+    if (dbUser) return Email.sendEmail(userEmail, { type: 'beachDiscountRejection' });
     return MarketHero.createLead(userEmail);
   })
   .then((dbResponse) => {
     console.log(`
-    (runEmailDiscount.js @ checkForUser.resolve)
+    (SUCCESS @ runEmailDiscount.js)
     Results = ${dbResponse}
     `);
-    return closeDB(db, dbResponse);
+    resolve(dbResponse);
   })
-  .then(resolve)
   .catch((error) => {
     console.log(`
-    (runEmailDiscount.js @ checkForUser.catch)
-    Error = ${error}
+      (runEmailDiscount.js @ checkForUser.catch)
+      Error = ${error}
     `);
-    reject(error);
+    if (Object.prototype.hasOwnProperty.call(error, 'type')) {
+      reject(error);
+    } else {
+      reject({ type: 'error', problem: { ...error } });
+    }
   });
 });
 // 1a. check users email in the database.
