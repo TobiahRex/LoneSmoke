@@ -1,7 +1,9 @@
 /* eslint-disable no-use-before-define, no-console, import/newline-after-import */
-import emailSchema from '../schemas/email';
-import config from './config.json';
 import AWS from 'aws-sdk';
+import { Promise as bbPromise } from 'bluebird';
+import isEmail from 'validator/lib/isEmail';
+import emailSchema from '../schemas/email';
+import config from '../../..//config.json';
 
 AWS.config.update({
   accessKeyId: config.aws.accessKeyId,
@@ -12,24 +14,22 @@ AWS.config.update({
 const ses = new AWS.SES();
 
 export default (db) => {
-  emailSchema.statics.sendNastyGram = ({ to, from, type }) =>
+  emailSchema.statics.sendEmail = ({ to, from, type }) =>
   new Promise((resolve, reject) => {
+    if (!isEmail(to)) {
+      console.log(`
+        ERROR @ sendNastyGram:
+        "${from}" is not a valid email address.
+      `);
+      reject({ error: true, problem: 'Did not submit a valid email address. Please try again.' });
+    }
+
     Email.findOne({ type })
     .exec()
     .then((dbEmail) => {
       console.log('\nFound ', dbEmail.type, ' email.');
 
-      let toEmailAddresses = to;
-      let sourceEmail = from;
-      let bodyTextData = dbEmail.bodyData;
-      let bodyHtmlData = dbEmail.bodyData;
-      let bodyTextCharset = dbEmail.bodyTextCharset;
-      let bodyHtmlCharset = dbEmail.bodyHtmlCharset;
-      let subjectdata = dbEmail.subjectdata;
-      let subjectCharset = dbEmail.subjectCharset;
-      let replyToAddresses = dbEmail.replyTo;
-
-      let emailParams = {
+      const emailParams = {
         Destination: {
           ToAddresses: to,
         },
@@ -45,15 +45,30 @@ export default (db) => {
             },
           },
           Subject: {
-            Data: subjectdata,
-            Charset: subjectCharset,
+            Data: dbEmail.subjetData,
+            Charset: dbEmail.subjetCharset,
           },
         },
         Source: from,
-        ReplyToAddresses: replyToAddresses,
+        ReplyToAddresses: dbEmail.replyToAddress,
       };
+
+      return bbPromise.fromCallback(cb => ses.sendEmail(emailParams, cb));
     })
-    .catch(reject);
+    .then((data) => {
+      console.log(`
+        Successfully sent SES email: ${data}
+      `);
+      resolve(data);
+    })
+    .catch((error) => {
+      console.log(`
+        ERROR sending SES email.
+        Error = ${error}
+        ${error.stack}
+        `);
+      reject(error);
+    });
   });
 
   const Email = db.model('Email', emailSchema);

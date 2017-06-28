@@ -32,7 +32,8 @@
     "bluebird": "^3.5.0",
     "dotenv": "^4.0.0",
     "graphql": "^0.9.6",
-    "mongoose": "^4.11.0"
+    "mongoose": "^4.11.0",
+    "validator": "^7.1.0"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
