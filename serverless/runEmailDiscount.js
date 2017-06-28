@@ -16,8 +16,8 @@ new Promise((resolve, reject) => {
   })
   .then((dbResponse) => {
     console.log(`
-    (SUCCESS @ runEmailDiscount.js)
-    Results = ${dbResponse}
+      (SUCCESS @ runEmailDiscount.js)
+      Results = ${dbResponse}
     `);
     resolve(dbResponse);
   })
