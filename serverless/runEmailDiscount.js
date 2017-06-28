@@ -25,8 +25,10 @@ new Promise((resolve, reject) => {
       type: 'beachDiscountCongratulations',
     });
   })
-  .then(({ status, response }) => {
-    if (status === 200) return MarketHero.addTagToUser(userEmail, { name: '!beachDiscount', description: 'User received 10% discount at Zushi Beach 2017.' });
+  .then((sesResponse) => {
+    console.log(sesResponse, '\nNow adding tag to MarketHero lead.');
+
+    return MarketHero.addTagToUser(userEmail, { name: '!beachDiscount', description: 'User received 10% discount at Zushi Beach 2017.' });
   })
   .catch((error) => {
     console.log(`
