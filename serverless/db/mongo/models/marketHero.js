@@ -16,26 +16,13 @@ export default (db) => {
 
   marketHeroSchema.statics.createLead = userEmail =>
   new Promise((resolve, reject) => {
-
-    const asyncResults = Promise.all([
-      Email.sendEmail({
-        type: 'beachDiscountCongratulations',
-        to: userEmail,
-        from: 'no-reply@lonesmoke.com',
-      }),
-      bbPromise.fromCallback(cb => MarketHero.create({
-        lead: { userEmail },
-        tags: [{
-          name: '!beachDiscount',
-          description: 'User signed up for 10% discount at Zushi Beach.',
-        }],
-      }, cb)),
-    ])
-    .catch((error) => {
-      console.log('(Error @ createLead)\n ', error);
-    })
-
-
+    bbPromise.fromCallback(cb => MarketHero.create({
+      lead: { email: userEmail },
+      tags: [{
+        name: '!beachDiscount',
+        description: 'User signed up for 10% discount at Zushi Beach.',
+      }],
+    }, cb))
     .then((newLead) => {
       console.log(`
         Created new lead in Mongo Database.

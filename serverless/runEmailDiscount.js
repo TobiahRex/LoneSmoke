@@ -14,12 +14,19 @@ new Promise((resolve, reject) => {
     }
     return MarketHero.createLead(userEmail);
   })
-  .then((dbResponse) => {
+  .then((newLead) => {
     console.log(`
       (SUCCESS @ runEmailDiscount.js)
-      Results = ${dbResponse}
+      Results = ${newLead}
     `);
-    resolve(dbResponse);
+    return Email.sendEmail({
+      to: newLead.lead.email,
+      from: 'no-reply@lonesmoke.com',
+      type: 'beachDiscountCongratulations',
+    });
+  })
+  .then(({ status, response }) => {
+    if (status === 200) return MarketHero.addTagToUser(userEmail, { name: '!beachDiscount', description: 'User received 10% discount at Zushi Beach 2017.' });
   })
   .catch((error) => {
     console.log(`
