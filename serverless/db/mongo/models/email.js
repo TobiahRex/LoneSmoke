@@ -33,6 +33,8 @@ export default (db) => {
         Destination: {
           ToAddresses: to,
         },
+        Source: from,
+        ReplyToAddresses: dbEmail.replyToAddress,
         Message: {
           Html: {
             Data: dbEmail.bodyHtmlData,
@@ -41,16 +43,14 @@ export default (db) => {
           Body: {
             Text: {
               Data: dbEmail.bodyTextData,
-              Charset: dbEmail.bodyCharset,
+              Charset: dbEmail.bodyTextCharset,
             },
           },
           Subject: {
-            Data: dbEmail.subjetData,
-            Charset: dbEmail.subjetCharset,
+            Data: dbEmail.subjectData,
+            Charset: dbEmail.subjectCharset,
           },
         },
-        Source: from,
-        ReplyToAddresses: dbEmail.replyToAddress,
       };
 
       return bbPromise.fromCallback(cb => ses.sendEmail(emailParams, cb));
@@ -59,7 +59,10 @@ export default (db) => {
       console.log(`
         Successfully sent SES email: ${data}
       `);
-      resolve(data);
+      resolve({
+        statusCode: 200,
+        body: JSON.stringify({ message: 'Mail sent successfully.' }),
+      });
     })
     .catch((error) => {
       console.log(`
