@@ -18,7 +18,7 @@ export default (db) => {
   new Promise((resolve, reject) => {
     if (!isEmail(to)) {
       console.log(`
-        ERROR @ sendNastyGram:
+        ERROR @ sendEmail:
         "${from}" is not a valid email address.
       `);
       reject({ error: true, problem: 'Did not submit a valid email address. Please try again.' });
@@ -67,7 +67,7 @@ export default (db) => {
         Error = ${error}
         ${error.stack}
         `);
-      reject(error);
+      reject({ error: true, problem: { ...error } });
     });
   });
 
