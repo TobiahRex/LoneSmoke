@@ -5,7 +5,13 @@ new Promise((resolve, reject) => {
 
   MarketHero.checkForLead(userEmail)
   .then((dbUser) => {
-    if (dbUser) return Email.sendEmail(userEmail, { type: 'beachDiscountRejection' });
+    if (dbUser) {
+      return Email.sendEmail({
+        to: userEmail,
+        from: 'no-reply@lonesmoke.com',
+        type: 'beachDiscountRejection',
+      });
+    }
     return MarketHero.createLead(userEmail);
   })
   .then((dbResponse) => {
@@ -17,7 +23,7 @@ new Promise((resolve, reject) => {
   })
   .catch((error) => {
     console.log(`
-      (runEmailDiscount.js @ checkForUser.catch)
+      (ERROR @ runEmailDiscount.js)
       Error = ${error}
     `);
     if (Object.prototype.hasOwnProperty.call(error, 'type')) {
