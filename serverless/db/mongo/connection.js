@@ -1,7 +1,7 @@
-/* eslint-disable no-console, no-constant-condition */
+/* eslint-disable no-console, no-constant-condition, no-unused-vars */
 import mongoose from 'mongoose';
-import createProductModel from './models/product';
-import createUserModel from './models/user';
+import createMarketHeroModel from './models/marketHero';
+import createEmailModel from './models/email';
 
 mongoose.Promise = Promise;
 const dotenv = require('dotenv').config({ silent: true }); //eslint-disable-line
@@ -9,36 +9,33 @@ const MONGO_DB = process.env.MONGO_URI;
 
 if (!MONGO_DB) throw new Error(`MONGO_DB URI value is: ${MONGO_DB.length ? MONGO_DB : 'undefined'}`);
 
-const mongooseConnection = () =>
-new Promise((resolve) => {
-  const newDB = mongoose.createConnection(MONGO_DB, console.log);
-  resolve(newDB);
-});
+let cachedDb = {
+  connection: null,
+  dbModels: {
+    Product: null,
+    User: null,
+  },
+};
 
-export const closeDB = (db, GraphQLResponse) =>
+const verifyDb = () =>
 new Promise((resolve) => {
-  db.close(() => {
-    console.log('\n//mongo/connection.js @ CLOSE DB');
-    console.log('\n//mongo/connection.js \ndb.connections AFTER close: ', db.base.connections);
-    resolve(GraphQLResponse);
-  });
-});
+  if (cachedDb.connection && (cachedDb.connection._readyState === 1)) {
+    console.log('cachedDb.connection._readyState: ', cachedDb.connection._readyState, '\nFOUND PREVIOUS CONNECTION\n', '\nCurrent Connections: ', cachedDb.connection.base.connections);
+    resolve(cachedDb);
+  } else {
+    const connection = mongoose.createConnection(MONGO_DB, console.log);
 
-export const startDB = () =>
-new Promise((resolve) => {
-  mongooseConnection()
-  .then((newDB) => {
-    console.log(`\nMongo Connected @ ${MONGO_DB}`);
-    console.log('\nNew DB = ', newDB);
-    resolve({
-      db: newDB,
+    console.log('CREATED NEW CONNECTION: ', connection, '\nmongoose.connection.readyState: ', connection._readyState, '\nAll Connections:', connection.base);
+
+    cachedDb = {
+      connection,
       dbModels: {
-        Product: createProductModel(newDB),
-        User: createUserModel(newDB),
+        MarketHero: createMarketHeroModel(connection),
+        Email: createEmailModel(connection),
       },
-    });
-  })
-  .catch(error =>
-    console.log(`\nCould not connect to Mongo DB.\nERROR: ${error}`),
-  );
+    };
+    resolve(cachedDb);
+  }
 });
+
+export default verifyDb;
