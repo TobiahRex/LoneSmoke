@@ -1,6 +1,6 @@
+/* eslint-disable no-console */
 import mongoose from 'mongoose';
 import isEmail from 'validator/lib/isEmail';
-import { Promise as bbPromise } from 'bluebird';
 import complaintSchema from '../schemas/complaint';
 
 export default (dbConnection) => {
@@ -14,18 +14,19 @@ export default (dbConnection) => {
  */
   complaintSchema.statics.addEmailComplaint = email => {
     if (!isEmail(email)) return Promise.reject({ type: 'error', problem: `${email} - Is not a valid email.` });
-    
+
     Complaint.find({})
     .exec()
-    .(dbComplaints => dbComplaints
+    .then(dbComplaints => dbComplaints
       .emails
       .push(email)
-      .save({ new: true })
+      .save()
     )
-    .then((savedComplaints) => {
+    .then(() => {
       console.log('Successfully saved ', email, ' to Complaints list.');
       return Promise.resolve();
     })
   }
   const Complaint = mongoose.model('Complaint', complaintSchema);
+  return Complaint;
 };
