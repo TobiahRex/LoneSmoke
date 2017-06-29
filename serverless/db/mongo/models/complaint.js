@@ -18,14 +18,10 @@ export default (dbConnection) => {
     }
     Complaint.find({})
     .exec()
-    .then(dbComplaints => {
-
-      dbComplaints
+    .then(dbComplaints => dbComplaints
       .emails
       .push({ address: email, created: new Date() })
       .save()
-
-    }
     )
     .then(() => {
       console.log('Successfully saved ', email, ' to Complaints list.');

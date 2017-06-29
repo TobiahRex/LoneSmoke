@@ -1,8 +1,9 @@
-/* eslint-disable no-console */
+/* eslint-disable no-console, import/newline-after-import, import/imports-first */
 
 require('dotenv').load({ silent: true });
 import axios from 'axios';
-import Complaint from './db/mongo/models';
+import Complaint from './db/mongo/models/complaint';
+import createNewLead from './services/createNewLead.async';
 
 export default (notification) =>
 new Promise((resolve, reject) => {
@@ -17,7 +18,7 @@ new Promise((resolve, reject) => {
   } else if (keys.includes('')) {
     Complaint.find({})
     .exec()
-    .((dbResult) => {
+    .then((dbResult) => {
       dbResult.email.push(source);
       return dbResult.save({ new: true });
     })
@@ -32,16 +33,12 @@ new Promise((resolve, reject) => {
 
   } else if (keys.incldues('smtpResponse')) {
     console.log('SES email successfully delivered to email: ', source, '\n Saving email to Market Hero and Mongo cluster...');
-    async function newLead((email) => {
-      const results = await Promise.all([
-
-      ])
-      .catch((error) => {
-        console.log('Error while creating new Lead in Market Hero & Mongo cluster: ', error);
-        reject();
-      });
-      resolve();
+    const results = createNewLead(source)
+    .catch((error) => {
+      console.log('Error saving lead to Market Hero & Mongo Collection: ', error);
+      reject();
     });
-
-  }
+    console.log('Successfully saved lead# ', source, ' to Market Hero & Mongo Cluster.');
+    resolve();
+  };
 });
