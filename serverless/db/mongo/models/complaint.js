@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable no-use-before-define, no-console */
 import mongoose from 'mongoose';
 import isEmail from 'validator/lib/isEmail';
 import complaintSchema from '../schemas/complaint';
@@ -12,21 +12,24 @@ export default (dbConnection) => {
  *
  * @return {object} - Promise resolved with data.
  */
-  complaintSchema.statics.addEmailComplaint = email => {
-    if (!isEmail(email)) return Promise.reject({ type: 'error', problem: `${email} - Is not a valid email.` });
+  complaintSchema.statics.addEmailComplaint = (email) =>
+  new Promise((resolve, reject) => {
 
+    if (!isEmail(email)) {
+      reject({ type: 'error', problem: `${email} - Is not a valid email.` });
+    }
     Complaint.find({})
     .exec()
     .then(dbComplaints => dbComplaints
       .emails
-      .push(email)
+      .push({ address: email, created: new Date() })
       .save()
     )
     .then(() => {
       console.log('Successfully saved ', email, ' to Complaints list.');
-      return Promise.resolve();
-    })
-  }
-  const Complaint = mongoose.model('Complaint', complaintSchema);
+      resolve();
+    });
+  const Complaint = dbConnection
+    .model('Complaint', complaintSchema);
   return Complaint;
-};
+});
