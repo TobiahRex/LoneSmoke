@@ -29,6 +29,7 @@ new Promise((resolve, reject) => {
       console.log('\nError saving email to Complaint collection:\n Error = ', error);
       reject(error);
     });
+
   } else if (keys.incldues('smtpResponse')) {
     console.log('SES email successfully delivered to email: ', source, '\n Saving email to Market Hero and Mongo cluster...');
     async function newLead((email) => {
