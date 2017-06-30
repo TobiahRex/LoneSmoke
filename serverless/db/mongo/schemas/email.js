@@ -4,6 +4,7 @@ export const ObjectId = Schema.Types.ObjectId;
 const emailSchema = new Schema({
   created: { type: Date, default: Date.now },
   purpose: { type: String, required: true },
+  language: { type: String, required: true },
   replyToAddress: { type: String, required: true },
   subjectData: { type: String, required: true },
   subjectCharset: { type: String, default: 'utf8' },

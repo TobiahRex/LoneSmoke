@@ -52,7 +52,6 @@ functions:
             headers:
               Access-Control-Allow-Origin: "'*'"
 
-
   sesStatusHandler:
     handler: handler.sesStatusHandler
     iamRoleStatements:
@@ -63,3 +62,63 @@ functions:
           - logs:CreateLogGroup
           - logs:CreateLogStream
           - logs:PutLogEvents
+
+  createNewEmail:
+    handler: handler.createNewEmail
+    vpc:
+      securityGroupIds:
+        - ${file(./config.yml):securityGroupId}
+      subnetIds:
+        - ${file(./config.yml):subnetId}
+    iamRoleStatements:
+      - Effect: Allow
+        Resource: "*"
+        Action:
+          - ec2:CreateNetworkInterface
+          - ec2:DescribeNetworkInterfaces
+          - ec2:DetachNetworkInterface
+          - ec2:DeleteNetworkInterface
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+    events:
+      - http:
+          path: create-email
+          method: post
+          integration: lambda
+          memorySize: 256
+          timeout: 10
+          cors: true
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+
+  deleteEmail:
+    handler: handler.deleteEmail
+    vpc:
+      securityGroupIds:
+        - ${file(./config.yml):securityGroupId}
+      subnetIds:
+        - ${file(./config.yml):subnetId}
+    iamRoleStatements:
+      - Effect: Allow
+        Resource: "*"
+        Action:
+          - ec2:CreateNetworkInterface
+          - ec2:DescribeNetworkInterfaces
+          - ec2:DetachNetworkInterface
+          - ec2:DeleteNetworkInterface
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+    events:
+      - http:
+          path: delete-email
+          method: post
+          integration: lambda
+          memorySize: 256
+          timeout: 10
+          cors: true
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"

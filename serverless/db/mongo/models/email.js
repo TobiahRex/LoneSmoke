@@ -14,18 +14,25 @@ AWS.config.update({
 const ses = new AWS.SES();
 
 export default (db) => {
-  emailSchema.statics.createEmail = (fields) =>
+  emailSchema.statics.createEmail = fields =>
   new Promise((resolve, reject) => {
     const {
       purpose,
+      language,
       subjectData,
       bodyHtmlData,
       bodyTextData,
       replyToAddress,
     } = fields;
 
-    if (!purpose || !replyToAddress || !subjectData || !bodyHtmlData || !bodyTextData) {
-      reject({ error: 'Missing required fields to create a new Email.' })
+    if (!purpose || !language || !replyToAddress || !subjectData || !bodyHtmlData || !bodyTextData) {
+      reject({ error: 'Missing required fields to create a new Email.', ...fields });
+    } else {
+      bbPromise.fromCallback(cb => Email.create({ ...fields }, cb))
+      .then((newEmail) => {
+        console.log('\nSuccessfully created new Email: \n', { ...newEmail });
+        resolve();
+      });
     }
   });
 
@@ -39,17 +46,20 @@ export default (db) => {
   *
   * @return {object} - Promise: resolved - email type sent.
   */
-  emailSchema.statics.sendEmail = ({ to, from, type }) =>
+  emailSchema.statics.sendEmail = ({ to, from, type, language }) =>
   new Promise((resolve, reject) => {
     if (!isEmail(to)) {
       console.log('ERROR @ sendEmail: \n\'', from, '\' is not a valid email address.');
       reject({ error: true, problem: 'Did not submit a valid email address. Please try again.' });
     }
 
-    Email.findOne({ type })
+    Email.find({ type })
     .exec()
-    .then((dbEmail) => {
-      console.log('\nFound ', dbEmail.type, ' email.');
+    .then((dbEmails) => {
+      console.log('\nFound ', dbEmails.type, ' email.');
+
+      const dbEmail = dbEmails
+        .filter(email => email.language === language)[0];
 
       const emailParams = {
         Destination: {
