@@ -30,7 +30,7 @@ export default (db) => {
     } else {
       bbPromise.fromCallback(cb => Email.create({ ...fields }, cb))
       .then((newEmail) => {
-        console.log('\nSuccessfully created new Email: \n', { ...newEmail });
+        console.log('\nSuccessfully created new Email: ', newEmail._id);
         resolve();
       });
     }

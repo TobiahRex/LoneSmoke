@@ -2470,6 +2470,7 @@ a {
 }
 
 .booya-discount-section {
+  display: none;
   height: 400px;
   background-image: url('../images/loneSmoke-brisket-BGIMAGE.png');
   background-position: 50% -1%;
@@ -2965,6 +2966,7 @@ a {
 }
 
 .discount-section {
+  display: none;
   height: 400px;
   background-image: -webkit-linear-gradient(270deg, rgba(0, 0, 0, .5), rgba(0, 0, 0, .5)), url('../images/loneSmoke-smoke-WEB.png');
   background-image: linear-gradient(180deg, rgba(0, 0, 0, .5), rgba(0, 0, 0, .5)), url('../images/loneSmoke-smoke-WEB.png');
@@ -2994,7 +2996,6 @@ a {
   -webkit-align-items: stretch;
   -ms-flex-align: stretch;
   align-items: stretch;
-  background-color: transparent;
 }
 
 .discount-heading {
@@ -4193,6 +4194,7 @@ html.w-mod-js *[data-ix="navbar-zoom-in-on-load"] {
     font-size: 40px;
   }
   .discount-section {
+    display: none;
     background-image: -webkit-linear-gradient(270deg, null, null), url('../images/loneSmoke-smoke-WEB.png');
     background-image: linear-gradient(180deg, null, null), url('../images/loneSmoke-smoke-WEB.png');
     background-position: 0px 0px, 50% 50%;
@@ -5163,6 +5165,7 @@ html.w-mod-js *[data-ix="navbar-zoom-in-on-load"] {
     font-size: 18px;
   }
   .discount-section {
+    display: none;
     height: 500px;
     background-image: -webkit-linear-gradient(270deg, null, null), url('../images/loneSmoke-smoke-WEB.png');
     background-image: linear-gradient(180deg, null, null), url('../images/loneSmoke-smoke-WEB.png');
