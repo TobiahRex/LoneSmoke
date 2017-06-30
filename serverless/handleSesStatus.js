@@ -1,6 +1,7 @@
 /* eslint-disable no-console, import/newline-after-import, import/imports-first */
 
 require('dotenv').load({ silent: true });
+import { Promise as bbPromise } from 'bluebird';
 import Complaint from './db/mongo/models/complaint';
 import createNewLead from './services/createNewLead.async';
 /**
@@ -24,12 +25,11 @@ new Promise((resolve, reject) => {
     resolve()
     // 2b) if type === "Complaint"
   } else if (keys.includes('complaintFeedbackType')) {
-    return Complaint.create({
+    bbPromise.fromCallback(cb => Complaint.create({
       email: destination[0],
       subject: commonHeaders.subject,
       created: new Date(),
-    })
-    .exec()
+    }), cb)
     .then((newComplaint) => {
       console.log('\nSuccessfully added ', destination[0], ' to Complaint collection.');
       resolve();
@@ -46,7 +46,7 @@ new Promise((resolve, reject) => {
       console.log('Error saving lead to Market Hero & Mongo Collection: ', error);
       reject();
     });
-    console.log('Successfully saved lead# ', destination[0], ' to Market Hero & Mongo Cluster.\nMarket Hero Result: ', results[0].data, '\nMongo Result: ', results[1].data);
+    console.log('Successfully saved new Lead: "', destination[0], '" to Market Hero & Mongo Cluster.\nMarket Hero Result: ', results[0].data, '\nMongo Result: ', results[1].data);
     resolve();
   }
 });
