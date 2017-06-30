@@ -3,7 +3,7 @@
 /**
 * 1) Concurrently calls MarketHero API and creates lead & Creates new MarketHero document with user email.
 *
-* @param {instance} marketHeroModel - Mongo Collection Instance.
+* @param {instance} marketHeroModel - Mongo model instance.
 * @param {string} email - SesStatusObject.
 * @param {object} tagInfo - { name, description }.
 *

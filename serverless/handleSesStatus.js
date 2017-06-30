@@ -2,7 +2,7 @@
 
 require('dotenv').load({ silent: true });
 import { Promise as bbPromise } from 'bluebird';
-import createNewLead from './services/createNewLead.async';
+import createLeadConcurrently from './services/createLeadConcurrently';
 /**
 * 1) Determines what type of notification has been received.
 * 2a) If Bounce type - do nothing.
@@ -10,12 +10,11 @@ import createNewLead from './services/createNewLead.async';
 * 2c) If Delivered type - add to MarketHero collection & add to MarketHero leads collection via REST API.
 *
 * @param {object} event - event.body = Top-Level SES status object.
-* @param {object} MarketHero - Mongo model instance.
-* @param {object} Complaint - Complaint model instance.
+* @param {object} dbModels - Mongo model instance(s).
 *
 * @return {object} - Promise: resolved - no data.
 */
-export default ({ event, MarketHero, Complaint }) =>
+export default ({ event, dbModels: { MarketHero, Complaint } }) =>
 new Promise((resolve, reject) => {
   const {
     notificationType,     // string
@@ -49,7 +48,7 @@ new Promise((resolve, reject) => {
     // 2c) If type === "Delivered"
   } else if (notificationType === 'Delivery') {
     console.log('SES email successfully delivered to email: ', destination[0], '\n Saving email to Market Hero and Mongo cluster...');
-    const results = createNewLead(MarketHero, destination[0], {
+    const results = createLeadConcurrently(MarketHero, destination[0], {
       name: '!LS-beachDiscount',
       description: 'User received a 10% discount for submitting email at Zushi Beach 2017.',
     })
