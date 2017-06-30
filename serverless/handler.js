@@ -22,9 +22,9 @@ module.exports.sesStatusHandler = (event, context, cb) => {
 
   startDB()
   .then(dbResults => handleSesStatus({ event, ...dbResults }))
-  .then(type => cb(null, { success: `User has successfully been sent a ${type} email.` }))
+  .then(() => cb(null, { success: 'Ses status has been successfully handled.' }))
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-    cb(error, 'Ses Discount handler FAILED');
+    cb(error, 'Ses Status handler FAILED');
   });
 };

@@ -1,4 +1,15 @@
 /* eslint-disable no-console */
+/**
+* 1) Determine if the userEmail has already been sent a discount by checking Market Hero collection.
+* 2a) If found, send a Rejection Email.
+* 2b) If not found, verify user has not added classified our application emails as "spam" since last message had been sent.
+* 3a) If email
+*
+* @param {object} event - event.body = Top-Level SES status object.
+* @param {object} dbModels - Mongo model instance(s).
+*
+* @return {object} - Promise: resolved - no data.
+*/
 export default ({ event, dbModels: { MarketHero, Email } }) =>
 new Promise((resolve, reject) => {
   const { userEmail } = event.body;
