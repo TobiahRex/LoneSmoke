@@ -17,6 +17,18 @@
         "LogGroupName": "/aws/lambda/lonesmoke-development-sesStatusHandler"
       }
     },
+    "CreateNewEmailLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/lonesmoke-development-createNewEmail"
+      }
+    },
+    "DeleteEmailLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/lonesmoke-development-deleteEmail"
+      }
+    },
     "IamRoleLambdaExecution": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -62,6 +74,12 @@
                     },
                     {
                       "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lonesmoke-development-sesStatusHandler:*"
+                    },
+                    {
+                      "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lonesmoke-development-createNewEmail:*"
+                    },
+                    {
+                      "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lonesmoke-development-deleteEmail:*"
                     }
                   ]
                 },
@@ -76,6 +94,12 @@
                     },
                     {
                       "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lonesmoke-development-sesStatusHandler:*:*"
+                    },
+                    {
+                      "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lonesmoke-development-createNewEmail:*:*"
+                    },
+                    {
+                      "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lonesmoke-development-deleteEmail:*:*"
                     }
                   ]
                 }
@@ -107,7 +131,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/lonesmoke/development/1498849175961-2017-06-30T18:59:35.961Z/lonesmoke.zip"
+          "S3Key": "serverless/lonesmoke/development/1498858932698-2017-06-30T21:42:12.698Z/lonesmoke.zip"
         },
         "FunctionName": "lonesmoke-development-sesDiscountHandler",
         "Handler": "handler.sesDiscountHandler",
@@ -139,14 +163,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "SesDiscountHandlerLambdaVersionkCV4V5O8GWUpeowCPGJORHlEurn1V6tLJzYLjHGM": {
+    "SesDiscountHandlerLambdaVersion0LvFpWNr1wFfNqIudNe3bO1EsirE0ZHhidHvkplll4E": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "SesDiscountHandlerLambdaFunction"
         },
-        "CodeSha256": "kCV4V5/O8/+GWUpeowCPGJORHlEurn1V6tLJzYLjHGM="
+        "CodeSha256": "0LvFpWNr1wFfNqIudNe3bO1EsirE0ZHhidHvkplll4E="
       }
     },
     "SesStatusHandlerLambdaFunction": {
@@ -156,7 +180,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/lonesmoke/development/1498849175961-2017-06-30T18:59:35.961Z/lonesmoke.zip"
+          "S3Key": "serverless/lonesmoke/development/1498858932698-2017-06-30T21:42:12.698Z/lonesmoke.zip"
         },
         "FunctionName": "lonesmoke-development-sesStatusHandler",
         "Handler": "handler.sesStatusHandler",
@@ -180,14 +204,112 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "SesStatusHandlerLambdaVersionkCV4V5O8GWUpeowCPGJORHlEurn1V6tLJzYLjHGM": {
+    "SesStatusHandlerLambdaVersion0LvFpWNr1wFfNqIudNe3bO1EsirE0ZHhidHvkplll4E": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "SesStatusHandlerLambdaFunction"
         },
-        "CodeSha256": "kCV4V5/O8/+GWUpeowCPGJORHlEurn1V6tLJzYLjHGM="
+        "CodeSha256": "0LvFpWNr1wFfNqIudNe3bO1EsirE0ZHhidHvkplll4E="
+      }
+    },
+    "CreateNewEmailLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/lonesmoke/development/1498858932698-2017-06-30T21:42:12.698Z/lonesmoke.zip"
+        },
+        "FunctionName": "lonesmoke-development-createNewEmail",
+        "Handler": "handler.createNewEmail",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs6.10",
+        "Timeout": 20,
+        "Environment": {
+          "Variables": {
+            "MONGO_URI": "mongodb://stackinet:odV9WmWq1Tm752KO@stackinet-cluster-shard-00-00-wqafo.mongodb.net:27017,stackinet-cluster-shard-00-01-wqafo.mongodb.net:27017,stackinet-cluster-shard-00-02-wqafo.mongodb.net:27017/lonesmoke-development?ssl=true&replicaSet=stackinet-cluster-shard-0&authSource=admin"
+          }
+        },
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-151ac173"
+          ],
+          "SubnetIds": [
+            "subnet-708fc428"
+          ]
+        }
+      },
+      "DependsOn": [
+        "CreateNewEmailLogGroup",
+        "IamRoleLambdaExecution"
+      ]
+    },
+    "CreateNewEmailLambdaVersion0LvFpWNr1wFfNqIudNe3bO1EsirE0ZHhidHvkplll4E": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "CreateNewEmailLambdaFunction"
+        },
+        "CodeSha256": "0LvFpWNr1wFfNqIudNe3bO1EsirE0ZHhidHvkplll4E="
+      }
+    },
+    "DeleteEmailLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/lonesmoke/development/1498858932698-2017-06-30T21:42:12.698Z/lonesmoke.zip"
+        },
+        "FunctionName": "lonesmoke-development-deleteEmail",
+        "Handler": "handler.deleteEmail",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs6.10",
+        "Timeout": 20,
+        "Environment": {
+          "Variables": {
+            "MONGO_URI": "mongodb://stackinet:odV9WmWq1Tm752KO@stackinet-cluster-shard-00-00-wqafo.mongodb.net:27017,stackinet-cluster-shard-00-01-wqafo.mongodb.net:27017,stackinet-cluster-shard-00-02-wqafo.mongodb.net:27017/lonesmoke-development?ssl=true&replicaSet=stackinet-cluster-shard-0&authSource=admin"
+          }
+        },
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-151ac173"
+          ],
+          "SubnetIds": [
+            "subnet-708fc428"
+          ]
+        }
+      },
+      "DependsOn": [
+        "DeleteEmailLogGroup",
+        "IamRoleLambdaExecution"
+      ]
+    },
+    "DeleteEmailLambdaVersion0LvFpWNr1wFfNqIudNe3bO1EsirE0ZHhidHvkplll4E": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DeleteEmailLambdaFunction"
+        },
+        "CodeSha256": "0LvFpWNr1wFfNqIudNe3bO1EsirE0ZHhidHvkplll4E="
       }
     },
     "ApiGatewayRestApi": {
@@ -206,6 +328,36 @@
           ]
         },
         "PathPart": "discount",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourceCreateDashemail": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "ApiGatewayRestApi",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "create-email",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourceDeleteDashemail": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "ApiGatewayRestApi",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "delete-email",
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
         }
@@ -251,6 +403,98 @@
         },
         "ResourceId": {
           "Ref": "ApiGatewayResourceDiscount"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodCreateDashemailOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            },
+            "ResponseModels": {}
+          }
+        ],
+        "RequestParameters": {},
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'",
+                "method.response.header.Access-Control-Allow-Credentials": "'false'"
+              },
+              "ResponseTemplates": {
+                "application/json": ""
+              }
+            }
+          ]
+        },
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceCreateDashemail"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodDeleteDashemailOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            },
+            "ResponseModels": {}
+          }
+        ],
+        "RequestParameters": {},
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'",
+                "method.response.header.Access-Control-Allow-Credentials": "'false'"
+              },
+              "ResponseTemplates": {
+                "application/json": ""
+              }
+            }
+          ]
+        },
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceDeleteDashemail"
         },
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
@@ -438,7 +682,369 @@
         ]
       }
     },
-    "ApiGatewayDeployment1498849176047": {
+    "ApiGatewayMethodCreateDashemailPost": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "POST",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceCreateDashemail"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "CreateNewEmailLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          },
+          "PassthroughBehavior": "NEVER",
+          "RequestTemplates": {
+            "application/json": "\n    #set( $body = $input.json(\"$\") )\n\n    \n  #define( $loop )\n    {\n    #foreach($key in $map.keySet())\n        #set( $k = $util.escapeJavaScript($key) )\n        #set( $v = $util.escapeJavaScript($map.get($key)).replaceAll(\"\\\\'\", \"'\") )\n        \"$k\":\n          \"$v\"\n          #if( $foreach.hasNext ) , #end\n    #end\n    }\n  #end\n\n  {\n    \"body\": $body,\n    \"method\": \"$context.httpMethod\",\n    \"principalId\": \"$context.authorizer.principalId\",\n    \"stage\": \"$context.stage\",\n\n    \"cognitoPoolClaims\" : {\n       \n       \"sub\": \"$context.authorizer.claims.sub\"\n    },\n\n    #set( $map = $input.params().header )\n    \"headers\": $loop,\n\n    #set( $map = $input.params().querystring )\n    \"query\": $loop,\n\n    #set( $map = $input.params().path )\n    \"path\": $loop,\n\n    #set( $map = $context.identity )\n    \"identity\": $loop,\n\n    #set( $map = $stageVariables )\n    \"stageVariables\": $loop\n  }\n\n  ",
+            "application/x-www-form-urlencoded": "\n    #define( $body )\n      {\n      #foreach( $token in $input.path('$').split('&') )\n        #set( $keyVal = $token.split('=') )\n        #set( $keyValSize = $keyVal.size() )\n        #if( $keyValSize >= 1 )\n          #set( $key = $util.escapeJavaScript($util.urlDecode($keyVal[0])) )\n          #if( $keyValSize >= 2 )\n            #set($val = $util.escapeJavaScript($util.urlDecode($keyVal[1])).replaceAll(\"\\\\'\",\"'\"))\n          #else\n            #set( $val = '' )\n          #end\n          \"$key\": \"$val\"#if($foreach.hasNext),#end\n        #end\n      #end\n      }\n    #end\n\n    \n  #define( $loop )\n    {\n    #foreach($key in $map.keySet())\n        #set( $k = $util.escapeJavaScript($key) )\n        #set( $v = $util.escapeJavaScript($map.get($key)).replaceAll(\"\\\\'\", \"'\") )\n        \"$k\":\n          \"$v\"\n          #if( $foreach.hasNext ) , #end\n    #end\n    }\n  #end\n\n  {\n    \"body\": $body,\n    \"method\": \"$context.httpMethod\",\n    \"principalId\": \"$context.authorizer.principalId\",\n    \"stage\": \"$context.stage\",\n\n    \"cognitoPoolClaims\" : {\n       \n       \"sub\": \"$context.authorizer.claims.sub\"\n    },\n\n    #set( $map = $input.params().header )\n    \"headers\": $loop,\n\n    #set( $map = $input.params().querystring )\n    \"query\": $loop,\n\n    #set( $map = $input.params().path )\n    \"path\": $loop,\n\n    #set( $map = $context.identity )\n    \"identity\": $loop,\n\n    #set( $map = $stageVariables )\n    \"stageVariables\": $loop\n  }\n\n  "
+          },
+          "IntegrationResponses": [
+            {
+              "StatusCode": 200,
+              "SelectionPattern": "",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            },
+            {
+              "StatusCode": 400,
+              "SelectionPattern": "[\\s\\S]*\\[400\\][\\s\\S]*",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            },
+            {
+              "StatusCode": 401,
+              "SelectionPattern": "[\\s\\S]*\\[401\\][\\s\\S]*",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            },
+            {
+              "StatusCode": 403,
+              "SelectionPattern": "[\\s\\S]*\\[403\\][\\s\\S]*",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            },
+            {
+              "StatusCode": 404,
+              "SelectionPattern": "[\\s\\S]*\\[404\\][\\s\\S]*",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            },
+            {
+              "StatusCode": 422,
+              "SelectionPattern": "[\\s\\S]*\\[422\\][\\s\\S]*",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            },
+            {
+              "StatusCode": 500,
+              "SelectionPattern": "[\\s\\S]*(Process\\s?exited\\s?before\\s?completing\\s?request|\\[500\\])[\\s\\S]*",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            },
+            {
+              "StatusCode": 502,
+              "SelectionPattern": "[\\s\\S]*\\[502\\][\\s\\S]*",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            },
+            {
+              "StatusCode": 504,
+              "SelectionPattern": "[\\s\\S]*\\[504\\][\\s\\S]*",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            }
+          ]
+        },
+        "MethodResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 200
+          },
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 400
+          },
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 401
+          },
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 403
+          },
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 404
+          },
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 422
+          },
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 500
+          },
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 502
+          },
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 504
+          }
+        ]
+      }
+    },
+    "ApiGatewayMethodDeleteDashemailPost": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "POST",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceDeleteDashemail"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "DeleteEmailLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          },
+          "PassthroughBehavior": "NEVER",
+          "RequestTemplates": {
+            "application/json": "\n    #set( $body = $input.json(\"$\") )\n\n    \n  #define( $loop )\n    {\n    #foreach($key in $map.keySet())\n        #set( $k = $util.escapeJavaScript($key) )\n        #set( $v = $util.escapeJavaScript($map.get($key)).replaceAll(\"\\\\'\", \"'\") )\n        \"$k\":\n          \"$v\"\n          #if( $foreach.hasNext ) , #end\n    #end\n    }\n  #end\n\n  {\n    \"body\": $body,\n    \"method\": \"$context.httpMethod\",\n    \"principalId\": \"$context.authorizer.principalId\",\n    \"stage\": \"$context.stage\",\n\n    \"cognitoPoolClaims\" : {\n       \n       \"sub\": \"$context.authorizer.claims.sub\"\n    },\n\n    #set( $map = $input.params().header )\n    \"headers\": $loop,\n\n    #set( $map = $input.params().querystring )\n    \"query\": $loop,\n\n    #set( $map = $input.params().path )\n    \"path\": $loop,\n\n    #set( $map = $context.identity )\n    \"identity\": $loop,\n\n    #set( $map = $stageVariables )\n    \"stageVariables\": $loop\n  }\n\n  ",
+            "application/x-www-form-urlencoded": "\n    #define( $body )\n      {\n      #foreach( $token in $input.path('$').split('&') )\n        #set( $keyVal = $token.split('=') )\n        #set( $keyValSize = $keyVal.size() )\n        #if( $keyValSize >= 1 )\n          #set( $key = $util.escapeJavaScript($util.urlDecode($keyVal[0])) )\n          #if( $keyValSize >= 2 )\n            #set($val = $util.escapeJavaScript($util.urlDecode($keyVal[1])).replaceAll(\"\\\\'\",\"'\"))\n          #else\n            #set( $val = '' )\n          #end\n          \"$key\": \"$val\"#if($foreach.hasNext),#end\n        #end\n      #end\n      }\n    #end\n\n    \n  #define( $loop )\n    {\n    #foreach($key in $map.keySet())\n        #set( $k = $util.escapeJavaScript($key) )\n        #set( $v = $util.escapeJavaScript($map.get($key)).replaceAll(\"\\\\'\", \"'\") )\n        \"$k\":\n          \"$v\"\n          #if( $foreach.hasNext ) , #end\n    #end\n    }\n  #end\n\n  {\n    \"body\": $body,\n    \"method\": \"$context.httpMethod\",\n    \"principalId\": \"$context.authorizer.principalId\",\n    \"stage\": \"$context.stage\",\n\n    \"cognitoPoolClaims\" : {\n       \n       \"sub\": \"$context.authorizer.claims.sub\"\n    },\n\n    #set( $map = $input.params().header )\n    \"headers\": $loop,\n\n    #set( $map = $input.params().querystring )\n    \"query\": $loop,\n\n    #set( $map = $input.params().path )\n    \"path\": $loop,\n\n    #set( $map = $context.identity )\n    \"identity\": $loop,\n\n    #set( $map = $stageVariables )\n    \"stageVariables\": $loop\n  }\n\n  "
+          },
+          "IntegrationResponses": [
+            {
+              "StatusCode": 200,
+              "SelectionPattern": "",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            },
+            {
+              "StatusCode": 400,
+              "SelectionPattern": "[\\s\\S]*\\[400\\][\\s\\S]*",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            },
+            {
+              "StatusCode": 401,
+              "SelectionPattern": "[\\s\\S]*\\[401\\][\\s\\S]*",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            },
+            {
+              "StatusCode": 403,
+              "SelectionPattern": "[\\s\\S]*\\[403\\][\\s\\S]*",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            },
+            {
+              "StatusCode": 404,
+              "SelectionPattern": "[\\s\\S]*\\[404\\][\\s\\S]*",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            },
+            {
+              "StatusCode": 422,
+              "SelectionPattern": "[\\s\\S]*\\[422\\][\\s\\S]*",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            },
+            {
+              "StatusCode": 500,
+              "SelectionPattern": "[\\s\\S]*(Process\\s?exited\\s?before\\s?completing\\s?request|\\[500\\])[\\s\\S]*",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            },
+            {
+              "StatusCode": 502,
+              "SelectionPattern": "[\\s\\S]*\\[502\\][\\s\\S]*",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            },
+            {
+              "StatusCode": 504,
+              "SelectionPattern": "[\\s\\S]*\\[504\\][\\s\\S]*",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "ResponseTemplates": {}
+            }
+          ]
+        },
+        "MethodResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 200
+          },
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 400
+          },
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 401
+          },
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 403
+          },
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 404
+          },
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 422
+          },
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 500
+          },
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 502
+          },
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "ResponseModels": {},
+            "StatusCode": 504
+          }
+        ]
+      }
+    },
+    "ApiGatewayDeployment1498858932858": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -447,7 +1053,9 @@
         "StageName": "development"
       },
       "DependsOn": [
-        "ApiGatewayMethodDiscountPost"
+        "ApiGatewayMethodDiscountPost",
+        "ApiGatewayMethodCreateDashemailPost",
+        "ApiGatewayMethodDeleteDashemailPost"
       ]
     },
     "SesDiscountHandlerLambdaPermissionApiGateway": {
@@ -456,6 +1064,72 @@
         "FunctionName": {
           "Fn::GetAtt": [
             "SesDiscountHandlerLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "CreateNewEmailLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "CreateNewEmailLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "DeleteEmailLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "DeleteEmailLambdaFunction",
             "Arn"
           ]
         },
@@ -493,13 +1167,25 @@
     "SesDiscountHandlerLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "SesDiscountHandlerLambdaVersionkCV4V5O8GWUpeowCPGJORHlEurn1V6tLJzYLjHGM"
+        "Ref": "SesDiscountHandlerLambdaVersion0LvFpWNr1wFfNqIudNe3bO1EsirE0ZHhidHvkplll4E"
       }
     },
     "SesStatusHandlerLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "SesStatusHandlerLambdaVersionkCV4V5O8GWUpeowCPGJORHlEurn1V6tLJzYLjHGM"
+        "Ref": "SesStatusHandlerLambdaVersion0LvFpWNr1wFfNqIudNe3bO1EsirE0ZHhidHvkplll4E"
+      }
+    },
+    "CreateNewEmailLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "CreateNewEmailLambdaVersion0LvFpWNr1wFfNqIudNe3bO1EsirE0ZHhidHvkplll4E"
+      }
+    },
+    "DeleteEmailLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "DeleteEmailLambdaVersion0LvFpWNr1wFfNqIudNe3bO1EsirE0ZHhidHvkplll4E"
       }
     },
     "ServiceEndpoint": {

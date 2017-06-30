@@ -38,7 +38,7 @@ module.exports.createNewEmail = (event, context, cb) => {
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
 
   verifyDB()
-  .then(({ Email }) => Email.createNewEmail(event.body.fields))
+  .then(({ dbModels: { Email } }) => Email.createNewEmail(event.body.fields))
   .then(() => cb(null, { success: 'Created new Email.' }))
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
@@ -50,7 +50,7 @@ module.exports.deleteEmail = (event, context, cb) => {
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
 
   verifyDB()
-  .then(({ Email }) => Email.findByIdAndDelete(event.body.id).exec())
+  .then(({ dbModels: { Email } }) => Email.findByIdAndDelete(event.body.id).exec())
   .then(() => cb(null, { success: 'Successfully deleted Email.' }))
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
