@@ -40,9 +40,6 @@ custom:
 functions:
   sesDiscountHandler:
     handler: handler.sesDiscountHandler
-
-  sesStatusHandler:
-    handler: handler.sesStatusHandler
     vpc:
       securityGroupIds:
         - ${file(./config.yml):securityGroupId}
@@ -70,3 +67,15 @@ functions:
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
+
+
+  sesStatusHandler:
+    handler: handler.sesStatusHandler
+    iamRoleStatements:
+      - Effect: Allow
+        Resource: "*"
+        Action:
+          - SNS:Publish
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
