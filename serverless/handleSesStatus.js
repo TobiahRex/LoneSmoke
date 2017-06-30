@@ -17,11 +17,14 @@ import createNewLead from './services/createNewLead.async';
 export default notification =>
 new Promise((resolve, reject) => {
   const keys = Object.keys(notification);
-  const { destination, commonHeaders } = notification;
+  const {
+    destination,     // [array]
+    commonHeaders,   // {object}
+  } = notification;
 
   // 2a) if type === "Bounce"
   if (keys.includes('bounceType')) {
-    console.log('Email to ', destination[0], 'BOUNCED.');
+    console.log('BOUNCED Email to ', destination[0], '\nSubject: ', commonHeaders.subject);
     resolve();
 
     // 2b) if type === "Complaint"
@@ -32,7 +35,7 @@ new Promise((resolve, reject) => {
       created: new Date(),
     }), cb) //eslint-disable-line
     .then((newComplaint) => {
-      console.log('\nSuccessfully added ', newComplaint.email, ' to Complaint collection.');
+      console.log('\n', newComplaint.email, ': successfully added to Complaint collection.');
       resolve();
     })
     .catch((error) => {
