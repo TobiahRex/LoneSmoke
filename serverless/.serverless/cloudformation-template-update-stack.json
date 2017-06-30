@@ -107,7 +107,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/lonesmoke/development/1498842073215-2017-06-30T17:01:13.215Z/lonesmoke.zip"
+          "S3Key": "serverless/lonesmoke/development/1498849175961-2017-06-30T18:59:35.961Z/lonesmoke.zip"
         },
         "FunctionName": "lonesmoke-development-sesDiscountHandler",
         "Handler": "handler.sesDiscountHandler",
@@ -139,14 +139,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "SesDiscountHandlerLambdaVersionCQVjW5N07hX7ExFhIvmpkjxXgRfFnpk2mxYGJUxHBk": {
+    "SesDiscountHandlerLambdaVersionkCV4V5O8GWUpeowCPGJORHlEurn1V6tLJzYLjHGM": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "SesDiscountHandlerLambdaFunction"
         },
-        "CodeSha256": "CQVjW5N07hX7ExFhIvmp+kjxXgRfFnpk2mxYGJUxHBk="
+        "CodeSha256": "kCV4V5/O8/+GWUpeowCPGJORHlEurn1V6tLJzYLjHGM="
       }
     },
     "SesStatusHandlerLambdaFunction": {
@@ -156,7 +156,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/lonesmoke/development/1498842073215-2017-06-30T17:01:13.215Z/lonesmoke.zip"
+          "S3Key": "serverless/lonesmoke/development/1498849175961-2017-06-30T18:59:35.961Z/lonesmoke.zip"
         },
         "FunctionName": "lonesmoke-development-sesStatusHandler",
         "Handler": "handler.sesStatusHandler",
@@ -180,14 +180,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "SesStatusHandlerLambdaVersionCQVjW5N07hX7ExFhIvmpkjxXgRfFnpk2mxYGJUxHBk": {
+    "SesStatusHandlerLambdaVersionkCV4V5O8GWUpeowCPGJORHlEurn1V6tLJzYLjHGM": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "SesStatusHandlerLambdaFunction"
         },
-        "CodeSha256": "CQVjW5N07hX7ExFhIvmp+kjxXgRfFnpk2mxYGJUxHBk="
+        "CodeSha256": "kCV4V5/O8/+GWUpeowCPGJORHlEurn1V6tLJzYLjHGM="
       }
     },
     "ApiGatewayRestApi": {
@@ -438,7 +438,7 @@
         ]
       }
     },
-    "ApiGatewayDeployment1498842073308": {
+    "ApiGatewayDeployment1498849176047": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -493,13 +493,13 @@
     "SesDiscountHandlerLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "SesDiscountHandlerLambdaVersionCQVjW5N07hX7ExFhIvmpkjxXgRfFnpk2mxYGJUxHBk"
+        "Ref": "SesDiscountHandlerLambdaVersionkCV4V5O8GWUpeowCPGJORHlEurn1V6tLJzYLjHGM"
       }
     },
     "SesStatusHandlerLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "SesStatusHandlerLambdaVersionCQVjW5N07hX7ExFhIvmpkjxXgRfFnpk2mxYGJUxHBk"
+        "Ref": "SesStatusHandlerLambdaVersionkCV4V5O8GWUpeowCPGJORHlEurn1V6tLJzYLjHGM"
       }
     },
     "ServiceEndpoint": {

@@ -14,6 +14,21 @@ AWS.config.update({
 const ses = new AWS.SES();
 
 export default (db) => {
+  emailSchema.statics.createEmail = (fields) =>
+  new Promise((resolve, reject) => {
+    const {
+      purpose,
+      subjectData,
+      bodyHtmlData,
+      bodyTextData,
+      replyToAddress,
+    } = fields;
+
+    if (!purpose || !replyToAddress || !subjectData || !bodyHtmlData || !bodyTextData) {
+      reject({ error: 'Missing required fields to create a new Email.' })
+    }
+  });
+
   /**
   * 1) Determine if the userEmail has already been sent a discount by checking Market Hero collection.
   * 2a) If found, send a Rejection Email.

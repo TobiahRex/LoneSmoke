@@ -3,12 +3,12 @@ if (!global._babelPolyfill) require('babel-polyfill');
 
 import handleSesDiscount from './services/handleSesDiscount';
 import handleSesStatus from './services/handleSesStatus';
-import { startDB } from './db/mongo/connection';
+import verifyDB from './db/mongo/connection';
 
 module.exports.sesDiscountHandler = (event, context, cb) => {
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
 
-  startDB()
+  verifyDB()
   .then(dbResults => handleSesDiscount({ event, ...dbResults }))
   .then((type) => {
     if (type) {
@@ -25,7 +25,7 @@ module.exports.sesDiscountHandler = (event, context, cb) => {
 module.exports.sesStatusHandler = (event, context, cb) => {
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
 
-  startDB()
+  verifyDB()
   .then(dbResults => handleSesStatus({ event, ...dbResults }))
   .then(() => cb(null, { success: 'Ses status has been successfully handled.' }))
   .catch((error) => {
