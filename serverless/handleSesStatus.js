@@ -17,27 +17,29 @@ import createNewLead from './services/createNewLead.async';
 export default notification =>
 new Promise((resolve, reject) => {
   const keys = Object.keys(notification);
-  const { destination, messageId, commonHeaders } = notification;
+  const { destination, commonHeaders } = notification;
 
   // 2a) if type === "Bounce"
   if (keys.includes('bounceType')) {
     console.log('Email to ', destination[0], 'BOUNCED.');
-    resolve()
+    resolve();
+
     // 2b) if type === "Complaint"
   } else if (keys.includes('complaintFeedbackType')) {
-    bbPromise.fromCallback(cb => Complaint.create({
+    bbPromise.fromCallback(cb => Complaint.create({ // eslint-disable-line
       email: destination[0],
       subject: commonHeaders.subject,
       created: new Date(),
-    }), cb)
+    }), cb) //eslint-disable-line
     .then((newComplaint) => {
-      console.log('\nSuccessfully added ', destination[0], ' to Complaint collection.');
+      console.log('\nSuccessfully added ', newComplaint.email, ' to Complaint collection.');
       resolve();
     })
     .catch((error) => {
       console.log('\nError saving email to Complaint collection:\n Error = ', error);
       reject(error);
     });
+
     // 2c) If type === "Delivered"
   } else if (keys.incldues('smtpResponse')) {
     console.log('SES email successfully delivered to email: ', destination[0], '\n Saving email to Market Hero and Mongo cluster...');
