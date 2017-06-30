@@ -3,7 +3,17 @@
 require('dotenv').load({ silent: true });
 import Complaint from './db/mongo/models/complaint';
 import createNewLead from './services/createNewLead.async';
-
+/**
+* 1) Determines what type of notification has been received.
+* 2a) If Bounce type - do nothing.
+* 2b) If Complaint type - add to Complaint collection.
+* 2) Creates new MarketHero document in Mongo Cluster..
+* 3) Returns Resolved Promise.d.
+*
+* @param {object} notification - SesStatusObject.
+*
+* @return {object} - Promise: resolved - no data.
+*/
 export default notification =>
 new Promise((resolve, reject) => {
   const keys = Object.keys(notification);
