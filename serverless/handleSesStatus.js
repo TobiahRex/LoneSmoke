@@ -41,7 +41,10 @@ new Promise((resolve, reject) => {
     // 2c) If type === "Delivered"
   } else if (keys.incldues('smtpResponse')) {
     console.log('SES email successfully delivered to email: ', destination[0], '\n Saving email to Market Hero and Mongo cluster...');
-    const results = createNewLead(destination[0])
+    const results = createNewLead(destination[0], {
+      name: '!LS-beachDiscount',
+      description: 'User received a 10% discount for submitting email at Zushi Beach 2017.',
+    })
     .catch((error) => {
       console.log('Error saving lead to Market Hero & Mongo Collection: ', error);
       reject();
