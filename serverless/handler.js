@@ -12,7 +12,7 @@ module.exports.sesDiscountHandler = (event, context, cb) => {
   .then(dbResults => handleSesDiscount({ event, ...dbResults }))
   .then((type) => {
     if (type) {
-      cb(null, { success: `User has successfully been sent a ${type} email.` });
+      cb(null, { success: `User has successfully been sent a "${type}" email.` });
     }
     cb(null, { 'no-action': 'User has classified our emails as "SPAM".' });
   })

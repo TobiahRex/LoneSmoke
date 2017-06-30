@@ -11,37 +11,35 @@
 *
 * @return {object} - Promise: resolved - email type sent.
 */
-export default ({ event, dbModels: { MarketHero, Email } }) =>
+export default ({ event, dbModels: { MarketHero, Email, Complaint } }) =>
 new Promise((resolve, reject) => {
   const { userEmail } = event.body;
 
   MarketHero.checkForLead(userEmail)
   .then((dbUser) => {
     if (dbUser) {
-      return Email.sendEmail({
+      Email.sendEmail({
         to: userEmail,
         from: 'no-reply@lonesmoke.com',
         type: 'beachDiscountRejection',
-      });
+      })
+      .then(() => resolve('REJECTED DISCOUNT'));
     }
     return Complaint.find({ email: userEmail }).exec();
   })
-  .then((newLead) => {
-    console.log(`
-      (SUCCESS @ runEmailDiscount.js)
-      Results = ${newLead}
-    `);
+  .then((dbComplaint) => {
+    if (dbComplaint) {
+      console.log(dbComplaint.email, ' has classified our emails as "SPAM"');
+      return resolve();
+    }
+    console.log('New user has successfully signed up for 10% Discount.\nSending discount email now...');
     return Email.sendEmail({
-      to: newLead.lead.email,
+      to: userEmail,
       from: 'no-reply@lonesmoke.com',
       type: 'beachDiscountCongratulations',
     });
   })
-  .then((sesResponse) => {
-    console.log(sesResponse, '\nNow adding tag to MarketHero lead.');
-
-    return MarketHero.addTagToUser(userEmail, { name: '!beachDiscount', description: 'User received 10% discount at Zushi Beach 2017.' });
-  })
+  .then(() => resolve('SUCCESSFUL DISCOUNT'))
   .catch((error) => {
     console.log(`
       (ERROR @ runEmailDiscount.js)
@@ -54,11 +52,3 @@ new Promise((resolve, reject) => {
     }
   });
 });
-// 1a. check users email in the database.
-// User.findOne({  })
-// 1b. if a matching email is found - respond with an email that says - You've already received a discount for signing up.
-// 1c. If there is no match found...
-// 2a. Save the user's email into the database.
-// 2b. Upon completion - send users email to market hero.
-// 2c. Attach a tag to the user that identifies them as LoneSmoke customer.
-// 2d. If both requests are successful...
