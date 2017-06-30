@@ -2,7 +2,6 @@
 
 require('dotenv').load({ silent: true });
 import { Promise as bbPromise } from 'bluebird';
-import Complaint from './db/mongo/models/complaint';
 import createNewLead from './services/createNewLead.async';
 /**
 * 1) Determines what type of notification has been received.
@@ -14,7 +13,7 @@ import createNewLead from './services/createNewLead.async';
 *
 * @return {object} - Promise: resolved - no data.
 */
-export default notification =>
+export default ({ event, MarketHero, Complaint }) =>
 new Promise((resolve, reject) => {
   const keys = Object.keys(notification);
   const {
