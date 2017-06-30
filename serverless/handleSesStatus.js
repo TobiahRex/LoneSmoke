@@ -9,25 +9,28 @@ import createNewLead from './services/createNewLead.async';
 * 2b) If Complaint type - add to Complaint collection.
 * 2c) If Delivered type - add to MarketHero collection & add to MarketHero leads collection via REST API.
 *
-* @param {object} notification - SesStatusObject.
+* @param {object} event - event.body = Top-Level SES status object.
+* @param {object} MarketHero - Mongo model instance.
+* @param {object} Complaint - Complaint model instance.
 *
 * @return {object} - Promise: resolved - no data.
 */
 export default ({ event, MarketHero, Complaint }) =>
 new Promise((resolve, reject) => {
-  const keys = Object.keys(notification);
   const {
-    destination,     // [array]
-    commonHeaders,   // {object}
-  } = notification;
+    notificationType,     // string
+    mail: {
+      destination,
+    },                 // {object}
+  } = event.body;
 
   // 2a) if type === "Bounce"
-  if (keys.includes('bounceType')) {
+  if (notificationType === 'Bounce') {
     console.log('BOUNCED Email to ', destination[0], '\nSubject: ', commonHeaders.subject);
     resolve();
 
     // 2b) if type === "Complaint"
-  } else if (keys.includes('complaintFeedbackType')) {
+  } else if (notificationType === 'Complaint')) {
     bbPromise.fromCallback(cb => Complaint.create({ // eslint-disable-line
       email: destination[0],
       subject: commonHeaders.subject,
@@ -43,7 +46,7 @@ new Promise((resolve, reject) => {
     });
 
     // 2c) If type === "Delivered"
-  } else if (keys.incldues('smtpResponse')) {
+  } else if (notificationType === 'Delivery') {
     console.log('SES email successfully delivered to email: ', destination[0], '\n Saving email to Market Hero and Mongo cluster...');
     const results = createNewLead(destination[0], {
       name: '!LS-beachDiscount',
