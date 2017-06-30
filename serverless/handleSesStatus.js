@@ -20,8 +20,9 @@ new Promise((resolve, reject) => {
   const {
     notificationType,     // string
     mail: {
-      destination,
-    },                 // {object}
+      destination,        // [array]
+      commonHeaders,      // {object}
+    },
   } = event.body;
 
   // 2a) if type === "Bounce"
@@ -30,33 +31,33 @@ new Promise((resolve, reject) => {
     resolve();
 
     // 2b) if type === "Complaint"
-  } else if (notificationType === 'Complaint')) {
+  } else if (notificationType === 'Complaint') {
     bbPromise.fromCallback(cb => Complaint.create({ // eslint-disable-line
       email: destination[0],
       subject: commonHeaders.subject,
       created: new Date(),
     }), cb) //eslint-disable-line
     .then((newComplaint) => {
-      console.log('\n', newComplaint.email, ': successfully added to Complaint collection.');
+      console.log('\n', newComplaint.email, ': successfully added to Complaint collections.');
       resolve();
     })
     .catch((error) => {
       console.log('\nError saving email to Complaint collection:\n Error = ', error);
-      reject(error);
+      reject({ type: 'error', problem: { ...error } });
     });
 
     // 2c) If type === "Delivered"
   } else if (notificationType === 'Delivery') {
     console.log('SES email successfully delivered to email: ', destination[0], '\n Saving email to Market Hero and Mongo cluster...');
-    const results = createNewLead(destination[0], {
+    const results = createNewLead(MarketHero, destination[0], {
       name: '!LS-beachDiscount',
       description: 'User received a 10% discount for submitting email at Zushi Beach 2017.',
     })
     .catch((error) => {
       console.log('Error saving lead to Market Hero & Mongo Collection: ', error);
-      reject();
+      reject({ type: 'error', problem: { ...error } });
     });
-    console.log('Successfully saved new Lead: "', destination[0], '" to Market Hero & Mongo Cluster.\nMarket Hero Result: ', results[0].data, '\nMongo Result: ', results[1].data);
+    console.log('Successfully saved new Lead: "', destination[0], '" to Market Hero & Mongo Cluster.\nMarket Hero Result: ', results[0].data, '\nMongo Result: ', results[1]);
     resolve();
   }
 });
