@@ -12,18 +12,15 @@ new Promise((resolve, reject) => {
   } = notification;
   // if type === "Bounce"
   if (keys.includes('')) {
-
     // if type === "Complaint"
-  } else if (keys.includes('')) {
-    Complaint.find({})
-    .exec()
-    .then((dbComplaints) => {
-      console.log('Before Save, total Complaints = ', dbComplaints.emails.length);
-      dbComplaints.email.push(source);
-      return dbComplaints.save({ new: true });
+  } else if (keys.includes('complaintFeedbackType')) {
+    return Complaint.create({
+      email: source,
+      created: new Date(),
     })
-    .then((savedComplaints) => {
-      console.log('\nSuccessfully added ', source, ' to Complaint collection. \nTotal complaints = ', savedComplaints.emails.length);
+    .exec()
+    .then((newComplaint) => {
+      console.log('\nSuccessfully added ', source, ' to Complaint collection.');
       resolve();
     })
     .catch((error) => {

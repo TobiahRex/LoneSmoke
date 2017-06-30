@@ -66,9 +66,22 @@ export default (db) => {
     });
   });
 
+  /**
+  * 1) Determines whether @param "userName" is a valid email.
+  * 2) Find the saved MarketHero document matching the email param.
+  * 3) Populates the [tags] for the document.
+  * 4) Saves the result.
+  * 5) Return resolved promise - no data.
+  *
+  * @param {string} userEmail - Email data.
+  * @param {object} tagDetails - { name, description }.
+  *
+  * @return {object} - Promise: resolved - no data.
+  */
   marketHeroSchema.statics.addTagToUser = (userEmail, { name, description }) =>
   // First adds tags to Market Hero lead.  If successful adds tags to Mongo Lead document.
   new Promise((resolve, reject) => {
+    if (!isEmail(userEmail)) reject({ type: 'error', problem: `${email} is not a valid email.` });
     let dbUserRef;
 
     MarketHero

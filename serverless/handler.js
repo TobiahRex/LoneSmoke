@@ -1,15 +1,14 @@
 /* eslint-disable global-require, import/imports-first, no-console, no-unused-expressions */
 if (!global._babelPolyfill) require('babel-polyfill');
 
-import runEmailDiscount from './runEmailDiscount';
+import handleEmailDiscount from './handleEmailDiscount';
 import { startDB } from './db/mongo/connection';
 
 module.exports.discount = (event, context, cb) => {
   console.log('\nEVENT: ', event);
   // 3a. Send user a 200 status code and an email that says - "Thank you for signing up with LoneSmoke.  Show this email when you pay and receive 10% off your meal.".
-
   startDB()
-  .then(dbResults => runEmailDiscount({ event, ...dbResults }))
+  .then(dbResults => handleEmailDiscount({ event, ...dbResults }))
   .then((results) => {
     console.log('\n >> FINAL Lambda SUCCESS response: \n', JSON.stringify(results, null, 2));
     context.succeed && context.succeed(results);
