@@ -16,6 +16,7 @@ provider:
     - Effect: Allow
       Resource: "*"
       Action:
+        - SNS:Publish
         - ec2:CreateNetworkInterface
         - ec2:DescribeNetworkInterfaces
         - ec2:DetachNetworkInterface
@@ -37,8 +38,11 @@ custom:
       plugins: [transform-runtime]
 
 functions:
-  discount:
-    handler: handler.discount
+  sesDiscountHandler:
+    handler: handler.sesDiscountHandler
+
+  sesStatusHandler:
+    handler: handler.sesStatusHandler
     vpc:
       securityGroupIds:
         - ${file(./config.yml):securityGroupId}
@@ -57,7 +61,7 @@ functions:
           - logs:PutLogEvents
     events:
       - http:
-          path: discount
+          path: sesStatusHandler
           method: post
           integration: lambda
           memorySize: 256
