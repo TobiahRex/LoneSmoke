@@ -10,7 +10,12 @@ module.exports.sesDiscountHandler = (event, context, cb) => {
 
   startDB()
   .then(dbResults => handleSesDiscount({ event, ...dbResults }))
-  .then(type => cb(null, { success: `User has successfully been sent a ${type} email.` }))
+  .then((type) => {
+    if (type) {
+      cb(null, { success: `User has successfully been sent a ${type} email.` });
+    }
+    cb(null, { 'no-action': 'User has classified our emails as "SPAM".' });
+  })
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
     cb(error, 'Ses Discount handler FAILED');
