@@ -2,7 +2,7 @@
 
 require('dotenv').load({ silent: true });
 import { Promise as bbPromise } from 'bluebird';
-import createLeadConcurrently from './services/createLeadConcurrently';
+import createLeadConcurrently from './createLeadConcurrently';
 /**
 * 1) Determines what type of notification has been received.
 * 2a) If Bounce type - do nothing.
