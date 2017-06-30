@@ -23,7 +23,7 @@ new Promise((resolve, reject) => {
         from: 'no-reply@lonesmoke.com',
         type: 'beachDiscountRejection',
       })
-      .then(() => resolve('REJECTED DISCOUNT'));
+      .then(type => resolve(type));
     }
     return Complaint.find({ email: userEmail }).exec();
   })
@@ -39,7 +39,7 @@ new Promise((resolve, reject) => {
       type: 'beachDiscountCongratulations',
     });
   })
-  .then(() => resolve('SUCCESSFUL DISCOUNT'))
+  .then(type => resolve(type))
   .catch((error) => {
     console.log(`
       (ERROR @ runEmailDiscount.js)

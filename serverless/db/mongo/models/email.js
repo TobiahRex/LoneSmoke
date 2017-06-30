@@ -14,13 +14,20 @@ AWS.config.update({
 const ses = new AWS.SES();
 
 export default (db) => {
+  /**
+  * 1) Determine if the userEmail has already been sent a discount by checking Market Hero collection.
+  * 2a) If found, send a Rejection Email.
+  * 2b) If not found, verify user has not added classified our application emails as "spam" since last message had been sent.
+  * 3a) If email has not been added to Complaint collection, send the user a Discount email.
+  *
+  * @param {object} sendInfo - to, from, type = Required fields for sending emails with AWS.
+  *
+  * @return {object} - Promise: resolved - email type sent.
+  */
   emailSchema.statics.sendEmail = ({ to, from, type }) =>
   new Promise((resolve, reject) => {
     if (!isEmail(to)) {
-      console.log(`
-        ERROR @ sendEmail:
-        "${from}" is not a valid email address.
-      `);
+      console.log('ERROR @ sendEmail: \n\'', from, '\' is not a valid email address.');
       reject({ error: true, problem: 'Did not submit a valid email address. Please try again.' });
     }
 
@@ -56,20 +63,14 @@ export default (db) => {
       return bbPromise.fromCallback(cb => ses.sendEmail(emailParams, cb));
     })
     .then((data) => {
-      console.log(`
-        Successfully sent SES email: ${data}
-      `);
+      console.log('\nSuccessfully sent SES email: ', data);
       resolve({
         statusCode: 200,
         body: JSON.stringify({ message: 'Mail sent successfully.' }),
       });
     })
     .catch((error) => {
-      console.log(`
-        ERROR sending SES email.
-        Error = ${error}
-        ${error.stack}
-        `);
+      console.log('\nERROR sending SES email. \nError = ', error, error.stack);
       reject({ error: true, problem: { ...error } });
     });
   });
