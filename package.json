@@ -8,10 +8,10 @@
     "analyze-bundle": "NODE_ENV=production babel-node ./tools/analyzeBundle.js",
     "deploy": "npm-run-all s3:clean s3:deploy cf:invalidate open-site",
     "cf:invalidate": "babel-node ./tools/cf_invalidate_script.js",
-    "s3:clean": "aws s3 rm s3://lonesmoke-react --recursive",
-    "s3:deploy": "aws s3 sync lonesmoke.webflow/ s3://lonesmoke-react",
+    "s3:clean": "aws s3 rm s3://lonesmoke-static-menu --recursive",
+    "s3:deploy": "aws s3 sync lonesmoke.webflow.mvp1/ s3://lonesmoke-static-menu",
     "sls-deploy": "cd ./serverless && serverless deploy",
-    "open-site": "cd ./lonesmoke.webflow && python -m SimpleHTTPServer",
+    "open-site": "cd ./lonesmoke.webflow.mvp1 && python -m SimpleHTTPServer",
     "start-prod": "babel-node ./tools/distServer.js",
     "prebuild": "rimraf ./dist && mkdir dist"
   },

@@ -58,8 +58,7 @@ export default (db) => {
     .then((dbEmails) => {
       console.log('\nFound ', dbEmails.type, ' email.');
 
-      const dbEmail = dbEmails
-        .filter(email => email.language === language)[0];
+      const dbEmail = dbEmails.filter(email => email.language === language)[0];
 
       const emailParams = {
         Destination: {
