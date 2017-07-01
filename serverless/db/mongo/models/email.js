@@ -17,6 +17,7 @@ export default (db) => {
   emailSchema.statics.createEmail = fields =>
   new Promise((resolve, reject) => {
     const {
+      type,
       purpose,
       language,
       subjectData,
@@ -25,13 +26,13 @@ export default (db) => {
       replyToAddress,
     } = fields;
 
-    if (!purpose || !language || !replyToAddress || !subjectData || !bodyHtmlData || !bodyTextData) {
+    if (!type || !purpose || !language || !replyToAddress || !subjectData || !bodyHtmlData || !bodyTextData) {
       reject({ error: 'Missing required fields to create a new Email.', ...fields });
     } else {
       bbPromise.fromCallback(cb => Email.create({ ...fields }, cb))
       .then((newEmail) => {
         console.log('\nSuccessfully created new Email: ', newEmail._id);
-        resolve();
+        resolve(newEmail._id, newEmail.type);
       });
     }
   });
@@ -56,7 +57,7 @@ export default (db) => {
     Email.find({ type })
     .exec()
     .then((dbEmails) => {
-      console.log('\nFound ', dbEmails.type, ' email.');
+      console.log('\nFound Email: ', dbEmails.type);
 
       const dbEmail = dbEmails.filter(email => email.language === language)[0];
 

@@ -42,9 +42,9 @@ module.exports.createNewEmail = (event, context) => {
 
   verifyDB()
   .then(({ dbModels: { Email } }) => Email.createEmail(event.body))
-  .then(() => {
+  .then((emailId, type) => {
     console.log('final resolve.');
-    context.succeed && context.succeed({ message: 'Created new Email.' });
+    context.succeed && context.succeed({ message: 'Created new Email.', _id: emailId, type });
   })
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
@@ -59,8 +59,7 @@ module.exports.deleteEmail = (event, context) => {
   .then(({ dbModels: { Email } }) => bbPromise
   .fromCallback(cb2 => Email.findByIdAndRemove(event.body.id, cb2))) // eslint-disable-line
   .then(() => {
-    // context.succeed && context.succeed('Successfully deleted Email - context');
-    context.succedd && context.succeed({ message: 'Successfully deleted Email.' });
+    context.succeed && context.succeed({ message: 'Successfully deleted Email.' });
   })
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
