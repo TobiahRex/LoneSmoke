@@ -33,7 +33,7 @@ module.exports.sesStatusHandler = (event, context) => {
   })
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-    context.succeed && context.succeed({ message: 'Ses Status handler FAILED', ...error });
+    context.error && context.error({ message: 'Ses Status handler FAILED', ...error });
   });
 };
 
@@ -48,12 +48,13 @@ module.exports.createNewEmail = (event, context) => {
   })
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-    context.succeed && context.succeed({ message: 'FAILED: Could not Create new Email.', ...error });
+    context.error && context.error({ message: 'FAILED: Could not Create new Email.', ...error });
   });
 };
 
 module.exports.deleteEmail = (event, context) => {
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
+  if (!event.body.id) context.error && context.error({ message: 'Missing required ID field.' });
 
   verifyDB()
   .then(({ dbModels: { Email } }) => bbPromise
@@ -63,6 +64,6 @@ module.exports.deleteEmail = (event, context) => {
   })
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-    context.succeed && context.succeed({ message: 'FAILED: Could not Delete Email.  Verify _id is correct.', ...error });
+    context.error && context.error({ message: 'FAILED: Could not Delete Email.  Verify _id is correct.', ...error });
   });
 };

@@ -131,7 +131,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/lonesmoke/development/1498909946997-2017-07-01T11:52:26.997Z/lonesmoke.zip"
+          "S3Key": "serverless/lonesmoke/development/1498912226507-2017-07-01T12:30:26.507Z/lonesmoke.zip"
         },
         "FunctionName": "lonesmoke-development-sesDiscountHandler",
         "Handler": "handler.sesDiscountHandler",
@@ -163,14 +163,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "SesDiscountHandlerLambdaVersioniOoAcgqKP32imMF5uUDdxIUyb91wqYQ14QbcMvs2hE": {
+    "SesDiscountHandlerLambdaVersiony1JKROpP2pOa0piy9Cuq5hfKzWqiHE6fr4FGv9I4BmI": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "SesDiscountHandlerLambdaFunction"
         },
-        "CodeSha256": "iOoAcgqKP32imMF5uUDdxIUyb91wqYQ14Q+bcMvs2hE="
+        "CodeSha256": "y1JKROpP2pOa0piy9Cuq5hfKzWqiHE6fr4FGv9I4BmI="
       }
     },
     "SesStatusHandlerLambdaFunction": {
@@ -180,7 +180,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/lonesmoke/development/1498909946997-2017-07-01T11:52:26.997Z/lonesmoke.zip"
+          "S3Key": "serverless/lonesmoke/development/1498912226507-2017-07-01T12:30:26.507Z/lonesmoke.zip"
         },
         "FunctionName": "lonesmoke-development-sesStatusHandler",
         "Handler": "handler.sesStatusHandler",
@@ -204,14 +204,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "SesStatusHandlerLambdaVersioniOoAcgqKP32imMF5uUDdxIUyb91wqYQ14QbcMvs2hE": {
+    "SesStatusHandlerLambdaVersiony1JKROpP2pOa0piy9Cuq5hfKzWqiHE6fr4FGv9I4BmI": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "SesStatusHandlerLambdaFunction"
         },
-        "CodeSha256": "iOoAcgqKP32imMF5uUDdxIUyb91wqYQ14Q+bcMvs2hE="
+        "CodeSha256": "y1JKROpP2pOa0piy9Cuq5hfKzWqiHE6fr4FGv9I4BmI="
       }
     },
     "CreateNewEmailLambdaFunction": {
@@ -221,7 +221,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/lonesmoke/development/1498909946997-2017-07-01T11:52:26.997Z/lonesmoke.zip"
+          "S3Key": "serverless/lonesmoke/development/1498912226507-2017-07-01T12:30:26.507Z/lonesmoke.zip"
         },
         "FunctionName": "lonesmoke-development-createNewEmail",
         "Handler": "handler.createNewEmail",
@@ -253,14 +253,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "CreateNewEmailLambdaVersioniOoAcgqKP32imMF5uUDdxIUyb91wqYQ14QbcMvs2hE": {
+    "CreateNewEmailLambdaVersiony1JKROpP2pOa0piy9Cuq5hfKzWqiHE6fr4FGv9I4BmI": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "CreateNewEmailLambdaFunction"
         },
-        "CodeSha256": "iOoAcgqKP32imMF5uUDdxIUyb91wqYQ14Q+bcMvs2hE="
+        "CodeSha256": "y1JKROpP2pOa0piy9Cuq5hfKzWqiHE6fr4FGv9I4BmI="
       }
     },
     "DeleteEmailLambdaFunction": {
@@ -270,7 +270,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/lonesmoke/development/1498909946997-2017-07-01T11:52:26.997Z/lonesmoke.zip"
+          "S3Key": "serverless/lonesmoke/development/1498912226507-2017-07-01T12:30:26.507Z/lonesmoke.zip"
         },
         "FunctionName": "lonesmoke-development-deleteEmail",
         "Handler": "handler.deleteEmail",
@@ -302,14 +302,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "DeleteEmailLambdaVersioniOoAcgqKP32imMF5uUDdxIUyb91wqYQ14QbcMvs2hE": {
+    "DeleteEmailLambdaVersiony1JKROpP2pOa0piy9Cuq5hfKzWqiHE6fr4FGv9I4BmI": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "DeleteEmailLambdaFunction"
         },
-        "CodeSha256": "iOoAcgqKP32imMF5uUDdxIUyb91wqYQ14Q+bcMvs2hE="
+        "CodeSha256": "y1JKROpP2pOa0piy9Cuq5hfKzWqiHE6fr4FGv9I4BmI="
       }
     },
     "ApiGatewayRestApi": {
@@ -1044,7 +1044,7 @@
         ]
       }
     },
-    "ApiGatewayDeployment1498909947169": {
+    "ApiGatewayDeployment1498912226672": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -1167,25 +1167,25 @@
     "SesDiscountHandlerLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "SesDiscountHandlerLambdaVersioniOoAcgqKP32imMF5uUDdxIUyb91wqYQ14QbcMvs2hE"
+        "Ref": "SesDiscountHandlerLambdaVersiony1JKROpP2pOa0piy9Cuq5hfKzWqiHE6fr4FGv9I4BmI"
       }
     },
     "SesStatusHandlerLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "SesStatusHandlerLambdaVersioniOoAcgqKP32imMF5uUDdxIUyb91wqYQ14QbcMvs2hE"
+        "Ref": "SesStatusHandlerLambdaVersiony1JKROpP2pOa0piy9Cuq5hfKzWqiHE6fr4FGv9I4BmI"
       }
     },
     "CreateNewEmailLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "CreateNewEmailLambdaVersioniOoAcgqKP32imMF5uUDdxIUyb91wqYQ14QbcMvs2hE"
+        "Ref": "CreateNewEmailLambdaVersiony1JKROpP2pOa0piy9Cuq5hfKzWqiHE6fr4FGv9I4BmI"
       }
     },
     "DeleteEmailLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "DeleteEmailLambdaVersioniOoAcgqKP32imMF5uUDdxIUyb91wqYQ14QbcMvs2hE"
+        "Ref": "DeleteEmailLambdaVersiony1JKROpP2pOa0piy9Cuq5hfKzWqiHE6fr4FGv9I4BmI"
       }
     },
     "ServiceEndpoint": {
