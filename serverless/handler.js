@@ -19,43 +19,40 @@ module.exports.sesDiscountHandler = (event, context) => {
   })
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-    // context.error && context.error(error);
-    cb(error, { message: 'Ses Discount handler FAILED' });
+    context.error && context.error({ message: 'Ses Discount handler FAILED', ...error });
   });
 };
 
-module.exports.sesStatusHandler = (event, context, cb) => {
+module.exports.sesStatusHandler = (event, context) => {
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
 
   verifyDB()
   .then(dbResults => handleSesStatus({ event, ...dbResults }))
   .then(() => {
-    // context.succeed && context.succeed();
-    cb(null, { message: 'Ses status has been successfully handled.' });
+    context.succeed && context.succeed({ message: 'Ses status has been successfully handled.' });
   })
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-    // context.error && context.error(error);
-    cb(error, { message: 'Ses Status handler FAILED' });
+    context.succeed && context.succeed({ message: 'Ses Status handler FAILED', ...error });
   });
 };
 
-module.exports.createNewEmail = (event, context, cb) => {
+module.exports.createNewEmail = (event, context) => {
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
 
   verifyDB()
   .then(({ dbModels: { Email } }) => Email.createEmail(event.body))
   .then(() => {
     console.log('final resolve.');
-    context.succeed && cb(null, { message: 'Created new Email.' });
+    context.succeed && context.succeed({ message: 'Created new Email.' });
   })
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-    cb(error, { message: 'FAILED: Could not Create new Email.' });
+    context.succeed && context.succeed({ message: 'FAILED: Could not Create new Email.', ...error });
   });
 };
 
-module.exports.deleteEmail = (event, context, cb) => {
+module.exports.deleteEmail = (event, context) => {
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
 
   verifyDB()
@@ -63,11 +60,10 @@ module.exports.deleteEmail = (event, context, cb) => {
   .fromCallback(cb2 => Email.findByIdAndRemove(event.body.id, cb2))) // eslint-disable-line
   .then(() => {
     // context.succeed && context.succeed('Successfully deleted Email - context');
-    context.succedd && cb(null, { message: 'Successfully deleted Email.' });
+    context.succedd && context.succeed({ message: 'Successfully deleted Email.' });
   })
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-    // context.error && context.error(error);
-    cb(error, { message: 'FAILED: Could not Delete Email.  Verify _id is correct.' });
+    context.succeed && context.succeed({ message: 'FAILED: Could not Delete Email.  Verify _id is correct.', ...error });
   });
 };
