@@ -60,7 +60,7 @@ export default (db) => {
     .find(type)
     .exec()
     .then((dbEmails) => {
-      if (!dbEmails) {
+      if (!dbEmails.length) {
         console.log('Error: \nDid not find any emails with type: "', type, '"');
         reject({ type: 'error', problem: `Did not find any emails with type: ${type}` });
       }
@@ -96,7 +96,7 @@ export default (db) => {
       Destination: {
         ToAddresses: to,
       },
-      Source: emailDoc.from,
+      Source: emailDoc.replyToAddress,
       ReplyToAddresses: emailDoc.replyToAddress,
       Message: {
         Html: {

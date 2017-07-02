@@ -9,38 +9,38 @@ import verifyDB from './db/mongo/connection';
 module.exports.sesDiscountHandler = (event, context) => {
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
   if (!event.body.userEmail || !event.body.type || !event.body.language) {
-    context.fail && context.fail(null, { type: 'ERROR', problem: 'Missing required arguments!', ...event.body });
-  } else {
-    console.log('wtf');
-    verifyDB()
-    .then(dbResults => handleSesDiscount({ event, ...dbResults }))
-    .then((result) => {
-      if (typeof result === 'string') {
-        context.succeed && context.succeed({ message: `User has successfully been sent a "${result}" email.` });
-      } else if (typeof result === 'object') {
-        context.succeedd && context.succeed(result);
-      }
-    })
-    .catch((error) => {
-      console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-      context.fail && context.fail({ message: 'Ses Discount handler FAILED', ...error });
-      // cb({ message: 'Ses Discount handler FAILED', ...error });
-    });
+    return context.fail('Missing required arguments.') && context.done(null, { type: 'ERROR', problem: 'Missing required arguments!', ...event.body });
   }
+  return verifyDB()
+  .then(dbResults => handleSesDiscount({ event, ...dbResults }))
+  .then((result) => {
+    if (typeof result === 'string') {
+      context.succeed && context.done(null, { message: `User has successfully been sent a "${result}" email.` });
+    } else if (typeof result === 'object') {
+      context.succeed && context.done(null, result);
+    }
+  })
+  .catch((error) => {
+    console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
+    context.fail('Ses discount failed.', JSON.stringify({ message: 'Ses Discount handler FAILED', ...error })) && context.done();
+  });
 };
 
 module.exports.sesStatusHandler = (event, context) => {
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
-
-  verifyDB()
-  .then(dbResults => handleSesStatus({ event, ...dbResults }))
-  .then(() => {
-    context.succeed && context.succeed({ message: 'Ses status has been successfully handled.' });
-  })
-  .catch((error) => {
-    console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-    context.fail && context.fail({ message: 'Ses Status handler FAILED', ...error });
-  });
+  if (!event.body.notificationType || !event.body.mail) {
+    context.fail('Missing required arguments.') && context.done(null, { type: 'ERROR', problem: 'Missing required arguments!', ...event.body });
+  } else {
+    verifyDB()
+    .then(dbResults => handleSesStatus({ event, ...dbResults }))
+    .then(() => {
+      context.succeed && context.succeed({ message: 'Ses status has been successfully handled.' });
+    })
+    .catch((error) => {
+      console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
+      context.fail && context.fail({ message: 'Ses Status handler FAILED', ...error });
+    });
+  }
 };
 
 module.exports.createNewEmail = (event, context) => {

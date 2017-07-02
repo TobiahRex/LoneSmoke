@@ -30,7 +30,7 @@ new Promise((resolve, reject) => {
       console.log(userEmail, ' has classified our emails as "SPAM"');
       return reject({ problem: 'Cannot send emails to that user because the user has classified our Emails as "abuse" aka "SPAM"' });
     }
-    console.log('New user has successfully signed up for 10% Discount.\nSending discount email now...');
+    console.log('New user has successfully signed up for ', type, '.\nSending discount email now...');
     return Email.findEmailAndFilterLanguage(type, language);
   })
   .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
