@@ -8,7 +8,7 @@ import config from '../../..//config.json';
 AWS.config.update({
   accessKeyId: config.aws.accessKeyId,
   secretAccessKey: config.aws.secretAccessKey,
-  region: config.aws.region,
+  region: config.aws.sesEmailRegion,
 });
 
 const ses = new AWS.SES();
