@@ -93,17 +93,17 @@ export default (db) => {
       reject({ error: true, problem: 'Did not submit a valid email address. Please try again.' });
     }
     const emailParams = {
-      Destination: {
+      Destination: [{
         ToAddresses: to,
-      },
+      }],
       Source: emailDoc.replyToAddress,
-      ReplyToAddresses: emailDoc.replyToAddress,
+      ReplyToAddresses: [emailDoc.replyToAddress],
       Message: {
-        Html: {
-          Data: emailDoc.bodyHtmlData,
-          Charset: emailDoc.bodyHtmlCharset,
-        },
         Body: {
+          Html: {
+            Data: emailDoc.bodyHtmlData,
+            Charset: emailDoc.bodyHtmlCharset,
+          },
           Text: {
             Data: emailDoc.bodyTextData,
             Charset: emailDoc.bodyTextCharset,

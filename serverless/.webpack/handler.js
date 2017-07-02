@@ -92,7 +92,7 @@
 	    }
 	  }).catch(function (error) {
 	    console.log('\nFINAL Lambda ERROR: \n', (0, _stringify2.default)(error, null, 2));
-	    context.fail('Ses discount failed.', (0, _stringify2.default)((0, _extends3.default)({ message: 'Ses Discount handler FAILED' }, error))) && context.done();
+	    context.fail((0, _stringify2.default)((0, _extends3.default)({ message: 'Ses Discount handler FAILED' }, error))) && context.done();
 	  });
 	};
 
@@ -816,17 +816,17 @@
 	        reject({ error: true, problem: 'Did not submit a valid email address. Please try again.' });
 	      }
 	      var emailParams = {
-	        Destination: {
+	        Destination: [{
 	          ToAddresses: to
-	        },
+	        }],
 	        Source: emailDoc.replyToAddress,
-	        ReplyToAddresses: emailDoc.replyToAddress,
+	        ReplyToAddresses: [emailDoc.replyToAddress],
 	        Message: {
-	          Html: {
-	            Data: emailDoc.bodyHtmlData,
-	            Charset: emailDoc.bodyHtmlCharset
-	          },
 	          Body: {
+	            Html: {
+	              Data: emailDoc.bodyHtmlData,
+	              Charset: emailDoc.bodyHtmlCharset
+	            },
 	            Text: {
 	              Data: emailDoc.bodyTextData,
 	              Charset: emailDoc.bodyTextCharset

@@ -22,7 +22,7 @@ module.exports.sesDiscountHandler = (event, context) => {
   })
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-    context.fail('Ses discount failed.', JSON.stringify({ message: 'Ses Discount handler FAILED', ...error })) && context.done();
+    context.fail(JSON.stringify({ message: 'Ses Discount handler FAILED', ...error })) && context.done();
   });
 };
 
