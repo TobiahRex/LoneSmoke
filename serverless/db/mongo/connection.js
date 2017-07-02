@@ -2,6 +2,7 @@
 import mongoose from 'mongoose';
 import createMarketHeroModel from './models/marketHero';
 import createEmailModel from './models/email';
+import createComplaintModel from './models/complaint';
 
 mongoose.Promise = Promise;
 const dotenv = require('dotenv').config({ silent: true }); //eslint-disable-line
@@ -32,6 +33,7 @@ new Promise((resolve) => {
       dbModels: {
         MarketHero: createMarketHeroModel(connection),
         Email: createEmailModel(connection),
+        Complaint: createComplaintModel(connection),
       },
     };
     resolve(cachedDb);

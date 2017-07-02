@@ -28,7 +28,7 @@ new Promise((resolve, reject) => {
   .then((dbComplaint) => {
     if (dbComplaint) {
       console.log(dbComplaint.email, ' has classified our emails as "SPAM"');
-      return resolve();
+      return resolve({ message: 'Cannot send emails to that user because the user has classified our Emails as "abuse" aka "SPAM"' });
     }
     console.log('New user has successfully signed up for 10% Discount.\nSending discount email now...');
     return Email.sendEmail({

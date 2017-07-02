@@ -12,11 +12,12 @@ module.exports.sesDiscountHandler = (event, context) => {
 
   verifyDB()
   .then(dbResults => handleSesDiscount({ event, ...dbResults }))
-  .then((type) => {
-    if (type) {
-      context.succeed && context.succeed({ message: `User has successfully been sent a "${type}" email.` });
+  .then((result) => {
+    if (typeof result === 'string') {
+      context.succeed && context.succeed({ message: `User has successfully been sent a "${result}" email.` });
+    } else if (typeof result === 'object') {
+      context.succeedd && context.succeed(result);
     }
-    context.succeed && context.succeed(null, { message: 'User has classified our emails as "SPAM".' });
   })
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
