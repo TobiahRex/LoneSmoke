@@ -14,6 +14,14 @@ AWS.config.update({
 const ses = new AWS.SES();
 
 export default (db) => {
+  /**
+  * 1) Validate required fields exist.
+  * 2) Create a new email.
+  *
+  * @param {object} fields - Required fields for creating new Email.
+  *
+  * @return {object} - Promise: resolved - Email details.
+  */
   emailSchema.statics.createEmail = fields =>
   new Promise((resolve, reject) => {
     const {
@@ -31,10 +39,40 @@ export default (db) => {
     } else {
       bbPromise.fromCallback(cb => Email.create({ ...fields }, cb))
       .then((newEmail) => {
-        console.log('\nSuccessfully created new Email: ', newEmail._id);
-        resolve(newEmail._id, newEmail.type);
+        console.log('\nSuccessfully created new Email!\n _id: ', newEmail._id);
+        resolve(newEmail);
       });
     }
+  });
+
+  /**
+  * 1) Find all emails with type.
+  * 2) Filter results by request language.
+  *
+  * @param {string} type - The email type to find.
+  * @param {string} requestedLangauge - The language to filter by.
+  *
+  * @return {object} - Promise: resolved - Email details.
+  */
+  emailSchema.statics.findEmailAndFilterLanguage = (type, reqLanguage) =>
+  new Promise((resolve, reject) => {
+    Email
+    .find(type)
+    .exec()
+    .then((dbEmails) => {
+      if (!dbEmails) {
+        console.log('Error: \nDid not find any emails with type: "', type, '"');
+        reject({ type: 'error', problem: `Did not find any emails with type: ${type}` });
+      }
+
+      const foundEmail = dbEmails.filter(dbEmail => dbEmail.language === reqLanguage)[0];
+
+      if (!foundEmail) {
+        console.log('Error: \nDid not find email with language: "', reqLanguage, '"');
+        reject({ type: 'error', problem: `After filtering emails of type "${type}", there was no email that matched language: "${reqLanguage}"` });
+      }
+      resolve(foundEmail);
+    });
   });
 
   /**
@@ -43,50 +81,42 @@ export default (db) => {
   * 2b) If not found, verify user has not added classified our application emails as "spam" since last message had been sent.
   * 3a) If email has not been added to Complaint collection, send the user a Discount email.
   *
-  * @param {object} sendInfo - to, from, type = Required fields for sending emails with AWS.
+  * @param {string} to - recipients email address.
+  * @param {object} emailDoc - Mongo Email collection, Document.
   *
   * @return {object} - Promise: resolved - email type sent.
   */
-  emailSchema.statics.sendEmail = ({ to, from, type, language }) =>
+  emailSchema.statics.sendEmail = (to, emailDoc) =>
   new Promise((resolve, reject) => {
     if (!isEmail(to)) {
-      console.log('ERROR @ sendEmail: \n\'', from, '\' is not a valid email address.');
+      console.log('ERROR @ sendEmail: \n\'', to, '\' is not a valid email address.');
       reject({ error: true, problem: 'Did not submit a valid email address. Please try again.' });
     }
-
-    Email.find({ type })
-    .exec()
-    .then((dbEmails) => {
-      console.log('\nFound Email: ', dbEmails.type);
-
-      const dbEmail = dbEmails.filter(email => email.language === language)[0];
-
-      const emailParams = {
-        Destination: {
-          ToAddresses: to,
+    const emailParams = {
+      Destination: {
+        ToAddresses: to,
+      },
+      Source: emailDoc.from,
+      ReplyToAddresses: emailDoc.replyToAddress,
+      Message: {
+        Html: {
+          Data: emailDoc.bodyHtmlData,
+          Charset: emailDoc.bodyHtmlCharset,
         },
-        Source: from,
-        ReplyToAddresses: dbEmail.replyToAddress,
-        Message: {
-          Html: {
-            Data: dbEmail.bodyHtmlData,
-            Charset: dbEmail.bodyHtmlCharset,
-          },
-          Body: {
-            Text: {
-              Data: dbEmail.bodyTextData,
-              Charset: dbEmail.bodyTextCharset,
-            },
-          },
-          Subject: {
-            Data: dbEmail.subjectData,
-            Charset: dbEmail.subjectCharset,
+        Body: {
+          Text: {
+            Data: emailDoc.bodyTextData,
+            Charset: emailDoc.bodyTextCharset,
           },
         },
-      };
+        Subject: {
+          Data: emailDoc.subjectData,
+          Charset: emailDoc.subjectCharset,
+        },
+      },
+    };
 
-      return bbPromise.fromCallback(cb => ses.sendEmail(emailParams, cb));
-    })
+    bbPromise.fromCallback(cb => ses.sendEmail(emailParams, cb))
     .then((data) => {
       console.log('\nSuccessfully sent SES email: ', data);
       resolve({
@@ -95,7 +125,7 @@ export default (db) => {
       });
     })
     .catch((error) => {
-      console.log('\nERROR sending SES email. \nError = ', error, error.stack);
+      console.log('\nERROR sending SES email with type: "', emailDoc.type, '"\nError = ', error, '\n', error.stack);
       reject({ error: true, problem: { ...error } });
     });
   });

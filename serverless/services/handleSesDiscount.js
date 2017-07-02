@@ -2,7 +2,7 @@
 
 /**
 * 1) Determine if the userEmail has already been sent a discount by checking Market Hero collection.
-* 2a) If found, send a Rejection Email.
+* 2a) If found, filter the email by language matching the requested langauge and send a Rejection Email.
 * 2b) If not found, verify user has not added classified our application emails as "spam" since last message had been sent.
 * 3a) If email has not been added to Complaint collection, send the user a Discount email.
 *
@@ -13,19 +13,17 @@
 */
 export default ({ event, dbModels: { MarketHero, Email, Complaint } }) =>
 new Promise((resolve, reject) => {
-  const { userEmail } = event.body;
+  const { userEmail, type, language } = event.body;
 
   MarketHero.checkForLead(userEmail)
-  .then((dbUser) => {
+  .then((dbUser) => { // eslint-disable-line
     if (dbUser) {
-      Email.sendEmail({
-        to: userEmail,
-        from: 'no-reply@lonesmoke.com',
-        type: 'beachDiscountRejection',
-      })
-      .then(type => resolve(type));
+      Email.findEmailAndFilterLanguage(type, language)
+      .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
+      .then(sesResponse => resolve(sesResponse));
+    } else {
+      return Complaint.find({ email: userEmail }).exec();
     }
-    return Complaint.find({ email: userEmail }).exec();
   })
   .then((dbComplaint) => {
     if (dbComplaint) {
@@ -39,7 +37,7 @@ new Promise((resolve, reject) => {
       type: 'beachDiscountCongratulations',
     });
   })
-  .then(type => resolve(type))
+  .then(emailType => resolve(emailType))
   .catch((error) => {
     console.log(`
       (ERROR @ runEmailDiscount.js)

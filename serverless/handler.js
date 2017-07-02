@@ -8,6 +8,7 @@ import verifyDB from './db/mongo/connection';
 
 module.exports.sesDiscountHandler = (event, context) => {
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
+  if (!event.body.userEmail || !event.body.type) context.error && context.error({ type: 'ERROR', problem: 'Missing required arguments!', ...event.body });
 
   verifyDB()
   .then(dbResults => handleSesDiscount({ event, ...dbResults }))
