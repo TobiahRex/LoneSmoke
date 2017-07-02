@@ -18,7 +18,7 @@ new Promise((resolve, reject) => {
   MarketHero.checkForLead(userEmail)
   .then((dbUser) => { // eslint-disable-line
     if (dbUser) {
-      Email.findEmailAndFilterLanguage(type, language)
+      Email.findEmailAndFilterLanguage(`${type}Rejected`, language)
       .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
       .then(sesResponse => resolve(sesResponse));
     } else {
@@ -31,12 +31,9 @@ new Promise((resolve, reject) => {
       return resolve({ message: 'Cannot send emails to that user because the user has classified our Emails as "abuse" aka "SPAM"' });
     }
     console.log('New user has successfully signed up for 10% Discount.\nSending discount email now...');
-    return Email.sendEmail({
-      to: userEmail,
-      from: 'no-reply@lonesmoke.com',
-      type: 'beachDiscountCongratulations',
-    });
+    return Email.findEmailAndFilterLanguage(type, language);
   })
+  .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
   .then(emailType => resolve(emailType))
   .catch((error) => {
     console.log(`
