@@ -2,7 +2,7 @@
 import isEmail from 'validator/lib/isEmail';
 import complaintSchema from '../schemas/complaint';
 
-export default (dbConnection) => {
+export default (db) => {
   /**
  * 1) Verifies email - 2) If valid, saved email to Complaint collection:
  * Purpose: Have a record of emails that have tagged this apps Emails as "Spam" so as to never send again.
@@ -29,7 +29,6 @@ export default (dbConnection) => {
     });
   });
 
-  const Complaint = dbConnection
-    .model('Complaint', complaintSchema);
+  const Complaint = db.model('Complaint', complaintSchema);
   return Complaint;
 };

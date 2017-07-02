@@ -1,4 +1,4 @@
-import Schema from 'mongoose';
+const Schema = require('mongoose').Schema;
 
 const complaintSchema = new Schema({
   emails: {
