@@ -28,7 +28,7 @@ new Promise((resolve, reject) => {
   .then((dbComplaint) => {
     if (dbComplaint.length) {
       console.log(userEmail, ' has classified our emails as "SPAM"');
-      return resolve({ message: 'Cannot send emails to that user because the user has classified our Emails as "abuse" aka "SPAM"' });
+      return reject({ problem: 'Cannot send emails to that user because the user has classified our Emails as "abuse" aka "SPAM"' });
     }
     console.log('New user has successfully signed up for 10% Discount.\nSending discount email now...');
     return Email.findEmailAndFilterLanguage(type, language);
@@ -36,10 +36,7 @@ new Promise((resolve, reject) => {
   .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
   .then(emailType => resolve(emailType))
   .catch((error) => {
-    console.log(`
-      (ERROR @ runEmailDiscount.js)
-      Error = ${error}
-    `);
+    console.log('(ERROR @ handleSesDiscount.js) \nERROR: ', error);
     if (Object.prototype.hasOwnProperty.call(error, 'type')) {
       reject(error);
     } else {

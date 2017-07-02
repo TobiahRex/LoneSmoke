@@ -8,21 +8,25 @@ import verifyDB from './db/mongo/connection';
 
 module.exports.sesDiscountHandler = (event, context) => {
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
-  if (!event.body.userEmail || !event.body.type) context.error && context.error({ type: 'ERROR', problem: 'Missing required arguments!', ...event.body });
-
-  verifyDB()
-  .then(dbResults => handleSesDiscount({ event, ...dbResults }))
-  .then((result) => {
-    if (typeof result === 'string') {
-      context.succeed && context.succeed({ message: `User has successfully been sent a "${result}" email.` });
-    } else if (typeof result === 'object') {
-      context.succeedd && context.succeed(result);
-    }
-  })
-  .catch((error) => {
-    console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-    context.error && context.error({ message: 'Ses Discount handler FAILED', ...error });
-  });
+  if (!event.body.userEmail || !event.body.type || !event.body.language) {
+    context.fail && context.fail(null, { type: 'ERROR', problem: 'Missing required arguments!', ...event.body });
+  } else {
+    console.log('wtf');
+    verifyDB()
+    .then(dbResults => handleSesDiscount({ event, ...dbResults }))
+    .then((result) => {
+      if (typeof result === 'string') {
+        context.succeed && context.succeed({ message: `User has successfully been sent a "${result}" email.` });
+      } else if (typeof result === 'object') {
+        context.succeedd && context.succeed(result);
+      }
+    })
+    .catch((error) => {
+      console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
+      context.fail && context.fail({ message: 'Ses Discount handler FAILED', ...error });
+      // cb({ message: 'Ses Discount handler FAILED', ...error });
+    });
+  }
 };
 
 module.exports.sesStatusHandler = (event, context) => {
@@ -35,7 +39,7 @@ module.exports.sesStatusHandler = (event, context) => {
   })
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-    context.error && context.error({ message: 'Ses Status handler FAILED', ...error });
+    context.fail && context.fail({ message: 'Ses Status handler FAILED', ...error });
   });
 };
 
