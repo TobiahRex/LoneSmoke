@@ -42,9 +42,9 @@ module.exports.createNewEmail = (event, context) => {
 
   verifyDB()
   .then(({ dbModels: { Email } }) => Email.createEmail(event.body))
-  .then((emailId, type) => {
+  .then((newEmail) => {
     console.log('final resolve.');
-    context.succeed && context.succeed({ message: 'Created new Email.', _id: emailId, type });
+    context.succeed && context.succeed({ message: 'Created new Email.', newEmail });
   })
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));

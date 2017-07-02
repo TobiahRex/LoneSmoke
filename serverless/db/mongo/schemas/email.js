@@ -2,6 +2,7 @@ const Schema = require('mongoose').Schema;
 
 export const ObjectId = Schema.Types.ObjectId;
 const emailSchema = new Schema({
+  type: { type: String, required: true },
   created: { type: Date, default: Date.now },
   purpose: { type: String, required: true },
   language: { type: String, required: true },
