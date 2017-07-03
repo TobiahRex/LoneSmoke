@@ -57,14 +57,14 @@ export default (db) => {
         console.log(`
           Market Hero API Error:
           Cannot update lead# ${userEmail};
-          Response: ${res}
+          Response: ${JSON.stringify(res)}
         `);
         reject({ type: 'error', problem: { ...res } });
       }
       console.log(`
         Market Hero API Success:
-        Created/Updated ${userEmail}.
-        Response: ${res}
+        Created/Updated "${userEmail}".
+        Response: ${JSON.stringify(res)}
       `);
     })
     .catch((error) => {

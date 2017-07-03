@@ -18,15 +18,20 @@ new Promise((resolve, reject) => {
   MarketHero.checkForLead(userEmail)
   .then((dbUser) => { // eslint-disable-line
     if (dbUser) {
-      Email.findEmailAndFilterLanguage(`${type}Rejected`, language)
-      .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
+      console.log('\nFound MarketHero lead for this user - Preparing to send rejection email...');
+      Email.findEmailAndFilterLanguage(Email, `${type}Rejected`, language)
+      .then((filteredEmail) => {
+        console.log('\nFound email based on user\'s language: ', filteredEmail.language);
+        return Email.sendEmail(userEmail, filteredEmail);
+      })
       .then(sesResponse => resolve(sesResponse));
     } else {
+      console.log('\nNew user! Verifying they don\'t have not blocked our emails...');
       return Complaint.find({ email: userEmail }).exec();
     }
   })
   .then((dbComplaint) => {
-    if (dbComplaint.length) {
+    if (dbComplaint || dbComplaint.length) {
       console.log(userEmail, ' has classified our emails as "SPAM"');
       return reject({ problem: 'Cannot send emails to that user because the user has classified our Emails as "abuse" aka "SPAM"' });
     }

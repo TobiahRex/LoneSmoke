@@ -33,7 +33,7 @@ new Promise((resolve, reject) => {
       }
       console.log('\nFound Email with MessageID: ', msgId);
 
-      const emailsToSave = dbEmail.sentEmails.filter(sent => sent.messageId !== msgId)[0];
+      const emailsToSave = dbEmail.sentEmails.filter(sent => sent.messageId !== msgId);
 
       dbEmail.sentEmails = [...emailsToSave, {
         messageId: msgId,
@@ -50,7 +50,6 @@ new Promise((resolve, reject) => {
       console.log('\nThat query did not work: ', error);
       rej('Query was unsuccessful.');
     });
-    console.log('nothing happened.');
   });
 
   event.Records.forEach((record, i, array) => {

@@ -54,13 +54,13 @@ export default (db) => {
   *
   * @return {object} - Promise: resolved - Email details.
   */
-  emailSchema.statics.findEmailAndFilterLanguage = (type, reqLanguage) =>
+  emailSchema.statics.findEmailAndFilterLanguage = (Email, type, reqLanguage) =>
   new Promise((resolve, reject) => {
-    Email
-    .find(type)
+    Email.find(type)
     .exec()
     .then((dbEmails) => {
-      if (!dbEmails.length) {
+      console.log('\nFound the following emails with type: ', type, '\ndbEmails: ', dbEmails);
+      if (!dbEmails) {
         console.log('Error: \nDid not find any emails with type: "', type, '"');
         reject({ type: 'error', problem: `Did not find any emails with type: ${type}` });
       }
@@ -117,6 +117,7 @@ export default (db) => {
       },
     };
 
+    console.log('\nSending AWS ses email...');
     bbPromise.fromCallback(cb => ses.sendEmail(emailParams, cb))
     .then((data) => {
       console.log('\nSuccessfully sent SES email: \n', data, '\nSaving record of email sent to Email Document...');
