@@ -19,7 +19,7 @@ new Promise((resolve, reject) => {
   .then((dbUser) => { // eslint-disable-line
     if (dbUser) {
       console.log('\nFound MarketHero lead for this user - Preparing to send rejection email...');
-      Email.findEmailAndFilterLanguage(Email, `${type}Rejected`, language)
+      Email.findEmailAndFilterLanguage(`${type}Rejected`, language)
       .then((filteredEmail) => {
         console.log('\nFound email based on user\'s language: ', filteredEmail.language);
         return Email.sendEmail(userEmail, filteredEmail);
@@ -31,7 +31,7 @@ new Promise((resolve, reject) => {
     }
   })
   .then((dbComplaint) => {
-    if (dbComplaint || dbComplaint.length) {
+    if (dbComplaint && dbComplaint.length) {
       console.log(userEmail, ' has classified our emails as "SPAM"');
       return reject({ problem: 'Cannot send emails to that user because the user has classified our Emails as "abuse" aka "SPAM"' });
     }

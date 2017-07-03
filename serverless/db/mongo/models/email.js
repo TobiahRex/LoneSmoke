@@ -54,7 +54,7 @@ export default (db) => {
   *
   * @return {object} - Promise: resolved - Email details.
   */
-  emailSchema.statics.findEmailAndFilterLanguage = (Email, type, reqLanguage) =>
+  emailSchema.statics.findEmailAndFilterLanguage = (type, reqLanguage) =>
   new Promise((resolve, reject) => {
     Email.find(type)
     .exec()
@@ -72,6 +72,10 @@ export default (db) => {
         reject({ type: 'error', problem: `After filtering emails of type "${type}", there was no email that matched language: "${reqLanguage}"` });
       }
       resolve(foundEmail);
+    })
+    .catch((error) => {
+      console.log('Could not filter emails: ', error);
+      reject({ type: 'error', problem: { ...error } });
     });
   });
 
