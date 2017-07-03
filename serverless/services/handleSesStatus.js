@@ -47,11 +47,10 @@ new Promise((resolve, reject) => {
   };
   console.log('\nRECORDS: ', event.Records);
   event.Records.forEach((record, i, array) => {
-    console.log('Preparing to handle ', i, ' of ', array.length, ' records.');
+    console.log('Preparing to handle ', i + 1, ' of ', array.length, ' records.');
     const {
       Sns: {
         Message,    // JSON stringified object
-        MessageId,  // string
       },
     } = record;
 
@@ -59,28 +58,35 @@ new Promise((resolve, reject) => {
 
     try {
       notification = JSON.parse(Message);
+      console.log('\nSuccessfully parsed Sns Response Message.\nnotification: ', notification);
     } catch (error) {
       console.log('Could not parse Sns Message Body: ', error);
       reject({ type: 'error', problem: { ...error } });
     }
-    console.log('\nSuccessfully parsed Sns Response Message.');
+    const {
+      notificationType,
+      mail: {
+        messageId,
+        destination: destinations,
+      },
+    } = notification;
     // 2a) if type === "Bounce"
-    if (notification.notificationType === 'Bounce') {
-      findSentEmailAndUpdate(MessageId, notification.notificationType)
+    if (notificationType === 'Bounce') {
+      findSentEmailAndUpdate(messageId, notificationType)
       .then((updatedEmail) => {
         console.log('\nSuccessfully located and updated status for Email.');
         resolve(updatedEmail);
       });
       // 2b) if type === "Complaint"
-    } else if (notification.notificationType === 'Complaint') {
-      findSentEmailAndUpdate(MessageId, notification.notificationType)
+    } else if (notificationType === 'Complaint') {
+      findSentEmailAndUpdate(messageId, notificationType)
       .then((updatedEmail) => {
-        console.log('Successfully updated email status!\nEmail subject: ', updatedEmail.subjectData, '\nStatus: ', notification.notificationType);
+        console.log('Successfully updated email status!\nEmail subject: ', updatedEmail.subjectData, '\nStatus: ', notificationType);
 
         bbPromise.fromCallback(cb => Complaint.create({
-          email: notification.destination[i],
+          messageId,
           created: new Date(),
-          messageId: MessageId,
+          email: destinations[i],
         }, cb));
       })
       .then((newComplaint) => {
@@ -93,11 +99,11 @@ new Promise((resolve, reject) => {
       });
 
       // 2c) If type === "Delivered"
-    } else if (notification.notificationType === 'Delivery') {
-      console.log('SES email successfully delivered to email: ', notification.destination[i], '\n Saving email to Market Hero and Mongo cluster...');
-      findSentEmailAndUpdate(MessageId, notification.notificationType)
+    } else if (notificationType === 'Delivery') {
+      console.log('SES email successfully delivered to email: ', destinations[i], '\n Saving email to Market Hero and Mongo cluster...');
+      findSentEmailAndUpdate(messageId, notificationType)
       .then(({ type, purpose }) => {
-        const results = createLeadConcurrently(MarketHero, notification.destination[i], {
+        const results = createLeadConcurrently(MarketHero, destinations[i], {
           name: `!${type}`,
           description: purpose,
         })
@@ -105,9 +111,11 @@ new Promise((resolve, reject) => {
           console.log('Error saving lead to Market Hero & Mongo Collection: ', error);
           reject({ type: 'error', problem: { ...error } });
         });
-        console.log('Successfully saved new Lead: "', notification.destination[0], '" to Market Hero & Mongo Cluster.\nMarket Hero Result: ', results[0].data, '\nMongo Result: ', results[1]);
+        console.log('Successfully saved new Lead: "', destinations[i], '" to Market Hero & Mongo Cluster.\nMarket Hero Result: ', results[i].data, '\nMongo Result: ', results[1]);
         resolve();
       });
     }
+    console.log('no matching type found.');
+    reject();
   });
 });
