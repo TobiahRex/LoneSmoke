@@ -31,9 +31,9 @@ new Promise((resolve) => {
     cachedDb = {
       connection,
       dbModels: {
-        MarketHero: createMarketHeroModel(connection),
         Email: createEmailModel(connection),
         Complaint: createComplaintModel(connection),
+        MarketHero: createMarketHeroModel(connection),
       },
     };
     resolve(cachedDb);

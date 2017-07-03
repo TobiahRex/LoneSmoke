@@ -29,13 +29,15 @@ new Promise((resolve, reject) => {
         console.log('Could not find any Sent emails with MessageId: ', msgId);
         reject({ type: 'error', problem: `Could not find sent email with id# ${msgId}` });
       }
+      console.log('\nFound Email with MessageID: ', msgId);
+
       const emailsToSave = dbEmail.sentEmails.filter(sent => sent.messageId !== msgId)[0];
 
       dbEmail.sentEmails = [...emailsToSave, {
         messageId: msgId,
         sesStatus: status,
       }];
-
+      console.log('\nSaving updated Email status...');
       return dbEmail.save({ new: true });
     })
     .then((updatedEmail) => {
