@@ -1,7 +1,6 @@
 const Schema = require('mongoose').Schema;
 
 export const ObjectId = Schema.Types.ObjectId;
-const Mixed = Schema.Types.Mixed;
 
 const emailSchema = new Schema({
   type: { type: String, required: true },

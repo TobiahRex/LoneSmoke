@@ -28,7 +28,7 @@ module.exports.sesDiscountHandler = (event, context) => {
 
 module.exports.sesStatusHandler = (event, context) => {  // eslint-disable-line
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
-  if (!event.Records && !event.Records[0]) {
+  if (!event.Records && !event.Records.length) {
     return context.fail(JSON.stringify({ type: 'ERROR', problem: 'Missing required arguments!', ...event.Records })) && context.done();
   }
   verifyDB()
