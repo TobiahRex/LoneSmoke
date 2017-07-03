@@ -92,6 +92,7 @@ export default (db) => {
       console.log('ERROR @ sendEmail: \n\'', to, '\' is not a valid email address.');
       reject({ error: true, problem: 'Did not submit a valid email address. Please try again.' });
     }
+
     const emailParams = {
       Destination: {
         ToAddresses: [to],
@@ -118,7 +119,8 @@ export default (db) => {
 
     bbPromise.fromCallback(cb => ses.sendEmail(emailParams, cb))
     .then((data) => {
-      console.log('\nSuccessfully sent SES email: ', data);
+      console.log('\nSuccessfully sent SES email: ', data, 'Saving record of email sent to Email Document...');
+      emailDoc.sentEmails.push({ data });
       resolve({
         statusCode: 200,
         body: JSON.stringify({ message: 'Mail sent successfully.' }),

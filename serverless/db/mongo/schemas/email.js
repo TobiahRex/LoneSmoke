@@ -1,6 +1,8 @@
 const Schema = require('mongoose').Schema;
 
 export const ObjectId = Schema.Types.ObjectId;
+const Mixed = Schema.Types.Mixed;
+
 const emailSchema = new Schema({
   type: { type: String, required: true },
   created: { type: Date, default: Date.now },
@@ -13,5 +15,9 @@ const emailSchema = new Schema({
   bodyHtmlCharset: { type: String, default: 'utf8' },
   bodyTextData: { type: String, requried: true },
   bodyTextCharset: { type: String, default: 'utf8' },
+  sentEmails: [{
+    ResponseMetadata: { type: Mixed },
+    sesStatus: { type: String },
+  }],
 });
 export default emailSchema;

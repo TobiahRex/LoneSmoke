@@ -23,16 +23,16 @@ new Promise((resolve, reject) => {
       MessageId,  // string
     },
   } = event.Records[0];
-  let notificationType = null;
+  let notification = null;
   try {
-    notificationType = JSON.parse(Message);
+    notification = JSON.parse(Message);
   } catch (error) {
     console.log('Could not parse Sns Message Body: ', error);
     reject({ type: 'error', problem: { ...error } });
   }
   // 2a) if type === "Bounce"
-  if (notificationType === 'Bounce') {
-    console.log('BOUNCED Email to ', destination[0], '\nSubject: ', commonHeaders.subject);
+  if (notification.notificationType === 'Bounce') {
+    console.log('BOUNCED Email to ', notification.destination[0], '\nSubject: ', notification.commonHeaders.subject);
     resolve();
 
     // 2b) if type === "Complaint"
