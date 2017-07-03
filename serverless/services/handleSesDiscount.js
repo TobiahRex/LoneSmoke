@@ -30,11 +30,11 @@ new Promise((resolve, reject) => {
       console.log(userEmail, ' has classified our emails as "SPAM"');
       return reject({ problem: 'Cannot send emails to that user because the user has classified our Emails as "abuse" aka "SPAM"' });
     }
-    console.log('New user has successfully signed up for ', type, '.\nSending discount email now...');
+    console.log('\nNew user has successfully signed up for "', type, '".\nSending discount email now...');
     return Email.findEmailAndFilterLanguage(type, language);
   })
   .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
-  .then(emailType => resolve(emailType))
+  .then(sesStatus => resolve(sesStatus))
   .catch((error) => {
     console.log('(ERROR @ handleSesDiscount.js) \nERROR: ', error);
     if (Object.prototype.hasOwnProperty.call(error, 'type')) {

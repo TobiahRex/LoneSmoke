@@ -119,11 +119,11 @@ export default (db) => {
 
     bbPromise.fromCallback(cb => ses.sendEmail(emailParams, cb))
     .then((data) => {
-      console.log('\nSuccessfully sent SES email: ', data, 'Saving record of email sent to Email Document...');
+      console.log('\nSuccessfully sent SES email: \n', data, '\nSaving record of email sent to Email Document...');
       emailDoc.sentEmails.push({ messageId: data.MessageId });
       emailDoc.save({ new: true })
       .then((savedEmail) => {
-        console.log('Successfully updated sesStatus for MessageID: ', savedEmail.sentEmails.pop().messageId);
+        console.log('\nSuccessfully updated "messageId" with value: \n', savedEmail.sentEmails.pop().messageId);
 
         resolve({
           statusCode: 200,
