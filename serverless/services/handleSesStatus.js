@@ -20,9 +20,10 @@ new Promise((resolve, reject) => {
     if (!msgId || !status) {
       Promise.reject('Missing required inputs.');
     }
+    console.log('\nQuerying Mongo for Email to update...');
 
     Email
-    .findOne({ 'sentEmails.messageId': { $in: [msgId] } })
+    .findOne({ 'sentEmails.messageId': msgId })
     .exec()
     .then((dbEmail) => {
       if (!dbEmail) {
@@ -48,6 +49,7 @@ new Promise((resolve, reject) => {
   console.log('\nRECORDS: ', event.Records);
   event.Records.forEach((record, i, array) => {
     console.log('Preparing to handle ', i + 1, ' of ', array.length, ' records.');
+
     const {
       Sns: {
         Message,    // JSON stringified object
@@ -63,6 +65,7 @@ new Promise((resolve, reject) => {
       console.log('Could not parse Sns Message Body: ', error);
       reject({ type: 'error', problem: { ...error } });
     }
+
     const {
       notificationType,
       mail: {
@@ -70,6 +73,7 @@ new Promise((resolve, reject) => {
         destination: destinations,
       },
     } = notification;
+    console.log('notificationType: ', notificationType);
     // 2a) if type === "Bounce"
     if (notificationType === 'Bounce') {
       findSentEmailAndUpdate(messageId, notificationType)
