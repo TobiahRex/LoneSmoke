@@ -20,12 +20,26 @@ new Promise((resolve, reject) => {
     if (!msgId || !status) {
       Promise.reject('Missing required inputs.');
     }
-    console.log('\nQuerying Mongo for Email to update...');
+    console.log('Email: ', Email);
+    console.log('\nQuerying Mongo for Email to update...\nmessageId: ', msgId);
+    let foundEmail = null;
 
-    Email
-    .findOne({ 'sentEmails.messageId': msgId })
+    Email.find({}).exec().then(console.log);
+
+    Email.find({}, (error, dbEmails) => {
+      console.log('dbEmails: ', dbEmails);
+      dbEmails.forEach((dbEmail) => {
+        console.log('sentEmails: ', dbEmail.sentEmails);
+        foundEmail = dbEmail.sentEmails.filter(sent => sent.messageId === msgId)[0];
+      });
+    });
+    if (foundEmail) console.log('Found email!');
+    else console.log('Did not find email.');
+
+    Email.find({ 'sentEmails.messageId': msgId })
     .exec()
     .then((dbEmail) => {
+      console.log('WTF????: ', dbEmail);
       if (!dbEmail) {
         console.log('Could not find any Sent emails with MessageId: ', msgId);
         reject({ type: 'error', problem: `Could not find sent email with id# ${msgId}` });
@@ -44,7 +58,12 @@ new Promise((resolve, reject) => {
     .then((updatedEmail) => {
       console.log('Updated sent emails for Email _id: ', updatedEmail._id);
       return Promise.resolve(updatedEmail);
+    })
+    .catch((error) => {
+      console.log('\nThat query did not work: ', error);
+      return Promise.reject('Query was unsuccessful.');
     });
+    console.log('This shit is getting so fucking annoying.');
   };
   console.log('\nRECORDS: ', event.Records);
   event.Records.forEach((record, i, array) => {

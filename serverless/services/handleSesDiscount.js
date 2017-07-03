@@ -14,7 +14,7 @@
 export default ({ event, dbModels: { MarketHero, Email, Complaint } }) =>
 new Promise((resolve, reject) => {
   const { userEmail, type, language } = event.body;
-
+  Email.find({}).exec().then(console.log);
   MarketHero.checkForLead(userEmail)
   .then((dbUser) => { // eslint-disable-line
     if (dbUser) {
