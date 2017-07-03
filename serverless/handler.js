@@ -57,21 +57,24 @@ module.exports.createNewEmail = (event, context) => {
   });
 };
 
-module.exports.deleteEmail = (event, context) => {
+module.exports.deleteEmail = (event, context) => {  // eslint-disable-line
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
-  if (!event.body.id) {
+  const eventKeys = Object.keys(event.body);
+  if (!eventKeys.includes('id')) {
     console.log('ERROR: Did not provide necessary document _id to delete.');
-    context.error && context.error({ message: 'Missing required ID field.' });
-  } else {
-    verifyDB()
-    .then(({ dbModels: { Email } }) => bbPromise
-    .fromCallback(cb2 => Email.findByIdAndRemove(event.body.id, cb2))) // eslint-disable-line
-    .then(() => {
-      context.succeed && context.succeed({ message: 'Successfully deleted Email.' });
-    })
-    .catch((error) => {
-      console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-      context.error && context.error({ message: 'FAILED: Could not Delete Email.  Verify _id is correct.', ...error });
-    });
+    return context.error && context.error({ message: 'Missing required ID field.' });
+  } else if (eventKeys.length > 1) {
+    console.log('ERROR: You provided unneccesary inputs.');
+    return context.error && context.error({ message: 'Too many input arguments.', args: { ...event.body } });
   }
+  verifyDB()
+  .then(({ dbModels: { Email } }) => bbPromise
+  .fromCallback(cb2 => Email.findByIdAndRemove(event.body.id, cb2))) // eslint-disable-line
+  .then(() => {
+    context.succeed && context.succeed({ message: 'Successfully deleted Email.' });
+  })
+  .catch((error) => {
+    console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
+    context.error && context.error({ message: 'FAILED: Could not Delete Email.  Verify _id is correct.', ...error });
+  });
 };
