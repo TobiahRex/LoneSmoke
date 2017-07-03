@@ -45,7 +45,7 @@ export default (db) => {
       email: userEmail,
       tags: tagInfo,
     };
-    axios.post('https://private-anon-9aba81438f-markethero2.apiary-mock.com/v1/api/tag-lead',
+    axios.post('https://api.markethero.io/v1/api/tag-lead',
     JSON.stringify(reqBody), {
       headers: {
         'Content-Type': 'application/json',
