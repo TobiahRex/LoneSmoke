@@ -42,8 +42,12 @@ module.exports.sesStatusHandler = (event, context) => {  // eslint-disable-line
   });
 };
 
-module.exports.createNewEmail = (event, context) => {
+module.exports.createNewEmail = (event, context) => { // eslint-disable-line
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
+  if (Object.keys(event.body).length > 7) {
+    console.log('ERROR: You provided unneccesary inputs.');
+    return context.error && context.error({ message: 'Too many input arguments.', args: { ...event.body } });
+  }
 
   verifyDB()
   .then(({ dbModels: { Email } }) => Email.createEmail(event.body))
