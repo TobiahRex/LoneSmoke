@@ -45,8 +45,9 @@ new Promise((resolve, reject) => {
       return Promise.resolve(updatedEmail);
     });
   };
-
-  event.Records.forEach((record, i) => {
+  console.log('\nRECORDS: ', event.Records);
+  event.Records.forEach((record, i, array) => {
+    console.log('Preparing to handle ', i, ' of ', array.length, ' records.');
     const {
       Sns: {
         Message,    // JSON stringified object
@@ -62,10 +63,14 @@ new Promise((resolve, reject) => {
       console.log('Could not parse Sns Message Body: ', error);
       reject({ type: 'error', problem: { ...error } });
     }
+    console.log('\nSuccessfully parsed Sns Response Message.');
     // 2a) if type === "Bounce"
     if (notification.notificationType === 'Bounce') {
       findSentEmailAndUpdate(MessageId, notification.notificationType)
-      .then(resolve);
+      .then((updatedEmail) => {
+        console.log('\nSuccessfully located and updated status for Email.');
+        resolve(updatedEmail);
+      });
       // 2b) if type === "Complaint"
     } else if (notification.notificationType === 'Complaint') {
       findSentEmailAndUpdate(MessageId, notification.notificationType)
