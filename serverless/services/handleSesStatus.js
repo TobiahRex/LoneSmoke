@@ -17,13 +17,19 @@ import createLeadConcurrently from './createLeadConcurrently';
 export default ({ event, dbModels: { MarketHero, Complaint } }) =>
 new Promise((resolve, reject) => {
   const {
-    notificationType,     // string
-    mail: {
-      destination,        // [array]
-      commonHeaders,      // {object}
+    Sns: {
+      Type,       // string
+      Message,    // JSON stringified object
+      MessageId,  // string
     },
-  } = event.body;
-
+  } = event.Records[0];
+  let notificationType = null;
+  try {
+    notificationType = JSON.parse(Message);
+  } catch (error) {
+    console.log('Could not parse Sns Message Body: ', error);
+    reject({ type: 'error', problem: { ...error } });
+  }
   // 2a) if type === "Bounce"
   if (notificationType === 'Bounce') {
     console.log('BOUNCED Email to ', destination[0], '\nSubject: ', commonHeaders.subject);
