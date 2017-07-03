@@ -13,8 +13,9 @@ if (!MONGO_DB) throw new Error(`MONGO_DB URI value is: ${MONGO_DB.length ? MONGO
 let cachedDb = {
   connection: null,
   dbModels: {
-    Product: null,
-    User: null,
+    Email: null,
+    Complaint: null,
+    MarketHero: null,
   },
 };
 

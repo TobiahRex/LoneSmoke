@@ -54,6 +54,11 @@ functions:
 
   sesStatusHandler:
     handler: handler.sesStatusHandler
+    vpc:
+      securityGroupIds:
+        - ${file(./config.yml):securityGroupId}
+      subnetIds:
+        - ${file(./config.yml):subnetId}
     iamRoleStatements:
       - Effect: Allow
         Resource: "*"

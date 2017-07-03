@@ -51,20 +51,25 @@ export default (db) => {
         'Content-Type': 'application/json',
       },
     })
-    .then(({ status, data }) => {
-      if (status !== 200) {
+    .then((res) => {
+      console.log('\nSuccessfully posted to Market Hero: \nMarket Hero reponse: ', res);
+      if (res.status !== 200) {
         console.log(`
           Market Hero API Error:
           Cannot update lead# ${userEmail};
-          Response: ${data}
+          Response: ${res}
         `);
-        reject({ type: 'error', problem: { ...data } });
+        reject({ type: 'error', problem: { ...res } });
       }
       console.log(`
         Market Hero API Success:
         Created/Updated ${userEmail}.
-        Response: ${data}
+        Response: ${res}
       `);
+    })
+    .catch((error) => {
+      console.log('\nError trying to saved Lead to market Hero: ', error);
+      reject({ type: 'error', problem: { ...error } });
     });
   });
 

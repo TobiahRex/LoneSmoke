@@ -16,33 +16,20 @@ import createLeadConcurrently from './createLeadConcurrently';
 */
 export default ({ event, dbModels: { MarketHero, Complaint, Email } }) =>
 new Promise((resolve, reject) => {
-  const findSentEmailAndUpdate = (msgId, status) => {
+  const findSentEmailAndUpdate = (msgId, status) =>
+  new Promise((res, rej) => {
     if (!msgId || !status) {
-      Promise.reject('Missing required inputs.');
+      reject('Missing required inputs.');
     }
-    console.log('Email: ', Email);
+
     console.log('\nQuerying Mongo for Email to update...\nmessageId: ', msgId);
-    let foundEmail = null;
 
-    Email.find({}).exec().then(console.log);
-
-    Email.find({}, (error, dbEmails) => {
-      console.log('dbEmails: ', dbEmails);
-      dbEmails.forEach((dbEmail) => {
-        console.log('sentEmails: ', dbEmail.sentEmails);
-        foundEmail = dbEmail.sentEmails.filter(sent => sent.messageId === msgId)[0];
-      });
-    });
-    if (foundEmail) console.log('Found email!');
-    else console.log('Did not find email.');
-
-    Email.find({ 'sentEmails.messageId': msgId })
+    Email.findOne({ 'sentEmails.messageId': msgId })
     .exec()
     .then((dbEmail) => {
-      console.log('WTF????: ', dbEmail);
       if (!dbEmail) {
         console.log('Could not find any Sent emails with MessageId: ', msgId);
-        reject({ type: 'error', problem: `Could not find sent email with id# ${msgId}` });
+        rej({ type: 'error', problem: `Could not find sent email with id# ${msgId}` });
       }
       console.log('\nFound Email with MessageID: ', msgId);
 
@@ -57,15 +44,15 @@ new Promise((resolve, reject) => {
     })
     .then((updatedEmail) => {
       console.log('Updated sent emails for Email _id: ', updatedEmail._id);
-      return Promise.resolve(updatedEmail);
+      res(updatedEmail);
     })
     .catch((error) => {
       console.log('\nThat query did not work: ', error);
-      return Promise.reject('Query was unsuccessful.');
+      rej('Query was unsuccessful.');
     });
-    console.log('This shit is getting so fucking annoying.');
-  };
-  console.log('\nRECORDS: ', event.Records);
+    console.log('nothing happened.');
+  });
+
   event.Records.forEach((record, i, array) => {
     console.log('Preparing to handle ', i + 1, ' of ', array.length, ' records.');
 
@@ -136,9 +123,8 @@ new Promise((resolve, reject) => {
         });
         console.log('Successfully saved new Lead: "', destinations[i], '" to Market Hero & Mongo Cluster.\nMarket Hero Result: ', results[i].data, '\nMongo Result: ', results[1]);
         resolve();
-      });
+      })
+      .catch(reject);
     }
-    console.log('no matching type found.');
-    reject();
   });
 });
