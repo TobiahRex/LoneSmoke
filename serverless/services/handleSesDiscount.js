@@ -26,7 +26,7 @@ new Promise((resolve, reject) => {
       })
       .then(sesResponse => resolve(sesResponse));
     } else {
-      console.log('\nNew user! Verifying they don\'t have not blocked our emails...');
+      console.log('\nNew user! Verifying they haven\'t blocked our emails...');
       return Complaint.find({ email: userEmail }).exec();
     }
   })
