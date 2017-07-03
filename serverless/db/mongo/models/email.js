@@ -120,10 +120,15 @@ export default (db) => {
     bbPromise.fromCallback(cb => ses.sendEmail(emailParams, cb))
     .then((data) => {
       console.log('\nSuccessfully sent SES email: ', data, 'Saving record of email sent to Email Document...');
-      emailDoc.sentEmails.push({ data });
-      resolve({
-        statusCode: 200,
-        body: JSON.stringify({ message: 'Mail sent successfully.' }),
+      emailDoc.sentEmails.push({ messageId: data.MessageId });
+      emailDoc.save({ new: true })
+      .then((savedEmail) => {
+        console.log('Successfully updated sesStatus for MessageID: ', savedEmail.sentEmails.pop().messageId);
+
+        resolve({
+          statusCode: 200,
+          body: JSON.stringify({ message: 'Mail sent successfully.' }),
+        });
       });
     })
     .catch((error) => {

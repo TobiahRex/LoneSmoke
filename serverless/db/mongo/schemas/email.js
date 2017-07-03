@@ -16,7 +16,7 @@ const emailSchema = new Schema({
   bodyTextData: { type: String, requried: true },
   bodyTextCharset: { type: String, default: 'utf8' },
   sentEmails: [{
-    ResponseMetadata: { type: Mixed },
+    messageId: { type: String },
     sesStatus: { type: String },
   }],
 });
