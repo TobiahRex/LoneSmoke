@@ -44,7 +44,7 @@ new Promise((resolve, reject) => {
     });
   };
 
-  event.Records.forEach((record) => {
+  event.Records.forEach((record, i) => {
     const {
       Sns: {
         Message,    // JSON stringified object
@@ -66,11 +66,13 @@ new Promise((resolve, reject) => {
       .then(resolve);
       // 2b) if type === "Complaint"
     } else if (notification.notificationType === 'Complaint') {
-      bbPromise.fromCallback(cb => Complaint.create({ // eslint-disable-line
-        email: destination[0],
-        subject: commonHeaders.subject,
-        created: new Date(),
-      }), cb) //eslint-disable-line
+      findSentEmailAndUpdate(MessageId, notification.notificationType)
+      .then((updatedEmail) =>
+        bbPromise.fromCallback(cb => Complaint.create({
+          email: notification.destination[i],
+          subject: commonHeaders.subject,
+          created: new Date(),
+        }), cb)
       .then((newComplaint) => {
         console.log('\n', newComplaint.email, ': successfully added to Complaint collections.');
         resolve();
