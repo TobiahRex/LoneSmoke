@@ -67,14 +67,16 @@ new Promise((resolve, reject) => {
       // 2b) if type === "Complaint"
     } else if (notification.notificationType === 'Complaint') {
       findSentEmailAndUpdate(MessageId, notification.notificationType)
-      .then((updatedEmail) =>
+      .then((updatedEmail) => {
+        console.log('Successfully updated email status!\nEmail subject: ', updatedEmail.subjectData, '\nStatus: ', notification.notificationType);
         bbPromise.fromCallback(cb => Complaint.create({
           email: notification.destination[i],
-          subject: commonHeaders.subject,
           created: new Date(),
-        }), cb)
+          messageId: MessageId,
+        }, cb));
+      })
       .then((newComplaint) => {
-        console.log('\n', newComplaint.email, ': successfully added to Complaint collections.');
+        console.log('\n', newComplaint.email, ': successfully added to Complaint collections.\n :(');
         resolve();
       })
       .catch((error) => {
