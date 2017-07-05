@@ -97,6 +97,15 @@ export default (db) => {
     });
   });
 
+  /**
+  * 1) Locates Lead Document using email.
+  * 2) Updates the tags array on the document.
+  *
+  * @param {string} userEmail - Email data.
+  * @param {string || array} tag - Tag data.
+  *
+  * @return {object} - Promise: resolved - no data.
+  */
   marketHeroSchema.statics.updateMongoLead = (userEmail, tag) =>
   new Promise((resolve, reject) => {
     let tagInfo = null;
@@ -109,7 +118,7 @@ export default (db) => {
     .then((dbLead) => {
       console.log(`Found lead in Mongo Database. Results: ${dbLead}`);
       dbLead.tags = [...tagInfo];
-      return MarketHero.save({ new: true });
+      return dbLead.save({ new: true });
     })
     .then((savedLead) => {
       console.log(`Successfully updated Lead: ${savedLead}`);
