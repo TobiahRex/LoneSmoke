@@ -113,7 +113,7 @@ export default (db) => {
       }
 
       const foundEmail = dbEmails.filter(dbEmail =>
-        (dbEmail.type === type) && (dbEmail.language === reqLanguage)
+        (dbEmail.type === reqLanguage) && (dbEmail.language === reqLanguage)
       )[0];
 
       console.log(`Filtered email results: Found "type" = ${foundEmail.type}.  Requested "type" = ${type}.  Found "language" = ${reqLanguage}.  Requested "language" = ${reqLanguage}.  `);

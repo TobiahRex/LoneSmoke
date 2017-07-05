@@ -3,6 +3,7 @@
 require('dotenv').load({ silent: true });
 import { Promise as bbPromise } from 'bluebird';
 import createLeadConcurrently from './createLeadConcurrently';
+import updateLeadConcurrently from './updateLeadConcurrently';
 /**
 * 1) Determines what type of notification has been received.
 * 2a) If Bounce type - do nothing.
@@ -86,8 +87,10 @@ new Promise((resolve, reject) => {
         console.log(`Successfully updated MONGO email: "${updatedEmail.subjectData}" with status: "${notificationType}".  `);
 
         if (/Rejected/gi.test(updatedEmail.type)) {
-          return MarketHero
-          .createOrUpdateLead(destinations[i], updatedEmail.type);
+          return updateLeadConcurrently(MarketHero, destinations[i], {
+            name: `${updatedEmail.type}`,
+            description: updatedEmail.purpose,
+          });
         }
         return createLeadConcurrently(MarketHero, destinations[i], {
           name: `${updatedEmail.type}`,
@@ -95,9 +98,9 @@ new Promise((resolve, reject) => {
         });
       })
       .then((results) => {
-        console.log(`Successfully handled Ses Status!  Saved new Lead: "${destinations[i]}" to Market Hero & Mongo Cluster.  Market Hero Result: "${results[0]}". Mongo Result: "${results[1]}".  `);
+        console.log(`Successfully handled Ses Status!  MarketHero result: "${results[0]}".  Market Hero Result: "${results[1]}".  `);
 
-        resolve(`Successfully saved new Lead: "${destinations[i]}" to Market Hero & Mongo Cluster.  Market Hero Result: "${results[0]}". Mongo Result: "${results[1]}".  `);
+        return resolve(`Successfully handled Ses Status!  MarketHero result: "${results[0]}".  Market Hero Result: "${results[1]}".  `);
       })
       .catch((error) => {
         console.log(`Could not update Email with status: ${notificationType}.  ERROR = ${error}`);

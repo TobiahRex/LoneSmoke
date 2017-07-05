@@ -88,11 +88,32 @@ export default (db) => {
       tags: Array.isArray(tagInfo) ? [...tagInfo] : [tagInfo],
     }, cb))
     .then((newLead) => {
-      console.log(`
-        Created new lead in Mongo Database.
-        New Lead: ${newLead}
-      `);
+      console.log(`Created New lead in Mongo Database. Results: ${newLead}`);
       return resolve(newLead);
+    })
+    .catch((error) => {
+      console.log(`Error trying to save LEAD to Mongo Database.  ERROR = ${error}`);
+      return reject(`Error trying to save LEAD to Mongo Database.  ERROR = ${error}`);
+    });
+  });
+
+  marketHeroSchema.statics.updateMongoLead = (userEmail, tag) =>
+  new Promise((resolve, reject) => {
+    let tagInfo = null;
+
+    if (Array.isArray(tag)) tagInfo = [...tag];
+    else tagInfo = tag;
+
+    return MarketHero.findOne({ 'lead.email': userEmail })
+    .exec()
+    .then((dbLead) => {
+      console.log(`Found lead in Mongo Database. Results: ${dbLead}`);
+      dbLead.tags = [...tagInfo];
+      return MarketHero.save({ new: true });
+    })
+    .then((savedLead) => {
+      console.log(`Successfully updated Lead: ${savedLead}`);
+      return resolve(`Successfully updated Lead: ${savedLead}`);
     })
     .catch((error) => {
       console.log(`Error trying to save LEAD to Mongo Database.  ERROR = ${error}`);

@@ -9,9 +9,9 @@
 *
 * @return [array{object}] - Promises: resolved.
 */
-const createNewLead = (marketHeroModel, email, tagInfo) => Promise.all([
+const updateOldLead = (marketHeroModel, email, tagInfo) => Promise.all([
   marketHeroModel.createOrUpdateLead(email, tagInfo.name),
-  marketHeroModel.createMongoLead(email, tagInfo),
+  marketHeroModel.updateMongoLead(email, tagInfo),
 ]);
 
-export default createNewLead;
+export default updateOldLead;
