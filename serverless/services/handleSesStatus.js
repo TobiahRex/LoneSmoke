@@ -52,7 +52,7 @@ new Promise((resolve, reject) => {
         resolve(updatedEmail);
       })
       .catch((error) => {
-        console.log(`Could not update Email with status: ${notificationType}.  ERROR = ${error}`);
+        console.log(`Could not update Email with status: "${notificationType}".  ERROR = ${error}`);
         reject(`Could not update Email with status: ${notificationType}.  ERROR = ${error}`);
       });
 
@@ -83,7 +83,7 @@ new Promise((resolve, reject) => {
       Email
       .findSentEmailAndUpdate(messageId, notificationType)
       .then((updatedEmail) => {
-        console.log(`Successfully updated email: "${updatedEmail.subjectData}" with status: "${notificationType}".  `);
+        console.log(`Successfully updated MONGO email: "${updatedEmail.subjectData}" with status: "${notificationType}".  `);
 
         const results = createLeadConcurrently(MarketHero, destinations[i], {
           name: `!${updatedEmail.type}`,
@@ -93,6 +93,9 @@ new Promise((resolve, reject) => {
           console.log(`Error saving lead to Market Hero & Mongo Collection.  ERROR = ${error}`);
           reject(`Error saving lead to Market Hero & Mongo Collection.  ERROR = ${error}`);
         });
+
+        console.log('RESULTS: ', results);
+
         console.log(`Successfully saved new Lead: "${destinations[i]}" to Market Hero & Mongo Cluster.  Market Hero Result: "${results[i].data}". Mongo Result: "${results[1]}".  `);
         resolve(`Successfully saved new Lead: "${destinations[i]}" to Market Hero & Mongo Cluster.  Market Hero Result: "${results[i].data}". Mongo Result: "${results[1]}".  `);
       })

@@ -31,20 +31,20 @@ module.exports.sesStatusHandler = (event, context) => {  // eslint-disable-line
 
   verifyDB()
   .then(dbResults => handleSesStatus({ event, ...dbResults }))
-  .then(() => {
-    context.succeed({ message: 'Ses status has been successfully handled.' }) && context.done();
-  })
+  .then(result => (
+    context.succeed(`Ses status has been successfully handled.  RESULT = ${result}`) && context.done()
+  ))
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-    context.fail(JSON.stringify({ message: 'Ses Status handler FAILED', ...error })) && context.done();
+    context.fail(`Ses Status handler FAILED.  ERROR = ${error}`) && context.done();
   });
 };
 
 module.exports.createNewEmail = (event, context) => { // eslint-disable-line
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
   if (Object.keys(event.body).length > 7) {
-    console.log('ERROR: You provided unneccesary inputs.');
-    return context.fail(JSON.stringify({ message: 'Too many input arguments.', args: { ...event.body } })) && context.done();
+    console.log('ERROR: You provided unneccesary input arguments.');
+    context.fail('ERROR = You provided unnecessary input arguments.') && context.done();
   }
 
   verifyDB()
