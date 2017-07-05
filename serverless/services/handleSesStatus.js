@@ -61,12 +61,12 @@ new Promise((resolve, reject) => {
       Email
       .findSentEmailAndUpdate(messageId, notificationType)
       .then((updatedEmail) => {
-        console.log('Successfully updated email status!\nEmail subject: ', updatedEmail.subjectData, '\nStatus: ', notificationType);
+        console.log(`Successfully updated email: "${updatedEmail.subjectData}" with status: "${notificationType}".  `);
 
-        bbPromise.fromCallback(cb => Complaint.create({
+        return bbPromise.fromCallback(cb => Complaint.create({
           messageId,
-          created: new Date(),
           email: destinations[i],
+          created: new Date(),
         }, cb));
       })
       .then((newComplaint) => {
@@ -78,24 +78,28 @@ new Promise((resolve, reject) => {
         reject(`Could not update Email with status: ${notificationType}.  ERROR = ${error}`);
       });
 
-      // 2c) If type === "Delivered"
+      // 2c) If type === "Delivery"
     } else if (notificationType === 'Delivery') {
-      console.log('SES email successfully delivered to email: ', destinations[i], '\n Saving email to Market Hero and Mongo cluster...');
-      return Email.findSentEmailAndUpdate(messageId, notificationType)
-      .then(({ type, purpose }) => {
-        console.log('\nSuccessfully updated email.  Creating MarketHero LEAD & Creating MongoLead.');
+      Email
+      .findSentEmailAndUpdate(messageId, notificationType)
+      .then((updatedEmail) => {
+        console.log(`Successfully updated email: "${updatedEmail.subjectData}" with status: "${notificationType}".  `);
+
         const results = createLeadConcurrently(MarketHero, destinations[i], {
-          name: `!${type}`,
-          description: purpose,
+          name: `!${updatedEmail.type}`,
+          description: updatedEmail.purpose,
         })
         .catch((error) => {
           console.log(`Error saving lead to Market Hero & Mongo Collection.  ERROR = ${error}`);
-          return reject({ type: 'error', problem: { ...error } });
+          reject(`Error saving lead to Market Hero & Mongo Collection.  ERROR = ${error}`);
         });
-        console.log('Successfully saved new Lead: "', destinations[i], '" to Market Hero & Mongo Cluster.\nMarket Hero Result: ', results[i].data, '\nMongo Result: ', results[1]);
-        resolve();
+        console.log(`Successfully saved new Lead: "${destinations[i]}" to Market Hero & Mongo Cluster.  Market Hero Result: "${results[i].data}". Mongo Result: "${results[1]}".  `);
+        resolve(`Successfully saved new Lead: "${destinations[i]}" to Market Hero & Mongo Cluster.  Market Hero Result: "${results[i].data}". Mongo Result: "${results[1]}".  `);
       })
-      .catch(reject);
+      .catch((error) => {
+        console.log(`Could not update Email with status: ${notificationType}.  ERROR = ${error}`);
+        reject(`Could not update Email with status: ${notificationType}.  ERROR = ${error}`);
+      });
     }
   });
 });
