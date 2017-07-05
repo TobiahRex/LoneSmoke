@@ -13,6 +13,8 @@ const marketHeroSchema = new Schema({
     description: { type: String },
     date: { type: Date },
   }],
+}, {
+  bufferCommands: true,
 });
 export default marketHeroSchema;
 /* Schema Breakdown.

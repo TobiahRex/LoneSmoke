@@ -56,26 +56,33 @@ export default (db) => {
   */
   emailSchema.statics.findEmailAndFilterLanguage = (type, reqLanguage) =>
   new Promise((resolve, reject) => {
-    Email.find(type)
+    if (!type || !reqLanguage) return reject(`Missing required arguments. "type": ${type || 'undefined'}. "reqLanguage": ${reqLanguage || 'undefined'}.  `);
+
+    return Email
+    .find(type)
     .exec()
     .then((dbEmails) => {
-      console.log('\nFound the following emails with type: ', type, '\ndbEmails: ', dbEmails);
+      console.log(`Found the following emails: ${dbEmails}`);
       if (!dbEmails) {
-        console.log('Error: \nDid not find any emails with type: "', type, '"');
-        reject({ type: 'error', problem: `Did not find any emails with type: ${type}` });
+        console.log(`Did not find any emails with type: "${type}"`);
+        return reject(`Did not find any emails with type: "${type}".  `);
       }
 
-      const foundEmail = dbEmails.filter(dbEmail => dbEmail.language === reqLanguage)[0];
+      const foundEmail = dbEmails.filter(dbEmail =>
+        (dbEmail.language === reqLanguage) && (dbEmail.language === reqLanguage)
+      )[0];
+
+      console.log(`Filtered email results: Found "type" = ${foundEmail.type}.  Requested "type" = ${type}.  Found "language" = ${reqLanguage}.  Requested "language" = ${reqLanguage}.  `);
 
       if (!foundEmail) {
-        console.log('Error: \nDid not find email with language: "', reqLanguage, '"');
-        reject({ type: 'error', problem: `After filtering emails of type "${type}", there was no email that matched language: "${reqLanguage}"` });
+        console.log('Did not successfully filter email results array.');
+        return reject('Did not successfully filter email results array.');
       }
-      resolve(foundEmail);
+      return resolve(foundEmail);
     })
     .catch((error) => {
-      console.log('Could not filter emails: ', error);
-      reject({ type: 'error', problem: { ...error } });
+      console.log(`Could not find any emails with "type" = ${type}.  ERROR = ${error}`);
+      return reject(`Could not find any emails with "type" = ${type}.  ERROR = ${error}.  `);
     });
   });
 

@@ -14,10 +14,10 @@
 export default ({ event, dbModels: { MarketHero, Email, Complaint } }) =>
 new Promise((resolve, reject) => {
   const { userEmail, type, language } = event.body;
-
-  MarketHero.checkForLead(userEmail)
+  MarketHero
+  .checkForLead(userEmail)
   .then((dbUser) => { // eslint-disable-line
-    if (dbUser) {
+    if (dbUser && dbUser._id) {
       console.log('\nFound MarketHero lead for this user - Preparing to send rejection email...');
       Email.findEmailAndFilterLanguage(`${type}Rejected`, language)
       .then((filteredEmail) => {
@@ -35,7 +35,7 @@ new Promise((resolve, reject) => {
       console.log(userEmail, ' has classified our emails as "SPAM"');
       return reject({ problem: 'Cannot send emails to that user because the user has classified our Emails as "abuse" aka "SPAM"' });
     }
-    console.log('\nNew user has successfully signed up for "', type, '".\nSending discount email now...');
+    console.log(`New user has successfully signed up for "${type}".  Sending discount email now...'`);
     return Email.findEmailAndFilterLanguage(type, language);
   })
   .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
