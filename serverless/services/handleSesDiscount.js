@@ -43,9 +43,6 @@ new Promise((resolve, reject) => {
   .then(sesStatus => resolve(sesStatus))
   .catch((error) => {
     console.log(`Could not update SES Status.  ERROR = ${error}`);
-
-    if (Object.prototype.hasOwnProperty.call(error, 'type')) return reject(error);
-
     return reject(`Could not update SES Status.  ERROR = ${error}`);
   });
 });

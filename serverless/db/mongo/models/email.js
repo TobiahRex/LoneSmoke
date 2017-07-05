@@ -173,20 +173,22 @@ export default (db) => {
     };
 
     console.log('\nSending AWS ses email...');
-    bbPromise.fromCallback(cb => ses.sendEmail(emailParams, cb))
+    return bbPromise.fromCallback(cb => ses.sendEmail(emailParams, cb))
     .then((data) => {
-      console.log('\nSuccessfully sent SES email: \n', data, '\nSaving record of email sent to Email Document...');
-      emailDoc.sentEmails.push({ messageId: data.MessageId });
-      emailDoc.save({ new: true })
-      .then((savedEmail) => {
-        console.log('\nSuccessfully updated "messageId" with value: \n', savedEmail.sentEmails.pop().messageId);
+      console.log('\nSuccessfully sent SES email: \n', data,
+      '\nSaving record of email sent to Email Document...');
 
-        resolve('Mail sent successfully.');
-      });
+      emailDoc.sentEmails.push({ messageId: data.MessageId });
+
+      return emailDoc.save({ new: true });
+    })
+    .then((savedEmail) => {
+      console.log('\nSuccessfully updated "messageId" with value: \n', savedEmail.sentEmails.pop().messageId);
+      return resolve();
     })
     .catch((error) => {
       console.log('\nERROR sending SES email with type: "', emailDoc.type, '"\nError = ', error, '\n', error.stack);
-      reject({ error: true, problem: { ...error } });
+      return reject({ error: true, problem: { ...error } });
     });
   });
 

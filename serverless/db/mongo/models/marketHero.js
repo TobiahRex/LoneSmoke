@@ -46,30 +46,35 @@ export default (db) => {
       tags: tagInfo // eslint-disable-line
     };
 
-    axios.post('https://api.markethero.io/v1/api/tag-lead', reqBody, {
+    return axios.post('https://api.markethero.io/v1/api/tag-lead', reqBody, {
       headers: {
         'Content-Type': 'application/json',
       },
     })
     .then((res) => {
-      console.log('\nSuccessfully posted to Market Hero: \nMarket Hero reponse: ', res);
-      if (res.status !== 200) {
+      console.log('\nSuccessfully posted to Market Hero: \nMarket Hero reponse: ', res.data);
+      if (res.statusCode !== 200) {
         console.log(`
           Market Hero API Error:
           Cannot update lead# ${userEmail};
-          Response: "${res.statusText}"
+          Response: "${res.data.statusText}"
         `);
-        reject({ type: 'error', problem: { ...res } });
+        reject(`Error posting to Market Hero.  ERROR = ${res.data}`);
       }
       console.log(`
         Market Hero API Success:
-        Created/Updated "${userEmail}".
-        Response: ${res.statusText}
+        Created/Updated lead# "${userEmail}".
+        Response: ${res.data.statusText}
+      `);
+      return resolve(`
+        Market Hero API Success:
+        Created/Updated lead# "${userEmail}".
+        Response: ${res.data.statusText}
       `);
     })
     .catch((error) => {
       console.log('\nError trying to saved Lead to market Hero: ', error);
-      reject(`Error trying to save LEAD to MarketHero.  ERROR = ${error}`);
+      return reject(`Error trying to save LEAD to MarketHero.  ERROR = ${error}`);
     });
   });
 

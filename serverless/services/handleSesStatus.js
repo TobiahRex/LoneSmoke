@@ -92,10 +92,12 @@ new Promise((resolve, reject) => {
       })
       .then((results) => {
         console.log(`Successfully saved new Lead: "${destinations[i]}" to Market Hero & Mongo Cluster.  Market Hero Result: "${results[0]}". Mongo Result: "${results[1]}".  `);
+
         resolve(`Successfully saved new Lead: "${destinations[i]}" to Market Hero & Mongo Cluster.  Market Hero Result: "${results[0]}". Mongo Result: "${results[1]}".  `);
       })
       .catch((error) => {
         console.log(`Could not update Email with status: ${notificationType}.  ERROR = ${error}`);
+
         reject(`Could not update Email with status: ${notificationType}.  ERROR = ${error}`);
       });
     }

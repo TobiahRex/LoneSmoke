@@ -11,19 +11,16 @@ module.exports.sesDiscountHandler = (event, context) => {
   if (!event.body.userEmail || !event.body.type || !event.body.language) {
     return context.fail({ message: 'Missing required arguments.' }) && context.done();
   }
-  return verifyDB()
+
+  verifyDB()
   .then(dbResults => handleSesDiscount({ event, ...dbResults }))
   .then((result) => {
-    if (typeof result === 'string') {
-      context.succeed({ message: `User has successfully been sent a "${result}" email.` }) && context.done();
-    } else if (typeof result === 'object') {
-      console.log('Successfully handled Ses Discount.  RESULTS = ', result);
-      context.succeed(`Successfully handled Ses Discount.  RESULTS = ${result}`) && context.done();
-    }
+    console.log('Successfully handled Ses Discount.  RESULTS = ', result);
+    return context.succeed('Successfully handled Ses Discount.') && context.done();
   })
   .catch((error) => {
     console.log(`Error handling Ses discount. ERROR = ${error}`);
-    context.fail(`Ses Discount handler. ERROR = ${error}`) && context.done();
+    return context.fail(`Ses Discount handler. ERROR = ${error}`) && context.done();
   });
 };
 
@@ -37,7 +34,7 @@ module.exports.sesStatusHandler = (event, context) => {  // eslint-disable-line
   ))
   .catch((error) => {
     console.log(`Ses Status handler FAILED.  ERROR = ${error}`);
-    context.fail(`Ses Status handler FAILED.  ERROR = ${error}`) && context.done();
+    return context.fail(`Ses Status handler FAILED.  ERROR = ${error}`) && context.done();
   });
 };
 
@@ -46,18 +43,18 @@ module.exports.createNewEmail = (event, context) => { // eslint-disable-line
 
   if (Object.keys(event.body).length > 7) {
     console.log('ERROR: You provided unneccesary input arguments.');
-    context.fail('ERROR = You provided unnecessary input arguments.') && context.done();
+    return context.fail('ERROR = You provided unnecessary input arguments.') && context.done();
   }
 
   verifyDB()
   .then(({ dbModels: { Email } }) => Email.createEmail(event.body))
   .then((newEmail) => {
     console.log('final resolve.');
-    context.succeed({ message: 'Created new Email.', newEmail }) && context.done();
+    return context.succeed({ message: 'Created new Email.', newEmail }) && context.done();
   })
   .catch((error) => {
     console.log(`FAILED: Could not Create new Email.  ERROR = ${error}`);
-    context.fail(`FAILED: Could not Create new Email.  ERROR = ${error}`) && context.done();
+    return context.fail(`FAILED: Could not Create new Email.  ERROR = ${error}`) && context.done();
   });
 };
 
@@ -81,6 +78,6 @@ module.exports.deleteEmail = (event, context) => {  // eslint-disable-line
   ))
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-    context.error(`Could not Delete Email.  Verify _id is correct. <ERROR>= ${error}`) && context.done();
+    return context.error(`Could not Delete Email.  Verify _id is correct. ERROR= ${error}`) && context.done();
   });
 };
