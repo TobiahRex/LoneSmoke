@@ -14,6 +14,16 @@ AWS.config.update({
 const ses = new AWS.SES();
 
 export default (db) => {
+  /**
+  * 1) Find a saved Email Document.
+  * 2) Locate the sent email inside the documents - "sentEmails" array.
+  * 3) Update the email's status.  Save new changes.
+  *
+  * @param {string} msgId - SES messageId value.
+  * @param {string} status - SES status result.
+  *
+  * @return {object} - Promise: resolved - Email details.
+  */
   emailSchema.statics.findSentEmailAndUpdate = (msgId, status) =>
   new Promise((resolve, reject) => {
     if (!msgId || !status) return reject(`Missing required arguments. "msgId": ${msgId || 'undefined'}. "status": ${status || 'undefined'}. `);
@@ -29,22 +39,23 @@ export default (db) => {
       }
       console.log('\nFound Email with MessageID: ', msgId);
 
-      const emailsToSave = dbEmail.sentEmails.filter(sent => sent.messageId !== msgId);
+      const emailsToSave = dbEmail.sentEmails
+      .filter(sent => sent.messageId !== msgId);
 
       dbEmail.sentEmails = [...emailsToSave, {
         messageId: msgId,
         sesStatus: status,
       }];
-      console.log('\nSaving updated Email status...');
+      console.log('\nSaving updated Email status...  ');
       return dbEmail.save({ new: true });
     })
     .then((updatedEmail) => {
       console.log('Updated sent emails for Email _id: ', updatedEmail._id);
-      res(updatedEmail);
+      return resolve(updatedEmail);
     })
     .catch((error) => {
-      console.log('\nThat query did not work: ', error);
-      rej('Query was unsuccessful.');
+      console.log(`Query was unsuccessful.  ERROR = ${error}`);
+      return reject(`Query was unsuccessful.  ERROR = ${error}`);
     });
   });
   /**
