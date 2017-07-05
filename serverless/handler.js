@@ -36,13 +36,14 @@ module.exports.sesStatusHandler = (event, context) => {  // eslint-disable-line
     context.succeed(`Ses status has been successfully handled.  RESULT = ${result}`) && context.done()
   ))
   .catch((error) => {
-    console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
+    console.log(`Ses Status handler FAILED.  ERROR = ${error}`);
     context.fail(`Ses Status handler FAILED.  ERROR = ${error}`) && context.done();
   });
 };
 
 module.exports.createNewEmail = (event, context) => { // eslint-disable-line
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
+
   if (Object.keys(event.body).length > 7) {
     console.log('ERROR: You provided unneccesary input arguments.');
     context.fail('ERROR = You provided unnecessary input arguments.') && context.done();
