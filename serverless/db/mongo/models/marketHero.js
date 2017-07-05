@@ -38,16 +38,17 @@ export default (db) => {
     if (Array.isArray(tag)) tagInfo = tag;
     else tagInfo = [tag];
 
-    const reqBody = {
+    let reqBody = {
       apiKey: process.env.MARKET_HERO_API_KEY,
       firstName: 'John',
       lastName: 'Doe',
       email: userEmail,
       tags: tagInfo // eslint-disable-line
     };
-    console.log('MARKET HERE REQUEST BODY: ', JSON.stringify(reqBody));
-    axios.post('https://api.markethero.io/v1/api/tag-lead',
-    JSON.stringify(reqBody), {
+    reqBody = JSON.stringify(reqBody);
+    console.log('MARKET HERO REQUEST BODY: ', reqBody);
+
+    axios.post('https://api.markethero.io/v1/api/tag-lead', reqBody, {
       headers: {
         'Content-Type': 'application/json',
       },

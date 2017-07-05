@@ -17,12 +17,12 @@ module.exports.sesDiscountHandler = (event, context) => {
     if (typeof result === 'string') {
       context.succeed({ message: `User has successfully been sent a "${result}" email.` }) && context.done();
     } else if (typeof result === 'object') {
-      context.succeed({ message: { ...result } }) && context.done();
+      context.succeed(`Successfully handled Ses Discount.  RESULTS = ${result}`) && context.done();
     }
   })
   .catch((error) => {
-    console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error));
-    context.fail(JSON.stringify({ message: 'Ses Discount handler FAILED', ...error })) && context.done();
+    console.log(`Error handling Ses discount. ERROR = ${error}`);
+    context.fail(`Ses Discount handler. ERROR = ${error}`) && context.done();
   });
 };
 

@@ -86,7 +86,7 @@ new Promise((resolve, reject) => {
         console.log(`Successfully updated MONGO email: "${updatedEmail.subjectData}" with status: "${notificationType}".  `);
 
         return createLeadConcurrently(MarketHero, destinations[i], {
-          name: `!${updatedEmail.type}`,
+          name: `${updatedEmail.type}`,
           description: updatedEmail.purpose,
         });
       })
