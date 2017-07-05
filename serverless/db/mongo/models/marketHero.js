@@ -31,7 +31,7 @@ export default (db) => {
   *
   * @return {object} - Promise: resolved - no data.
   */
-  marketHeroSchema.statics.createApiLead = (userEmail, tag) =>
+  marketHeroSchema.statics.createOrUpdateLead = (userEmail, tag) =>
   new Promise((resolve, reject) => {
     let tagInfo = [];
 
@@ -52,25 +52,12 @@ export default (db) => {
       },
     })
     .then((res) => {
-      console.log('\nSuccessfully posted to Market Hero: \nMarket Hero reponse: ', res.data);
-      if (res.statusCode !== 200) {
-        console.log(`
-          Market Hero API Error:
-          Cannot update lead# ${userEmail};
-          Response: "${res.data.statusText}"
-        `);
-        reject(`Error posting to Market Hero.  ERROR = ${res.data}`);
+      if (res.status !== 200) {
+        console.log(`Market Hero API Error:  Cannot update lead# ${userEmail}; Response: "${res.data}".  `);
+        return reject(`Error posting to Market Hero.  ERROR = ${res.data}`);
       }
-      console.log(`
-        Market Hero API Success:
-        Created/Updated lead# "${userEmail}".
-        Response: ${res.data.statusText}
-      `);
-      return resolve(`
-        Market Hero API Success:
-        Created/Updated lead# "${userEmail}".
-        Response: ${res.data.statusText}
-      `);
+      console.log('\nSuccessfully posted to Market Hero: \nMarket Hero response: ', res.data);
+      return resolve(`Successfully posted to Market Hero: \nMarket Hero response: ${res.data}`);
     })
     .catch((error) => {
       console.log('\nError trying to saved Lead to market Hero: ', error);

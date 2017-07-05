@@ -103,7 +103,7 @@ export default (db) => {
     if (!type || !reqLanguage) return reject(`Missing required arguments. "type": ${type || 'undefined'}. "reqLanguage": ${reqLanguage || 'undefined'}.  `);
 
     return Email
-    .find(type)
+    .find({ type: type })
     .exec()
     .then((dbEmails) => {
       console.log(`Found the following emails: ${dbEmails}`);
@@ -113,7 +113,7 @@ export default (db) => {
       }
 
       const foundEmail = dbEmails.filter(dbEmail =>
-        (dbEmail.language === reqLanguage) && (dbEmail.language === reqLanguage)
+        (dbEmail.type === type) && (dbEmail.language === reqLanguage)
       )[0];
 
       console.log(`Filtered email results: Found "type" = ${foundEmail.type}.  Requested "type" = ${type}.  Found "language" = ${reqLanguage}.  Requested "language" = ${reqLanguage}.  `);

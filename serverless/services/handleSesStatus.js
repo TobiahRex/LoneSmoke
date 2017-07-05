@@ -85,13 +85,17 @@ new Promise((resolve, reject) => {
       .then((updatedEmail) => {
         console.log(`Successfully updated MONGO email: "${updatedEmail.subjectData}" with status: "${notificationType}".  `);
 
+        if (/Rejected/gi.test(updatedEmail.type)) {
+          return MarketHero
+          .createOrUpdateLead(destinations[i], updatedEmail.type);
+        }
         return createLeadConcurrently(MarketHero, destinations[i], {
           name: `${updatedEmail.type}`,
           description: updatedEmail.purpose,
         });
       })
       .then((results) => {
-        console.log(`Successfully saved new Lead: "${destinations[i]}" to Market Hero & Mongo Cluster.  Market Hero Result: "${results[0]}". Mongo Result: "${results[1]}".  `);
+        console.log(`Successfully handled Ses Status!  Saved new Lead: "${destinations[i]}" to Market Hero & Mongo Cluster.  Market Hero Result: "${results[0]}". Mongo Result: "${results[1]}".  `);
 
         resolve(`Successfully saved new Lead: "${destinations[i]}" to Market Hero & Mongo Cluster.  Market Hero Result: "${results[0]}". Mongo Result: "${results[1]}".  `);
       })
