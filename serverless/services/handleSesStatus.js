@@ -58,7 +58,8 @@ new Promise((resolve, reject) => {
 
     // 2b) if type === "Complaint"
     } else if (notificationType === 'Complaint') {
-      Email.findSentEmailAndUpdate(messageId, notificationType)
+      Email
+      .findSentEmailAndUpdate(messageId, notificationType)
       .then((updatedEmail) => {
         console.log('Successfully updated email status!\nEmail subject: ', updatedEmail.subjectData, '\nStatus: ', notificationType);
 
@@ -69,12 +70,12 @@ new Promise((resolve, reject) => {
         }, cb));
       })
       .then((newComplaint) => {
-        console.log('\n', newComplaint.email, ': successfully added to Complaint collections.\n :(');
-        resolve();
+        console.log(`Successfully added email: "${newComplaint.email}" to Complaint database.  `);
+        resolve(`Successfully added email: "${newComplaint.email}" to Complaint database.  `);
       })
       .catch((error) => {
-        console.log('\nError saving email to Complaint collection:\n Error = ', error);
-        reject({ type: 'error', problem: { ...error } });
+        console.log(`Could not update Email with status: ${notificationType}.  ERROR = ${error}`);
+        reject(`Could not update Email with status: ${notificationType}.  ERROR = ${error}`);
       });
 
       // 2c) If type === "Delivered"
