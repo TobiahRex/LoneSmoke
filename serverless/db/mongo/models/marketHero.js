@@ -33,18 +33,19 @@ export default (db) => {
   */
   marketHeroSchema.statics.createApiLead = (userEmail, tag) =>
   new Promise((resolve, reject) => {
-    let tagInfo = null;
+    let tagInfo = [];
 
-    if (Array.isArray(tag)) tagInfo = [...tag];
-    else tagInfo = tag;
+    if (Array.isArray(tag)) tagInfo = tag;
+    else tagInfo = [tag];
 
     const reqBody = {
       apiKey: process.env.MARKET_HERO_API_KEY,
       firstName: 'John',
       lastName: 'Doe',
       email: userEmail,
-      tags: tagInfo,
+      tags: tagInfo // eslint-disable-line
     };
+    console.log('MARKET HERE REQUEST BODY: ', JSON.stringify(reqBody));
     axios.post('https://api.markethero.io/v1/api/tag-lead',
     JSON.stringify(reqBody), {
       headers: {
@@ -69,7 +70,7 @@ export default (db) => {
     })
     .catch((error) => {
       console.log('\nError trying to saved Lead to market Hero: ', error);
-      reject({ type: 'error', problem: { ...error } });
+      reject(`Error trying to save LEAD to MarketHero.  ERROR = ${error}`);
     });
   });
 
@@ -91,7 +92,7 @@ export default (db) => {
     if (Array.isArray(tag)) tagInfo = [...tag];
     else tagInfo = tag;
 
-    bbPromise.fromCallback(cb => MarketHero.create({
+    return bbPromise.fromCallback(cb => MarketHero.create({
       lead: { email: userEmail },
       tags: Array.isArray(tagInfo) ? [...tagInfo] : [tagInfo],
     }, cb))
@@ -100,14 +101,11 @@ export default (db) => {
         Created new lead in Mongo Database.
         New Lead: ${newLead}
       `);
-      resolve(newLead);
+      return resolve(newLead);
     })
     .catch((error) => {
-      console.log(`
-        Could not create new Lead in Mongo Database.
-        ERROR: ${error}
-      `);
-      reject({ type: 'error', problem: { ...error } });
+      console.log(`Error trying to save LEAD to Mongo Database.  ERROR = ${error}`);
+      return reject(`Error trying to save LEAD to Mongo Database.  ERROR = ${error}`);
     });
   });
 

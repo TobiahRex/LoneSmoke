@@ -85,19 +85,14 @@ new Promise((resolve, reject) => {
       .then((updatedEmail) => {
         console.log(`Successfully updated MONGO email: "${updatedEmail.subjectData}" with status: "${notificationType}".  `);
 
-        const results = createLeadConcurrently(MarketHero, destinations[i], {
+        return createLeadConcurrently(MarketHero, destinations[i], {
           name: `!${updatedEmail.type}`,
           description: updatedEmail.purpose,
-        })
-        .catch((error) => {
-          console.log(`Error saving lead to Market Hero & Mongo Collection.  ERROR = ${error}`);
-          reject(`Error saving lead to Market Hero & Mongo Collection.  ERROR = ${error}`);
         });
-
-        console.log('RESULTS: ', results);
-
-        console.log(`Successfully saved new Lead: "${destinations[i]}" to Market Hero & Mongo Cluster.  Market Hero Result: "${results[i].data}". Mongo Result: "${results[1]}".  `);
-        resolve(`Successfully saved new Lead: "${destinations[i]}" to Market Hero & Mongo Cluster.  Market Hero Result: "${results[i].data}". Mongo Result: "${results[1]}".  `);
+      })
+      .then((results) => {
+        console.log(`Successfully saved new Lead: "${destinations[i]}" to Market Hero & Mongo Cluster.  Market Hero Result: "${results[0]}". Mongo Result: "${results[1]}".  `);
+        resolve(`Successfully saved new Lead: "${destinations[i]}" to Market Hero & Mongo Cluster.  Market Hero Result: "${results[0]}". Mongo Result: "${results[1]}".  `);
       })
       .catch((error) => {
         console.log(`Could not update Email with status: ${notificationType}.  ERROR = ${error}`);

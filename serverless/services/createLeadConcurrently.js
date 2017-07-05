@@ -9,8 +9,7 @@
 *
 * @return [array{object}] - Promises: resolved.
 */
-const createNewLead = async (marketHeroModel, email, tagInfo) =>
-await Promise.all([
+const createNewLead = (marketHeroModel, email, tagInfo) => Promise.all([
   marketHeroModel.createApiLead(email, tagInfo.name),
   marketHeroModel.createMongoLead(email, tagInfo),
 ]);
