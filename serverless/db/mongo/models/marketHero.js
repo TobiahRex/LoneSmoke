@@ -38,15 +38,13 @@ export default (db) => {
     if (Array.isArray(tag)) tagInfo = tag;
     else tagInfo = [tag];
 
-    let reqBody = {
+    const reqBody = {
       apiKey: process.env.MARKET_HERO_API_KEY,
       firstName: 'John',
       lastName: 'Doe',
       email: userEmail,
       tags: tagInfo // eslint-disable-line
     };
-    reqBody = JSON.stringify(reqBody);
-    console.log('MARKET HERO REQUEST BODY: ', reqBody);
 
     axios.post('https://api.markethero.io/v1/api/tag-lead', reqBody, {
       headers: {
@@ -59,7 +57,7 @@ export default (db) => {
         console.log(`
           Market Hero API Error:
           Cannot update lead# ${userEmail};
-          Response: ${JSON.stringify(res)}
+          Response: "${res.statusText}"
         `);
         reject({ type: 'error', problem: { ...res } });
       }

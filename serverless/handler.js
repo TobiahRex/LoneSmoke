@@ -17,6 +17,7 @@ module.exports.sesDiscountHandler = (event, context) => {
     if (typeof result === 'string') {
       context.succeed({ message: `User has successfully been sent a "${result}" email.` }) && context.done();
     } else if (typeof result === 'object') {
+      console.log('Successfully handled Ses Discount.  RESULTS = ', result);
       context.succeed(`Successfully handled Ses Discount.  RESULTS = ${result}`) && context.done();
     }
   })
@@ -54,29 +55,31 @@ module.exports.createNewEmail = (event, context) => { // eslint-disable-line
     context.succeed({ message: 'Created new Email.', newEmail }) && context.done();
   })
   .catch((error) => {
-    console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-    context.fail(JSON.stringify({ message: 'FAILED: Could not Create new Email.', error })) && context.done();
+    console.log(`FAILED: Could not Create new Email.  ERROR = ${error}`);
+    context.fail(`FAILED: Could not Create new Email.  ERROR = ${error}`) && context.done();
   });
 };
 
 module.exports.deleteEmail = (event, context) => {  // eslint-disable-line
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
   const eventKeys = Object.keys(event.body);
+
   if (!eventKeys.includes('id')) {
     console.log('ERROR: Did not provide necessary document _id to delete.');
     return context.fail(JSON.stringify({ message: 'Missing required ID field.' })) && context.done();
   } else if (eventKeys.length > 1) {
-    console.log('ERROR: You provided unneccesary inputs.');
-    return context.error(JSON.stringify({ message: 'Too many input arguments.', args: { ...event.body } })) && context.done();
+    console.log(`ERROR: You provided too many input arguments.  ARGS = ${Object.keys(event.body)}`);
+    return context.error(`ERROR: You provided too many input arguments.  ARGS = ${Object.keys(event.body)}`) && context.done();
   }
+
   verifyDB()
-  .then(({ dbModels: { Email } }) => bbPromise
-  .fromCallback(cb2 => Email.findByIdAndRemove(event.body.id, cb2))) // eslint-disable-line
-  .then(() => {
-    context.succeed({ message: 'Successfully deleted Email.' }) && context.done();
-  })
+  .then(({ dbModels: { Email } }) => bbPromise.fromCallback(cb2 =>
+    Email.findByIdAndRemove(event.body.id, cb2))) // eslint-disable-line
+  .then(() => (
+    context.succeed('Successfully deleted Email.') && context.done()
+  ))
   .catch((error) => {
     console.log('\nFINAL Lambda ERROR: \n', JSON.stringify(error, null, 2));
-    context.error(JSON.stringify({ message: 'FAILED: Could not Delete Email.  Verify _id is correct.', ...error })) && context.done();
+    context.error(`Could not Delete Email.  Verify _id is correct. <ERROR>= ${error}`) && context.done();
   });
 };

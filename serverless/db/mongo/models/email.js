@@ -181,10 +181,7 @@ export default (db) => {
       .then((savedEmail) => {
         console.log('\nSuccessfully updated "messageId" with value: \n', savedEmail.sentEmails.pop().messageId);
 
-        resolve({
-          statusCode: 200,
-          body: JSON.stringify({ message: 'Mail sent successfully.' }),
-        });
+        resolve('Mail sent successfully.');
       });
     })
     .catch((error) => {
