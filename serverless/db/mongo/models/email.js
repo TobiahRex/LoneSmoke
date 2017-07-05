@@ -14,6 +14,39 @@ AWS.config.update({
 const ses = new AWS.SES();
 
 export default (db) => {
+  emailSchema.statics.findSentEmailAndUpdate = (msgId, status) =>
+  new Promise((resolve, reject) => {
+    if (!msgId || !status) return reject(`Missing required arguments. "msgId": ${msgId || 'undefined'}. "status": ${status || 'undefined'}. `);
+
+    console.log(`Querying Mongo for Email to update.  "messageId": ${msgId}'.  `);
+
+    return Email.findOne({ 'sentEmails.messageId': msgId })
+    .exec()
+    .then((dbEmail) => {
+      if (!dbEmail) {
+        console.log('Could not find any Sent emails with MessageId: ', msgId);
+        return reject(`Could not find sent email with id# ${msgId}.  `);
+      }
+      console.log('\nFound Email with MessageID: ', msgId);
+
+      const emailsToSave = dbEmail.sentEmails.filter(sent => sent.messageId !== msgId);
+
+      dbEmail.sentEmails = [...emailsToSave, {
+        messageId: msgId,
+        sesStatus: status,
+      }];
+      console.log('\nSaving updated Email status...');
+      return dbEmail.save({ new: true });
+    })
+    .then((updatedEmail) => {
+      console.log('Updated sent emails for Email _id: ', updatedEmail._id);
+      res(updatedEmail);
+    })
+    .catch((error) => {
+      console.log('\nThat query did not work: ', error);
+      rej('Query was unsuccessful.');
+    });
+  });
   /**
   * 1) Validate required fields exist.
   * 2) Create a new email.

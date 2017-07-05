@@ -16,42 +16,6 @@ import createLeadConcurrently from './createLeadConcurrently';
 */
 export default ({ event, dbModels: { MarketHero, Complaint, Email } }) =>
 new Promise((resolve, reject) => {
-  const findSentEmailAndUpdate = (msgId, status) =>
-  new Promise((res, rej) => {
-    if (!msgId || !status) {
-      reject('Missing required inputs.');
-    }
-
-    console.log('\nQuerying Mongo for Email to update...\nmessageId: ', msgId);
-
-    Email.findOne({ 'sentEmails.messageId': msgId })
-    .exec()
-    .then((dbEmail) => {
-      if (!dbEmail) {
-        console.log('Could not find any Sent emails with MessageId: ', msgId);
-        rej({ type: 'error', problem: `Could not find sent email with id# ${msgId}` });
-      }
-      console.log('\nFound Email with MessageID: ', msgId);
-
-      const emailsToSave = dbEmail.sentEmails.filter(sent => sent.messageId !== msgId);
-
-      dbEmail.sentEmails = [...emailsToSave, {
-        messageId: msgId,
-        sesStatus: status,
-      }];
-      console.log('\nSaving updated Email status...');
-      return dbEmail.save({ new: true });
-    })
-    .then((updatedEmail) => {
-      console.log('Updated sent emails for Email _id: ', updatedEmail._id);
-      res(updatedEmail);
-    })
-    .catch((error) => {
-      console.log('\nThat query did not work: ', error);
-      rej('Query was unsuccessful.');
-    });
-  });
-
   event.Records.forEach((record, i, array) => {
     console.log('Preparing to handle ', i + 1, ' of ', array.length, ' records.');
 
@@ -81,14 +45,14 @@ new Promise((resolve, reject) => {
     console.log('notificationType: ', notificationType);
     // 2a) if type === "Bounce"
     if (notificationType === 'Bounce') {
-      findSentEmailAndUpdate(messageId, notificationType)
+      Email.findSentEmailAndUpdate(messageId, notificationType)
       .then((updatedEmail) => {
         console.log('\nSuccessfully located and updated status for Email.');
         resolve(updatedEmail);
       });
       // 2b) if type === "Complaint"
     } else if (notificationType === 'Complaint') {
-      findSentEmailAndUpdate(messageId, notificationType)
+      Email.findSentEmailAndUpdate(messageId, notificationType)
       .then((updatedEmail) => {
         console.log('Successfully updated email status!\nEmail subject: ', updatedEmail.subjectData, '\nStatus: ', notificationType);
 
@@ -110,7 +74,7 @@ new Promise((resolve, reject) => {
       // 2c) If type === "Delivered"
     } else if (notificationType === 'Delivery') {
       console.log('SES email successfully delivered to email: ', destinations[i], '\n Saving email to Market Hero and Mongo cluster...');
-      findSentEmailAndUpdate(messageId, notificationType)
+      Email.findSentEmailAndUpdate(messageId, notificationType)
       .then(({ type, purpose }) => {
         const results = createLeadConcurrently(MarketHero, destinations[i], {
           name: `!${type}`,
