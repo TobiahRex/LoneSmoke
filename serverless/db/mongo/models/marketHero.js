@@ -64,7 +64,7 @@ export default (db) => {
       console.log(`
         Market Hero API Success:
         Created/Updated "${userEmail}".
-        Response: ${JSON.stringify(res)}
+        Response: ${res.statusText}
       `);
     })
     .catch((error) => {
