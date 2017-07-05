@@ -14,26 +14,27 @@
 export default ({ event, dbModels: { MarketHero, Email, Complaint } }) =>
 new Promise((resolve, reject) => {
   const { userEmail, type, language } = event.body;
-  MarketHero
+  return MarketHero
   .checkForLead(userEmail)
   .then((dbUser) => { // eslint-disable-line
     if (dbUser && dbUser._id) {
       console.log('\nFound MarketHero lead for this user - Preparing to send rejection email...');
-      Email.findEmailAndFilterLanguage(`${type}Rejected`, language)
+      return Email
+      .findEmailAndFilterLanguage(`${type}Rejected`, language)
       .then((filteredEmail) => {
         console.log('\nFound email based on user\'s language: ', filteredEmail.language);
         return Email.sendEmail(userEmail, filteredEmail);
       })
       .then(sesResponse => resolve(sesResponse));
-    } else {
-      console.log('\nNew user! Verifying they haven\'t blocked our emails...');
-      return Complaint.find({ email: userEmail }).exec();
     }
+
+    console.log('\nNew user! Verifying they haven\'t blocked our emails...');
+    return Complaint.find({ email: userEmail }).exec();
   })
   .then((dbComplaint) => {
     if (dbComplaint && dbComplaint.length) {
       console.log(userEmail, ' has classified our emails as "SPAM"');
-      return reject({ problem: 'Cannot send emails to that user because the user has classified our Emails as "abuse" aka "SPAM"' });
+      return reject(userEmail, ' has classified our emails as "SPAM"');
     }
     console.log(`New user has successfully signed up for "${type}".  Sending discount email now...'`);
     return Email.findEmailAndFilterLanguage(type, language);
@@ -41,11 +42,10 @@ new Promise((resolve, reject) => {
   .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
   .then(sesStatus => resolve(sesStatus))
   .catch((error) => {
-    console.log('(ERROR @ handleSesDiscount.js) \nERROR: ', error);
-    if (Object.prototype.hasOwnProperty.call(error, 'type')) {
-      reject(error);
-    } else {
-      reject({ type: 'error', problem: { ...error } });
-    }
+    console.log(`Could not update SES Status.  ERROR = ${error}`);
+
+    if (Object.prototype.hasOwnProperty.call(error, 'type')) return reject(error);
+
+    return reject(`Could not update SES Status.  ERROR = ${error}`);
   });
 });
