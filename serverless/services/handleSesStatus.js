@@ -16,7 +16,7 @@ import createLeadConcurrently from './createLeadConcurrently';
 */
 export default ({ event, dbModels: { MarketHero, Complaint, Email } }) =>
 new Promise((resolve, reject) => {
-  event.Records.forEach((record, i, array) => {
+  event.Records.forEach((record, i, array) => { // eslint-disable-line
     console.log('Preparing to handle ', i + 1, ' of ', array.length, ' records.');
 
     const {
@@ -31,8 +31,8 @@ new Promise((resolve, reject) => {
       notification = JSON.parse(Message);
       console.log('\nSuccessfully parsed Sns Response Message.\nnotification: ', notification);
     } catch (error) {
-      console.log('Could not parse Sns Message Body: ', error);
-      reject({ type: 'error', problem: { ...error } });
+      console.log(`Could not parse Sns Message Body.  ERROR = ${error}`);
+      reject(`Could not parse Sns Message Body.  ERROR = ${error}`);
     }
 
     const {
@@ -42,15 +42,21 @@ new Promise((resolve, reject) => {
         destination: destinations,
       },
     } = notification;
-    console.log('notificationType: ', notificationType);
+
     // 2a) if type === "Bounce"
     if (notificationType === 'Bounce') {
-      Email.findSentEmailAndUpdate(messageId, notificationType)
+      Email
+      .findSentEmailAndUpdate(messageId, notificationType)
       .then((updatedEmail) => {
         console.log('\nSuccessfully located and updated status for Email.');
         resolve(updatedEmail);
+      })
+      .catch((error) => {
+        console.log(`Could not update Email with status: ${notificationType}.  ERROR = ${error}`);
+        reject(`Could not update Email with status: ${notificationType}.  ERROR = ${error}`);
       });
-      // 2b) if type === "Complaint"
+
+    // 2b) if type === "Complaint"
     } else if (notificationType === 'Complaint') {
       Email.findSentEmailAndUpdate(messageId, notificationType)
       .then((updatedEmail) => {
@@ -74,15 +80,16 @@ new Promise((resolve, reject) => {
       // 2c) If type === "Delivered"
     } else if (notificationType === 'Delivery') {
       console.log('SES email successfully delivered to email: ', destinations[i], '\n Saving email to Market Hero and Mongo cluster...');
-      Email.findSentEmailAndUpdate(messageId, notificationType)
+      return Email.findSentEmailAndUpdate(messageId, notificationType)
       .then(({ type, purpose }) => {
+        console.log('\nSuccessfully updated email.  Creating MarketHero LEAD & Creating MongoLead.');
         const results = createLeadConcurrently(MarketHero, destinations[i], {
           name: `!${type}`,
           description: purpose,
         })
         .catch((error) => {
-          console.log('Error saving lead to Market Hero & Mongo Collection: ', error);
-          reject({ type: 'error', problem: { ...error } });
+          console.log(`Error saving lead to Market Hero & Mongo Collection.  ERROR = ${error}`);
+          return reject({ type: 'error', problem: { ...error } });
         });
         console.log('Successfully saved new Lead: "', destinations[i], '" to Market Hero & Mongo Cluster.\nMarket Hero Result: ', results[i].data, '\nMongo Result: ', results[1]);
         resolve();
