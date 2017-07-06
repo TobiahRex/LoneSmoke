@@ -23,23 +23,25 @@ new Promise((resolve, reject) => {
       Email
       .findEmailAndFilterLanguage(`${type}Rejected`, language)
       .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
-      .then(sesResponse => resolve(`Successfully sent REJECTION email.  SES RESPONSE = ${sesResponse}`));
+      .then(sesResponse => resolve(`Successfully sent REJECTION email.  SES RESPONSE = ${sesResponse}`))
+      .catch(reject);
       return 1;
     }
     console.log('\nNew user! Verifying they haven\'t blocked our emails...');
     return Complaint.findOne({ email: userEmail }).exec();
   })
   .then((dbComplaint) => {
-    if (dbComplaint) {
-      console.log(`${userEmail}, has classified our emails as "SPAM"`);
-      resolve(`${userEmail}, has classified our emails as "SPAM"`);
+    if (dbComplaint === 'object') {
+      console.log(`"${userEmail}", has classified our emails as "SPAM"`);
+      resolve(`"${userEmail}", has classified our emails as "SPAM"`);
       return 1;
     }
     console.log(`Sending "${type}" email now...'`);
     Email
     .findEmailAndFilterLanguage(type, language)
     .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
-    .then(sesStatus => resolve(`Successfully sent DISCOUNT email.  SES Response = ${sesStatus}`));
+    .then(sesStatus => resolve(`Successfully sent DISCOUNT email.  SES Response = ${sesStatus}`))
+    .catch(reject);
     return 1;
   })
   .catch((error) => {

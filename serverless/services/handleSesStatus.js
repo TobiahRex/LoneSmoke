@@ -103,7 +103,7 @@ new Promise((resolve, reject) => {
         return resolve(`Successfully handled Ses Status!  MarketHero result: "${results[0]}".  Market Hero Result: "${results[1]}".  `);
       })
       .catch((error) => {
-        console.log(`Could not update Email with status: ${notificationType}.  ERROR = ${error}`);
+        console.log(`Could not update Email with status: "${notificationType}".  ERROR = ${error}`);
 
         reject(`Could not update Email with status: ${notificationType}.  ERROR = ${error}`);
       });

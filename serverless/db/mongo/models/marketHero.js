@@ -111,14 +111,14 @@ export default (db) => {
     let tagInfo = null;
 
     if (Array.isArray(tag)) tagInfo = [...tag];
-    else tagInfo = tag;
+    else tagInfo = [tag];
 
     MarketHero
     .findOne({ 'lead.email': userEmail })
     .exec()
     .then((dbLead) => {
       console.log(`Found lead in Mongo Database. Results: ${dbLead}`);
-      dbLead.tags = [...tagInfo];
+      dbLead.tags.concat(tagInfo);
       return dbLead.save({ new: true });
     })
     .then((savedLead) => {
@@ -126,8 +126,8 @@ export default (db) => {
       return resolve(`Successfully updated Lead: ${savedLead}`);
     })
     .catch((error) => {
-      console.log(`Error trying to save LEAD to Mongo Database.  ERROR = ${error}`);
-      return reject(`Error trying to save LEAD to Mongo Database.  ERROR = ${error}`);
+      console.log(`Error trying to update LEAD to Mongo Database.  ERROR = ${error}`);
+      return reject(`Error trying to update LEAD to Mongo Database.  ERROR = ${error}`);
     });
   });
 

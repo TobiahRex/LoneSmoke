@@ -28,11 +28,12 @@ export default (db) => {
   new Promise((resolve, reject) => {
     if (!msgId || !status) return reject(`Missing required arguments. "msgId": ${msgId || 'undefined'}. "status": ${status || 'undefined'}. `);
 
-    console.log(`Querying Mongo for Email to update.  "messageId": ${msgId}'.  `);
+    console.log(`Querying Mongo for Email to update.  "messageId": ${msgId}.  `);
 
     return Email.findOne({ 'sentEmails.messageId': msgId })
     .exec()
     .then((dbEmail) => {
+      console.log('dbEmail: ', dbEmail);
       if (!dbEmail) {
         console.log('Could not find any Sent emails with MessageId: ', msgId);
         return reject(`Could not find sent email with id# ${msgId}.  `);
@@ -115,7 +116,7 @@ export default (db) => {
       const foundEmail = dbEmails
       .filter(dbEmail => (dbEmail.type === type) && (dbEmail.language === reqLanguage))[0];
 
-      if (!foundEmail || !foundEmail.length) {
+      if (!foundEmail) {
         console.log('Did not successfully filter email results array.');
         return reject('Did not successfully filter email results array.');
       }
@@ -177,15 +178,15 @@ export default (db) => {
     .fromCallback(cb => ses.sendEmail(emailRequest, cb))
     .then((data) => {
       console.log('\nSuccessfully sent SES email: \n', data,
-      '\nSaving record of email to Email Document...');
+      '\nSaving record of email to MONGO Email collection...');
 
       emailDoc.sentEmails.push({ messageId: data.MessageId });
 
       return emailDoc.save({ new: true });
     })
     .then((savedEmail) => {
-      console.log('\nSuccessfully updated "messageId" with value: \n', savedEmail.sentEmails.pop().messageId);
-      resolve();
+      console.log('\nSuccessfully saved Email record to MONGO Email collection: \n', savedEmail.sentEmails.pop().messageId);
+      resolve(savedEmail);
     })
     .catch((error) => {
       console.log(`Error sending SES email with type: "${type}".  ERROR = ${error}`);

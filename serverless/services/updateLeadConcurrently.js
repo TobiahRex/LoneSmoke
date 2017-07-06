@@ -9,9 +9,9 @@
 *
 * @return [array{object}] - Promises: resolved.
 */
-const updateOldLead = (marketHeroModel, email, tagInfo) => Promise.all([
+const udpateLeadConcurrently = (marketHeroModel, email, tagInfo) => Promise.all([
   marketHeroModel.createOrUpdateLead(email, tagInfo.name),
   marketHeroModel.updateMongoLead(email, tagInfo),
 ]);
 
-export default updateOldLead;
+export default udpateLeadConcurrently;

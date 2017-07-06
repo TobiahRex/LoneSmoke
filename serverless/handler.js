@@ -37,7 +37,7 @@ module.exports.createNewEmail = (event, context) => { // eslint-disable-line
 
   if (Object.keys(event.body).length > 7) {
     console.log('ERROR: You provided unneccesary input arguments.');
-    return context.fail('ERROR = You provided unnecessary input arguments.') && context.done();
+    return context.fail('You provided unnecessary input arguments.') && context.done();
   }
 
   return verifyDB()
