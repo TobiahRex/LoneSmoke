@@ -19,28 +19,29 @@ new Promise((resolve, reject) => {
   .then((dbUser) => { // eslint-disable-line
     if (dbUser && dbUser._id) {
       console.log('\nFound MarketHero lead for this user - Preparing to send rejection email...');
-      return Email
-      .findEmailAndFilterLanguage(`${type}Rejected`, language)
-      .then((filteredEmail) => {
-        console.log('\nFound email based on user\'s language: ', filteredEmail.language);
-        return Email.sendEmail(userEmail, filteredEmail);
-      })
-      .then(sesResponse => resolve(sesResponse));
-    }
 
+      Email
+      .findEmailAndFilterLanguage(`${type}Rejected`, language)
+      .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
+      .then(sesResponse => resolve(sesResponse));
+      return 1;
+    }
     console.log('\nNew user! Verifying they haven\'t blocked our emails...');
-    return Complaint.find({ email: userEmail }).exec();
+    return Complaint.findOne({ email: userEmail }).exec();
   })
   .then((dbComplaint) => {
-    if (dbComplaint && dbComplaint.length) {
+    if (dbComplaint) {
       console.log(userEmail, ' has classified our emails as "SPAM"');
-      return reject(userEmail, ' has classified our emails as "SPAM"');
+      resolve(userEmail, ' has classified our emails as "SPAM"');
+      return 1;
     }
-    console.log(`New user has successfully signed up for "${type}".  Sending discount email now...'`);
-    return Email.findEmailAndFilterLanguage(type, language);
+    console.log(`Sending "${type}" email now...'`);
+    Email
+    .findEmailAndFilterLanguage(type, language)
+    .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
+    .then(sesStatus => resolve(sesStatus));
+    return 1;
   })
-  .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
-  .then(sesStatus => resolve(sesStatus))
   .catch((error) => {
     console.log(`Could not update SES Status.  ERROR = ${error}`);
     return reject(`Could not update SES Status.  ERROR = ${error}`);

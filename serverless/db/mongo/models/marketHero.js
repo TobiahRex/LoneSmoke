@@ -113,7 +113,8 @@ export default (db) => {
     if (Array.isArray(tag)) tagInfo = [...tag];
     else tagInfo = tag;
 
-    return MarketHero.findOne({ 'lead.email': userEmail })
+    MarketHero
+    .findOne({ 'lead.email': userEmail })
     .exec()
     .then((dbLead) => {
       console.log(`Found lead in Mongo Database. Results: ${dbLead}`);

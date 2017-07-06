@@ -106,27 +106,27 @@ export default (db) => {
     .find({ type })
     .exec()
     .then((dbEmails) => {
-      console.log(`Found the following emails: ${dbEmails}`);
       if (!dbEmails) {
         console.log(`Did not find any emails with type: "${type}"`);
         return reject(`Did not find any emails with type: "${type}".  `);
       }
+      console.log(`Found the following emails: ${dbEmails}`);
 
-      const foundEmail = dbEmails.filter(dbEmail =>
-        (dbEmail.type === type) && (dbEmail.language === reqLanguage)
-      )[0];
+      const foundEmail = dbEmails
+      .filter(dbEmail => (dbEmail.type === type) && (dbEmail.language === reqLanguage))[0];
 
-      console.log(`Filtered email results: Found "type" = ${foundEmail.type}.  Requested "type" = ${type}.  Found "language" = ${reqLanguage}.  Requested "language" = ${reqLanguage}.  `);
-
-      if (!foundEmail) {
+      if (!foundEmail || !foundEmail.length) {
         console.log('Did not successfully filter email results array.');
         return reject('Did not successfully filter email results array.');
       }
+
+      console.log(`Filtered email results: Found "type" = ${foundEmail.type}.  Requested "type" = ${type}.  Found "language" = ${reqLanguage}.  Requested "language" = ${reqLanguage}.  `);
+
       return resolve(foundEmail);
     })
     .catch((error) => {
-      console.log(`Could not find any emails with "type" = ${type}.  ERROR = ${error}`);
-      return reject(`Could not find any emails with "type" = ${type}.  ERROR = ${error}.  `);
+      console.log(`Error while trying to find any emails with "type" = ${type}.  ERROR = ${error}`);
+      return reject(`Error while trying to find emails with "type" = ${type}.  ERROR = ${error}.  `);
     });
   });
 
@@ -144,11 +144,11 @@ export default (db) => {
   emailSchema.statics.sendEmail = (to, emailDoc) =>
   new Promise((resolve, reject) => {
     if (!isEmail(to)) {
-      console.log('ERROR @ sendEmail: \n\'', to, '\' is not a valid email address.');
-      reject({ error: true, problem: 'Did not submit a valid email address. Please try again.' });
+      console.log(`ERROR = "${to}" is not a valid email.  `);
+      return reject(`ERROR = "${to}" is not a valid email.  `);
     }
 
-    const emailParams = {
+    const emailRequest = {
       Destination: {
         ToAddresses: [to],
       },
@@ -173,10 +173,11 @@ export default (db) => {
     };
 
     console.log('\nSending AWS ses email...');
-    return bbPromise.fromCallback(cb => ses.sendEmail(emailParams, cb))
+    bbPromise
+    .fromCallback(cb => ses.sendEmail(emailRequest, cb))
     .then((data) => {
       console.log('\nSuccessfully sent SES email: \n', data,
-      '\nSaving record of email sent to Email Document...');
+      '\nSaving record of email to Email Document...');
 
       emailDoc.sentEmails.push({ messageId: data.MessageId });
 
@@ -184,11 +185,11 @@ export default (db) => {
     })
     .then((savedEmail) => {
       console.log('\nSuccessfully updated "messageId" with value: \n', savedEmail.sentEmails.pop().messageId);
-      return resolve();
+      resolve();
     })
     .catch((error) => {
-      console.log('\nERROR sending SES email with type: "', emailDoc.type, '"\nError = ', error, '\n', error.stack);
-      return reject({ error: true, problem: { ...error } });
+      console.log(`Error sending SES email with type: "${type}".  ERROR = ${error}`);
+      reject(`Error sending SES email with type: "${type}".  ERROR = ${error}`);
     });
   });
 
