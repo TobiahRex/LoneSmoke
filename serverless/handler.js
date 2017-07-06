@@ -12,12 +12,9 @@ module.exports.sesDiscountHandler = (event, context) => {
     return context.fail({ message: 'Missing required arguments.' }) && context.done();
   }
 
-  verifyDB()
+  return verifyDB()
   .then(dbResults => handleSesDiscount({ event, ...dbResults }))
-  .then((result) => {
-    console.log('Successfully handled Ses Discount.  RESULTS = ', result);
-    return context.succeed('Successfully handled Ses Discount.') && context.done();
-  })
+  .then(result => context.succeed({ result }) && context.done())
   .catch((error) => {
     console.log(`Error handling Ses discount. ERROR = ${error}`);
     return context.fail(`Ses Discount handler. ERROR = ${error}`) && context.done();
@@ -27,7 +24,7 @@ module.exports.sesDiscountHandler = (event, context) => {
 module.exports.sesStatusHandler = (event, context) => {  // eslint-disable-line
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
 
-  verifyDB()
+  return verifyDB()
   .then(dbResults => handleSesStatus({ event, ...dbResults }))
   .then(result => (
     context.succeed(`Ses status has been successfully handled.  RESULT = ${result}`) && context.done()
