@@ -31,38 +31,42 @@ export default (db) => {
   *
   * @return {object} - Promise: resolved - no data.
   */
-  marketHeroSchema.statics.createOrUpdateLead = (userEmail, tag) =>
+  marketHeroSchema.statics.createOrUpdateLead = (userEmail, language, tag) =>
   new Promise((resolve, reject) => {
-    let tagInfo = [];
+    if (!userEmail || !language || !tag) {
+      console.log('Missing required arguments at "createOrUpdateLead".');
+      reject('Missing required arguments at "createOrUpdateLead"');
+    } else {
+      let tagInfo = [];
 
-    if (Array.isArray(tag)) tagInfo = tag;
-    else tagInfo = [tag];
+      if (Array.isArray(tag)) tagInfo = [...tag, language];
+      else tagInfo = [tag, language];
 
-    const reqBody = {
-      apiKey: process.env.MARKET_HERO_API_KEY,
-      firstName: 'John',
-      lastName: 'Doe',
-      email: userEmail,
-      tags: tagInfo // eslint-disable-line
-    };
-
-    return axios.post('https://api.markethero.io/v1/api/tag-lead', reqBody, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((res) => {
-      if (res.status !== 200) {
-        console.log(`Market Hero API Error:  Cannot update lead# ${userEmail}; Response: "${res.data}".  `);
-        return reject(`Error posting to Market Hero.  ERROR = ${res.data}`);
-      }
-      console.log('\nSuccessfully posted to Market Hero: \nMarket Hero response: ', res.data);
-      return resolve(`Successfully posted to Market Hero: \nMarket Hero response: ${res.data}`);
-    })
-    .catch((error) => {
-      console.log('\nError trying to saved Lead to market Hero: ', error);
-      return reject(`Error trying to save LEAD to MarketHero.  ERROR = ${error}`);
-    });
+      const reqBody = {
+        apiKey: process.env.MARKET_HERO_API_KEY,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: userEmail,
+        tags: tagInfo // eslint-disable-line
+      };
+      axios.post('https://api.markethero.io/v1/api/tag-lead', reqBody, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((res) => {
+        if (res.status !== 200) {
+          console.log(`Market Hero API Error:  Cannot update lead# ${userEmail}; Response: "${res.data}".  `);
+          return reject(`Error posting to Market Hero.  ERROR = ${res.data}`);
+        }
+        console.log('\nSuccessfully posted to Market Hero: \nMarket Hero response: ', res.data);
+        return resolve(`Successfully posted to Market Hero: \nMarket Hero response: ${res.data}`);
+      })
+      .catch((error) => {
+        console.log('\nError trying to saved Lead to market Hero: ', error);
+        return reject(`Error trying to save LEAD to MarketHero.  ERROR = ${error}`);
+      });
+    }
   });
 
   /**
