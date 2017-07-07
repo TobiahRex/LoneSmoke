@@ -9,7 +9,7 @@
 *
 * @return [array{object}] - Promises: resolved.
 */
-const createNewLead = (marketHeroModel, email, language, tagInfo) => Promise.all([
+const createNewLead = (marketHeroModel, language, email, tagInfo) => Promise.all([
   marketHeroModel.createOrUpdateLead(email, language, tagInfo.name),
   marketHeroModel.createMongoLead(email, language, tagInfo),
 ]);
