@@ -11,7 +11,7 @@
 */
 const udpateLeadConcurrently = (marketHeroModel, language, email, tagInfo) => Promise.all([
   marketHeroModel.createOrUpdateLead(email, language, tagInfo.name),
-  marketHeroModel.updateMongoLead(email, language, tagInfo),
+  marketHeroModel.updateMongoLead(email, tagInfo),
 ]);
 
 export default udpateLeadConcurrently;

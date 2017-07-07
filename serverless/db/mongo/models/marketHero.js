@@ -88,8 +88,9 @@ export default (db) => {
     } else {
       let tagInfo = null;
 
-      if (Array.isArray(tag)) tagInfo = [...tag, language];
-      else tagInfo = [tag, language];
+      if (Array.isArray(tag)) tagInfo = [...tag, { name: language, description: `This user speaks ${language}.` }];
+
+      else tagInfo = [tag, { name: language, description: `This user speaks ${language}` }];
 
       bbPromise.fromCallback(cb => MarketHero.create({
         lead: { email: userEmail },
@@ -115,9 +116,9 @@ export default (db) => {
   *
   * @return {object} - Promise: resolved - no data.
   */
-  marketHeroSchema.statics.updateMongoLead = (userEmail, language, tag) =>
+  marketHeroSchema.statics.updateMongoLead = (userEmail, tag) =>
   new Promise((resolve, reject) => {
-    if (!userEmail || !language || !tag) {
+    if (!userEmail || !tag) {
       console.log('Missing required arguments at "updateMongoLead".');
       reject('Missing required arguments at "updateMongoLead"');
     } else {
