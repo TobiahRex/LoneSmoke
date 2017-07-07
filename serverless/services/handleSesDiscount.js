@@ -33,15 +33,21 @@ new Promise((resolve, reject) => {
 
 const sendDiscountEmail = (complaintModel, emailModel, eventBody) => new Promise((resolve, reject) => {
   const { userEmail, type, language } = eventBody;
-
-  checkSpam(complaintModel, userEmail)
-  .then((result) => { // eslint-disable-line
-    if (result) reject(result);
-    else return emailModel.findEmailAndFilterLanguage(type, language);
-  })
-  .then(filteredEmail => emailModel.sendEmail(userEmail, filteredEmail))
-  .then(() => resolve('Successfully sent DISCOUNT email.'))
-  .catch(reject);
+  if (
+    !complaintModel ||
+    !emailModel ||
+    !eventBody
+  ) {
+    console.log('Missing required arguments in "sendRejectionEmail".');
+    reject('Missing required arguments in "sendRejectionEmail".');
+  } else {
+    const { userEmail, type, language } = eventBody;
+    checkSpam(complaintModel, userEmail)
+    .then(() => emailModel.findEmailAndFilterLanguage(type, language))
+    .then(filteredEmail => emailModel.sendEmail(userEmail, filteredEmail))
+    .then(() => resolve('Successfully sent DISCOUNT email.'))
+    .catch(reject);
+  }
 });
 
 // .then((dbComplaint) => {
@@ -68,13 +74,14 @@ new Promise((resolve, reject) => {
     !userEmail
   ) {
     console.log('Missing required arguments in "sendRejectionEmail".');
-    return reject('Missing required arguments in "sendRejectionEmail".');
+    reject('Missing required arguments in "sendRejectionEmail".');
+  } else {
+    checkSpam()
+    .then(() => emailModel.findEmailAndFilterLanguage(`${type}Rejected`, language))
+    .then(filteredEmail => emailModel.sendEmail(userEmail, filteredEmail))
+    .then(sesResponse => resolve(`Successfully sent REJECTION email.  SES RESPONSE = ${sesResponse}`))
+    .catch(reject);
   }
-  return emailModel
-  .findEmailAndFilterLanguage(`${type}Rejected`, language)
-  .then(filteredEmail => emailModel.sendEmail(userEmail, filteredEmail))
-  .then(sesResponse => resolve(`Successfully sent REJECTION email.  SES RESPONSE = ${sesResponse}`))
-  .catch(reject);
 });
 
 export default ({ event, dbModels: { MarketHero, Email, Complaint } }) =>
