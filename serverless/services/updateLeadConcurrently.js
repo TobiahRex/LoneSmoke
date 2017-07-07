@@ -9,9 +9,9 @@
 *
 * @return [array{object}] - Promises: resolved.
 */
-const udpateLeadConcurrently = (marketHeroModel, email, tagInfo) => Promise.all([
-  marketHeroModel.createOrUpdateLead(email, tagInfo.name),
-  marketHeroModel.updateMongoLead(email, tagInfo),
+const udpateLeadConcurrently = (marketHeroModel, language, email, tagInfo) => Promise.all([
+  marketHeroModel.createOrUpdateLead(email, language, tagInfo.name),
+  marketHeroModel.updateMongoLead(email, language, tagInfo),
 ]);
 
 export default udpateLeadConcurrently;

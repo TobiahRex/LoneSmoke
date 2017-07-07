@@ -87,12 +87,12 @@ new Promise((resolve, reject) => {
         console.log(`Successfully updated MONGO email: "${updatedEmail.subjectData}" with status: "${notificationType}".  `);
 
         if (/Rejected/gi.test(updatedEmail.type)) {
-          return updateLeadConcurrently(MarketHero, destinations[i], {
+          return updateLeadConcurrently(MarketHero, updatedEmail.language, destinations[i], {
             name: `${updatedEmail.type}`,
             description: updatedEmail.purpose,
           });
         }
-        return createLeadConcurrently(MarketHero, destinations[i], {
+        return createLeadConcurrently(MarketHero, updatedEmail.language, destinations[i], {
           name: `${updatedEmail.type}`,
           description: updatedEmail.purpose,
         });
