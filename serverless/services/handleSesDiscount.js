@@ -51,21 +51,6 @@ const sendDiscountEmail = (complaintModel, emailModel, eventBody) => new Promise
   }
 });
 
-// .then((dbComplaint) => {
-//   if (dbComplaint === 'object') {
-//     console.log(`"${userEmail}", has classified our emails as "SPAM"`);
-//     resolve(`"${userEmail}", has classified our emails as "SPAM"`);
-//     return 1;
-//   }
-//   console.log(`Sending "${type}" email now...'`);
-//   Email
-//   .findEmailAndFilterLanguage(type, language)
-//   .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
-//   .then(sesStatus => resolve(`Successfully sent DISCOUNT email.  SES Response = ${sesStatus}`))
-//   .catch(reject);
-//   return 1;
-// })
-
 const sendRejectionEmail = (complaintModel, emailModel, eventBody) =>
 new Promise((resolve, reject) => {
   const { userEmail, type, language } = eventBody;

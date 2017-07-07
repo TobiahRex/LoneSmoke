@@ -11,9 +11,7 @@ module.exports.sesDiscountHandler = (event, context) => {
   if (event.body.userEmail === 'wakeup@stakinet.com') {
     console.log('WAKEUP LAMBDA');
     return context.succeed('Successfully invoked LAMBDA.') && context.done();
-  }
-
-  if (
+  } else if (
     !event.body.userEmail ||
     !event.body.type ||
     !event.body.language
@@ -38,11 +36,6 @@ module.exports.sesStatusHandler = (event, context) => {
 
 module.exports.createNewEmail = (event, context) => { // eslint-disable-line
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
-
-  if (Object.keys(event.body).length > 7) {
-    console.log('ERROR: You provided unneccesary input arguments.');
-    return context.fail('You provided unnecessary input arguments.') && context.done();
-  }
 
   return verifyDB()
   .then(({ dbModels: { Email } }) => Email.createEmail(event.body))
