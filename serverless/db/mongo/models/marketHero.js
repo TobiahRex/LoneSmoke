@@ -88,12 +88,12 @@ export default (db) => {
       tags: Array.isArray(tagInfo) ? [...tagInfo] : [tagInfo],
     }, cb))
     .then((newLead) => {
-      console.log(`Created New lead in Mongo Database. Results: ${newLead}`);
+      console.log(`Created New lead in MONGO MarketHero collection. Results: ${newLead}`);
       return resolve(newLead);
     })
     .catch((error) => {
-      console.log(`Error trying to save LEAD to Mongo Database.  ERROR = ${error}`);
-      return reject(`Error trying to save LEAD to Mongo Database.  ERROR = ${error}`);
+      console.log(`Error trying to save LEAD to MONGO MarketHero Collection.  ERROR = ${error}`);
+      return reject(`Error trying to save LEAD to MONGO MarketHero Collection.  ERROR = ${error}`);
     });
   });
 
@@ -117,8 +117,8 @@ export default (db) => {
     .findOne({ 'lead.email': userEmail })
     .exec()
     .then((dbLead) => {
-      console.log(`Found lead in Mongo Database. Results: ${dbLead}`);
-      dbLead.tags.concat(tagInfo);
+      console.log(`Found lead in MONGO MarketHero collection. Results: ${dbLead}`);
+      dbLead.tags = dbLead.tags.concat(tagInfo);
       return dbLead.save({ new: true });
     })
     .then((savedLead) => {

@@ -34,6 +34,10 @@ module.exports.sesStatusHandler = (event, context) => {
 
 module.exports.createNewEmail = (event, context) => { // eslint-disable-line
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
+  if (event.body.userEmail === 'wakeup@stakinet.com') {
+    console.log('WAKEUP LAMBDA');
+    return context.succeed('Successfully invoked LAMBDA.') && context.done();
+  }
 
   if (Object.keys(event.body).length > 7) {
     console.log('ERROR: You provided unneccesary input arguments.');

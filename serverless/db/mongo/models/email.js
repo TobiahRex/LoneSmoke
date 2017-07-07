@@ -186,11 +186,11 @@ export default (db) => {
     })
     .then((savedEmail) => {
       console.log('\nSuccessfully saved Email record to MONGO Email collection: \n', savedEmail.sentEmails.pop().messageId);
-      resolve(savedEmail);
+      resolve();
     })
     .catch((error) => {
-      console.log(`Error sending SES email with type: "${type}".  ERROR = ${error}`);
-      reject(`Error sending SES email with type: "${type}".  ERROR = ${error}`);
+      console.log(`Error sending SES email with type: "${emailDoc.type}".  ERROR = ${error}`);
+      reject(`Error sending SES email with type: "${emailDoc.type}".  ERROR = ${error}`);
     });
   });
 

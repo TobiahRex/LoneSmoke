@@ -14,10 +14,11 @@
 export default ({ event, dbModels: { MarketHero, Email, Complaint } }) =>
 new Promise((resolve, reject) => {
   const { userEmail, type, language } = event.body;
+
   return MarketHero
   .checkForLead(userEmail)
   .then((dbUser) => { // eslint-disable-line
-    if (dbUser && dbUser._id) {
+    if (dbUser) {
       console.log('\nFound MarketHero lead for this user - Preparing to send rejection email...');
 
       Email
@@ -25,10 +26,10 @@ new Promise((resolve, reject) => {
       .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
       .then(sesResponse => resolve(`Successfully sent REJECTION email.  SES RESPONSE = ${sesResponse}`))
       .catch(reject);
-      return 1;
+    } else {
+      console.log('\nNew user! Verifying they haven\'t blocked our emails...');
+      return Complaint.findOne({ email: userEmail }).exec();
     }
-    console.log('\nNew user! Verifying they haven\'t blocked our emails...');
-    return Complaint.findOne({ email: userEmail }).exec();
   })
   .then((dbComplaint) => {
     if (dbComplaint === 'object') {
