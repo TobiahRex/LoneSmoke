@@ -168,7 +168,7 @@ export default (db) => {
           },
         },
         Subject: {
-          Data: `${moment().format('LL')} - ${emailDoc.subjectData}`,
+          Data: `${moment().format('LL')} | ${emailDoc.subjectData}`,
           Charset: emailDoc.subjectCharset,
         },
       },
