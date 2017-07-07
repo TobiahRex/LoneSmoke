@@ -18,7 +18,7 @@ new Promise((resolve, reject) => {
     reject('Missing required argument in "checkSpam".');
   } else {
     complaintModel
-    .fineOne({ email: userEmail })
+    .findOne({ email: userEmail })
     .exec()
     .then((result) => {
       if (result) {
@@ -40,8 +40,8 @@ const sendDiscountEmail = (complaintModel, emailModel, eventBody) => new Promise
     !type ||
     !language
   ) {
-    console.log('Missing required arguments in "sendRejectionEmail".');
-    reject('Missing required arguments in "sendRejectionEmail".');
+    console.log('Missing required arguments in "sendDiscountEmail".');
+    reject('Missing required arguments in "sendDiscountEmail".');
   } else {
     checkSpam(complaintModel, userEmail)
     .then(() => emailModel.findEmailAndFilterLanguage(type, language))
@@ -82,7 +82,7 @@ new Promise((resolve, reject) => {
     checkSpam(complaintModel, userEmail)
     .then(() => emailModel.findEmailAndFilterLanguage(`${type}Rejected`, language))
     .then(filteredEmail => emailModel.sendEmail(userEmail, filteredEmail))
-    .then(sesResponse => resolve(`Successfully sent REJECTION email.  SES RESPONSE = ${sesResponse}`))
+    .then(() => resolve('Successfull sent REJECTION email.'))
     .catch(reject);
   }
 });

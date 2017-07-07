@@ -1,6 +1,7 @@
 /* eslint-disable no-use-before-define, no-console, import/newline-after-import */
 import AWS from 'aws-sdk';
 import { Promise as bbPromise } from 'bluebird';
+import moment from 'moment';
 import isEmail from 'validator/lib/isEmail';
 import emailSchema from '../schemas/email';
 import config from '../../..//config.json';
@@ -167,7 +168,7 @@ export default (db) => {
           },
         },
         Subject: {
-          Data: emailDoc.subjectData,
+          Data: `${moment().format('LL')} - ${emailDoc.subjectData}`,
           Charset: emailDoc.subjectCharset,
         },
       },
