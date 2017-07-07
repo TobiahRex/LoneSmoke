@@ -36,12 +36,13 @@ const sendDiscountEmail = (complaintModel, emailModel, eventBody) => new Promise
   if (
     !complaintModel ||
     !emailModel ||
-    !eventBody
+    !userEmail ||
+    !type ||
+    !language
   ) {
     console.log('Missing required arguments in "sendRejectionEmail".');
     reject('Missing required arguments in "sendRejectionEmail".');
   } else {
-    const { userEmail, type, language } = eventBody;
     checkSpam(complaintModel, userEmail)
     .then(() => emailModel.findEmailAndFilterLanguage(type, language))
     .then(filteredEmail => emailModel.sendEmail(userEmail, filteredEmail))
@@ -65,9 +66,11 @@ const sendDiscountEmail = (complaintModel, emailModel, eventBody) => new Promise
 //   return 1;
 // })
 
-const sendRejectionEmail = (emailModel, { type, language, userEmail }) =>
+const sendRejectionEmail = (complaintModel, emailModel, eventBody) =>
 new Promise((resolve, reject) => {
+  const { userEmail, type, language } = eventBody;
   if (
+    !complaintModel ||
     !emailModel ||
     !type ||
     !language ||
@@ -76,7 +79,7 @@ new Promise((resolve, reject) => {
     console.log('Missing required arguments in "sendRejectionEmail".');
     reject('Missing required arguments in "sendRejectionEmail".');
   } else {
-    checkSpam()
+    checkSpam(complaintModel, userEmail)
     .then(() => emailModel.findEmailAndFilterLanguage(`${type}Rejected`, language))
     .then(filteredEmail => emailModel.sendEmail(userEmail, filteredEmail))
     .then(sesResponse => resolve(`Successfully sent REJECTION email.  SES RESPONSE = ${sesResponse}`))
@@ -90,7 +93,7 @@ new Promise((resolve, reject) => {
   .then((dbUser) => {
     if (dbUser) {
       console.log('\nFound MarketHero lead for this user - Preparing to send rejection email...');
-      return sendRejectionEmail(Email, event.body);
+      return sendRejectionEmail(Complaint, Email, event.body);
     }
     console.log('\nNew user! Verifying they haven\'t blocked our emails...');
     return sendDiscountEmail(Complaint, Email, event.body);
