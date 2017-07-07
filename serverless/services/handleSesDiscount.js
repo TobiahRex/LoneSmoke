@@ -11,40 +11,84 @@
 *
 * @return {object} - Promise: resolved - email type sent.
 */
+const checkSpam = (complaintModel, userEmail) =>
+new Promise((resolve, reject) => {
+  if (!complaintModel || !userEmail) {
+    console.log('Missing required argument in "checkSpam."');
+    reject('Missing required argument in "checkSpam".');
+  } else {
+    complaintModel
+    .fineOne({ email: userEmail })
+    .exec()
+    .then((result) => {
+      if (result) {
+        console.log(`"${userEmail}", has classified our emails as "SPAM"`);
+        return reject(`"${userEmail}", has classified our emails as "SPAM"`);
+      }
+      return resolve(null);
+    })
+    .catch(reject);
+  }
+});
+
+const sendDiscountEmail = (complaintModel, emailModel, eventBody) => new Promise((resolve, reject) => {
+  const { userEmail, type, language } = eventBody;
+
+  checkSpam(complaintModel, userEmail)
+  .then((result) => { // eslint-disable-line
+    if (result) reject(result);
+    else return emailModel.findEmailAndFilterLanguage(type, language);
+  })
+  .then(filteredEmail => emailModel.sendEmail(userEmail, filteredEmail))
+  .then(() => resolve('Successfully sent DISCOUNT email.'))
+  .catch(reject);
+});
+
+// .then((dbComplaint) => {
+//   if (dbComplaint === 'object') {
+//     console.log(`"${userEmail}", has classified our emails as "SPAM"`);
+//     resolve(`"${userEmail}", has classified our emails as "SPAM"`);
+//     return 1;
+//   }
+//   console.log(`Sending "${type}" email now...'`);
+//   Email
+//   .findEmailAndFilterLanguage(type, language)
+//   .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
+//   .then(sesStatus => resolve(`Successfully sent DISCOUNT email.  SES Response = ${sesStatus}`))
+//   .catch(reject);
+//   return 1;
+// })
+
+const sendRejectionEmail = (emailModel, { type, language, userEmail }) =>
+new Promise((resolve, reject) => {
+  if (
+    !emailModel ||
+    !type ||
+    !language ||
+    !userEmail
+  ) {
+    console.log('Missing required arguments in "sendRejectionEmail".');
+    return reject('Missing required arguments in "sendRejectionEmail".');
+  }
+  return emailModel
+  .findEmailAndFilterLanguage(`${type}Rejected`, language)
+  .then(filteredEmail => emailModel.sendEmail(userEmail, filteredEmail))
+  .then(sesResponse => resolve(`Successfully sent REJECTION email.  SES RESPONSE = ${sesResponse}`))
+  .catch(reject);
+});
+
 export default ({ event, dbModels: { MarketHero, Email, Complaint } }) =>
 new Promise((resolve, reject) => {
-  const { userEmail, type, language } = event.body;
-
-  return MarketHero
-  .checkForLead(userEmail)
-  .then((dbUser) => { // eslint-disable-line
+  MarketHero.checkForLead(event.body.userEmail)
+  .then((dbUser) => {
     if (dbUser) {
       console.log('\nFound MarketHero lead for this user - Preparing to send rejection email...');
-
-      Email
-      .findEmailAndFilterLanguage(`${type}Rejected`, language)
-      .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
-      .then(sesResponse => resolve(`Successfully sent REJECTION email.  SES RESPONSE = ${sesResponse}`))
-      .catch(reject);
-    } else {
-      console.log('\nNew user! Verifying they haven\'t blocked our emails...');
-      return Complaint.findOne({ email: userEmail }).exec();
+      return sendRejectionEmail(Email, event.body);
     }
+    console.log('\nNew user! Verifying they haven\'t blocked our emails...');
+    return sendDiscountEmail(Complaint, Email, event.body);
   })
-  .then((dbComplaint) => {
-    if (dbComplaint === 'object') {
-      console.log(`"${userEmail}", has classified our emails as "SPAM"`);
-      resolve(`"${userEmail}", has classified our emails as "SPAM"`);
-      return 1;
-    }
-    console.log(`Sending "${type}" email now...'`);
-    Email
-    .findEmailAndFilterLanguage(type, language)
-    .then(filteredEmail => Email.sendEmail(userEmail, filteredEmail))
-    .then(sesStatus => resolve(`Successfully sent DISCOUNT email.  SES Response = ${sesStatus}`))
-    .catch(reject);
-    return 1;
-  })
+  .then(resolve)
   .catch((error) => {
     console.log(`Could not update SES Status.  ERROR = ${error}`);
     return reject(`Could not update SES Status.  ERROR = ${error}`);

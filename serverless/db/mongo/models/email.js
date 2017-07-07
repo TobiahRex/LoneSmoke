@@ -174,7 +174,7 @@ export default (db) => {
     };
 
     console.log('\nSending AWS ses email...');
-    bbPromise
+    return bbPromise
     .fromCallback(cb => ses.sendEmail(emailRequest, cb))
     .then((data) => {
       console.log('\nSuccessfully sent SES email: \n', data,
