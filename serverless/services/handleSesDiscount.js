@@ -104,7 +104,18 @@ new Promise((resolve, reject) => {
     .catch(reject);
   }
 });
-
+/**
+* 1) Check local db for any copies of input userEmail.
+* 2a) If found - send rejection email.
+* 2b) If not found - send resolved email.
+*
+* @param {object} event - entire event Lambda object.
+* @param {object} dbModels - Mongo Collections: { MarketHero, Email, Complaint }
+*
+* @return {object} - Promise:
+* resolve = success msg.
+* reject = error msg.
+*/
 export default ({ event, dbModels: { MarketHero, Email, Complaint } }) =>
 new Promise((resolve, reject) => {
   MarketHero.checkForLead(event.body.userEmail)
