@@ -61,13 +61,14 @@ export default (db) => {
       return reject(`Query was unsuccessful.  ERROR = ${error}`);
     });
   });
+
   /**
-  * 1) Validate required fields exist.
-  * 2) Create a new email.
+  * 1) Check for requried input arguments.
+  * 2) Create a new email & resolve with new email.
   *
   * @param {object} fields - Required fields for creating new Email.
   *
-  * @return {object} - Promise: resolved - Email details.
+  * @return {object} - Promise: resolved - new email.
   */
   emailSchema.statics.createEmail = fields =>
   new Promise((resolve, reject) => {
@@ -82,7 +83,8 @@ export default (db) => {
     } = fields;
 
     if (!type || !purpose || !language || !replyToAddress || !subjectData || !bodyHtmlData || !bodyTextData) {
-      reject({ error: 'Missing required fields to create a new Email.', ...fields });
+      console.log(`Missing required input arguments for "createEmail": Arguments = ${fields}`);
+      reject(`Missing required input arguments for "createEmail": Arguments = ${fields}`);
     } else {
       bbPromise.fromCallback(cb => Email.create({ ...fields }, cb))
       .then((newEmail) => {
