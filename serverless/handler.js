@@ -5,7 +5,21 @@ import { Promise as bbPromise } from 'bluebird';
 import handleSesDiscount from './services/handleSesDiscount';
 import handleSesStatus from './services/handleSesStatus';
 import verifyDB from './db/mongo/connection';
-
+/**
+ * 1) Receives event object containing user email, language, and type of Discount.
+ * 2) Verifies user email is not already saved.
+ * 3a) If found - sends a rejection email since user already received discount.
+ * 3b) If not found - Performs 3 tasks.
+ * 4) Checks if user has classified emails as "Spam" - Sending emails to users who've identified us as Spam is considered "SES abuse".
+ * 5a) If not spam - Find email by "type".
+ * 5b) Filter found email by "language".
+ * 6) Send Email.
+ * 7) Save a record of sent email with "messageId" from AWS in local db for updating delivery status later.
+ *
+ * @param {string} email - Email data.
+ *
+ * @return {object} - Promise resolved with data.
+*/
 module.exports.sesDiscountHandler = (event, context) => {
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
   if (event.body.userEmail === 'wakeup@stakinet.com') {

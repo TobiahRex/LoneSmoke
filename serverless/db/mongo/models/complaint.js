@@ -3,14 +3,14 @@ import isEmail from 'validator/lib/isEmail';
 import complaintSchema from '../schemas/complaint';
 
 export default (db) => {
-  /**
+/**
  * 1) Verifies email - 2) If valid, saved email to Complaint collection:
  * Purpose: Have a record of emails that have tagged this apps Emails as "Spam" so as to never send again.
  *
  * @param {string} email - Email data.
  *
  * @return {object} - Promise resolved with data.
- */
+*/
   complaintSchema.statics.addEmailComplaint = email =>
   new Promise((resolve, reject) => {
     if (!isEmail(email)) {
