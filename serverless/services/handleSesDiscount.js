@@ -35,15 +35,18 @@ new Promise((resolve, reject) => {
 
 /**
 * 1) Check for valid inputs.
-* 2) Look for user email in Mongo Complaint collection.
+* 2) Verify user has not classified emails as spam.
 * 3a) If found - return rejected promise.
-* 3b) If not found - return null.
+* 3b) If not found - Find requested email & filter by language.
+* 4a) Send filtered email.
+* 5) Return resolved promise with msg.
 *
 * @param {object} comlaintModel - Mongo Collection: Complaint
-* @param {string} userEmail - users email.
+* @param {object} emailModel - Mongo Collection: Email
+* @param {object} eventBody - event inputs: { userEmail, type, language }.
 *
 * @return {object} - Promise:
-* resolve = null
+* resolve = success msg.
 * reject = error msg.
 */
 const sendDiscountEmail = (complaintModel, emailModel, eventBody) => new Promise((resolve, reject) => {
@@ -65,7 +68,22 @@ const sendDiscountEmail = (complaintModel, emailModel, eventBody) => new Promise
     .catch(reject);
   }
 });
-
+/**
+* 1) Check for valid inputs.
+* 2) Verify user has not classified emails as spam.
+* 3a) If found - return rejected promise.
+* 3b) If not found - Find reject email corresponding to requested email & filter by language.
+* 4a) Send filtered email.
+* 5) Return resolved promise with msg.
+*
+* @param {object} comlaintModel - Mongo Collection: Complaint
+* @param {object} emailModel - Mongo Collection: Email
+* @param {object} eventBody - event inputs: { userEmail, type, language }.
+*
+* @return {object} - Promise:
+* resolve = null
+* reject = error msg.
+*/
 const sendRejectionEmail = (complaintModel, emailModel, eventBody) =>
 new Promise((resolve, reject) => {
   const { userEmail, type, language } = eventBody;
