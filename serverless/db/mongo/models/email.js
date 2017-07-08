@@ -16,14 +16,16 @@ const ses = new AWS.SES();
 
 export default (db) => {
   /**
-  * 1) Find a saved Email Document.
-  * 2) Locate the sent email inside the documents - "sentEmails" array.
-  * 3) Update the email's status.  Save new changes.
+  * 1) Find a saved Email Document by querying with input argument "msgId".
+  * 2a) If not found - send rejected promise with error msg.
+  * 2b) If found - filter the sent emails list using the id of the sent email.
+  * 3) Update the sent email's "status" with the input argument "status".
+  * 4) Save changes & resolve promise with updated email object.
   *
   * @param {string} msgId - SES messageId value.
   * @param {string} status - SES status result.
   *
-  * @return {object} - Promise: resolved - Email details.
+  * @return {object} - Promise: resolved - updated email.
   */
   emailSchema.statics.findSentEmailAndUpdate = (msgId, status) =>
   new Promise((resolve, reject) => {
@@ -34,7 +36,6 @@ export default (db) => {
     return Email.findOne({ 'sentEmails.messageId': msgId })
     .exec()
     .then((dbEmail) => {
-      console.log('dbEmail: ', dbEmail);
       if (!dbEmail) {
         console.log('Could not find any Sent emails with MessageId: ', msgId);
         return reject(`Could not find sent email with id# ${msgId}.  `);
