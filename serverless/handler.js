@@ -20,7 +20,7 @@ import verifyDB from './db/mongo/connection';
  * @param {string} event.body.type - Type of discount email to send.
  * @param {string} event.body.language - Language of the user.
  *
- * @return {object} - Promise resolved with data.
+ * @return {string} - Promise resolved with results message.
 */
 module.exports.sesDiscountHandler = (event, context) => {
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
