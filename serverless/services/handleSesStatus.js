@@ -5,7 +5,7 @@ import { Promise as bbPromise } from 'bluebird';
 import createLeadConcurrently from './createLeadConcurrently';
 import updateLeadConcurrently from './updateLeadConcurrently';
 /**
-* 1) Determines what type of notification has been received.
+* 1) Dynamically reacts to Ses notification type.
 * 2a) If Bounce type - do nothing.
 * 2b) If Complaint type - add to Complaint collection.
 * 2c) If Delivered type - add to MarketHero collection & add to MarketHero leads collection via REST API.

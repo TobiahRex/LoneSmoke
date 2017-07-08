@@ -1,8 +1,8 @@
 /* eslint-disable no-console, import/imports-first */
 
 /**
-* 1a) Concurrently call MarketHero API and create new lead
-* 1b) Create new MarketHero document using user email to local DB.
+* 1a) Concurrently call MarketHero API and create new lead with tag(s).
+* 1b) Concurrently call MarketHero Mongo Collection create new doc.
 *
 * @param {instance} marketHeroModel - Mongo model instance.
 * @param {string} langauge - req language.
