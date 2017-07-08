@@ -95,13 +95,13 @@ export default (db) => {
   });
 
   /**
-  * 1) Find all emails with type.
-  * 2) Filter results by request language.
+  * 1) Find all emails with input argument "type".
+  * 2) Filter any results by request language.
   *
   * @param {string} type - The email type to find.
   * @param {string} requestedLangauge - The language to filter by.
   *
-  * @return {object} - Promise: resolved - Email details.
+  * @return {object} - Promise: resolved - found email.
   */
   emailSchema.statics.findEmailAndFilterLanguage = (type, reqLanguage) =>
   new Promise((resolve, reject) => {
