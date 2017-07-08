@@ -1,16 +1,17 @@
 /* eslint-disable no-console */
 
 /**
-* 1) Check for repeat user.
-* 2a) If found, filter the email by language matching the input arg. langauge and send a Rejection Email.
-* 2b) If not found, verify user has not classified our previous emails as "spam".
-* 3a) If no spam - filter emails by input arg. language and send the user a Discount email.
-* 3b) If spam - return rejected promise.
+* 1) Check for valid inputs.
+* 2) Look for user email in Mongo Complaint collection.
+* 3a) If found - return rejected promise.
+* 3b) If not found - return null.
 *
-* @param {object} event - event.body = Top-Level SES status object.
-* @param {object} dbModels - Mongo model instance(s).
+* @param {object} comlaintModel - Mongo Collection: Complaint
+* @param {string} userEmail - users email.
 *
-* @return {object} - Promise: resolved - email type sent.
+* @return {object} - Promise:
+* resolve = null
+* reject = error msg.
 */
 const checkSpam = (complaintModel, userEmail) =>
 new Promise((resolve, reject) => {
@@ -32,6 +33,19 @@ new Promise((resolve, reject) => {
   }
 });
 
+/**
+* 1) Check for valid inputs.
+* 2) Look for user email in Mongo Complaint collection.
+* 3a) If found - return rejected promise.
+* 3b) If not found - return null.
+*
+* @param {object} comlaintModel - Mongo Collection: Complaint
+* @param {string} userEmail - users email.
+*
+* @return {object} - Promise:
+* resolve = null
+* reject = error msg.
+*/
 const sendDiscountEmail = (complaintModel, emailModel, eventBody) => new Promise((resolve, reject) => {
   const { userEmail, type, language } = eventBody;
   if (
