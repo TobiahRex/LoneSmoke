@@ -16,7 +16,9 @@ import verifyDB from './db/mongo/connection';
  * 6) Send Email.
  * 7) Save a record of sent email with "messageId" from AWS in local db for updating delivery status later.
  *
- * @param {string} email - Email data.
+ * @param {string} event.body.userEmail - Users email.
+ * @param {string} event.body.type - Type of discount email to send.
+ * @param {string} event.body.language - Language of the user.
  *
  * @return {object} - Promise resolved with data.
 */
@@ -39,6 +41,13 @@ module.exports.sesDiscountHandler = (event, context) => {
   .catch(error => context.fail(error) && context.done());
 };
 
+/**
+ * 1)
+ *
+ * @param {string} email - Email data.
+ *
+ * @return {object} - Promise resolved with data.
+*/
 module.exports.sesStatusHandler = (event, context) => {
   console.log('\nEVENT: ', JSON.stringify(event, null, 2));
 
