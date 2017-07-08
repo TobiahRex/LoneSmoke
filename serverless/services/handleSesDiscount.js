@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
 
 /**
-* 1) Determine if the userEmail has already been sent a discount by checking Market Hero collection.
-* 2a) If found, filter the email by language matching the requested langauge and send a Rejection Email.
-* 2b) If not found, verify user has not added classified our application emails as "spam" since last message had been sent.
-* 3a) If email has not been added to Complaint collection, send the user a Discount email.
+* 1) Check for repeat user.
+* 2a) If found, filter the email by language matching the input arg. langauge and send a Rejection Email.
+* 2b) If not found, verify user has not classified our previous emails as "spam".
+* 3a) If no spam - filter emails by input arg. language and send the user a Discount email.
+* 3b) If spam - return rejected promise.
 *
 * @param {object} event - event.body = Top-Level SES status object.
 * @param {object} dbModels - Mongo model instance(s).
