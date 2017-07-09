@@ -1,6 +1,9 @@
 # _Lone Smoke:_
 Created: 11 June 2017
 
+## CLOUD ARCHITECTURE:
+<img src="http://i.imgur.com/bwivCUw.png" />
+
 ## DESCRIPTION:
 Static Food Menu for Beach BBQ company in Japan.
   * Uses _apisauce_ for API calls. See API README.md for details.
@@ -8,7 +11,6 @@ Static Food Menu for Beach BBQ company in Japan.
   * Uses _redux_sauce_ to create Types, Creators & Reducer.
   * Uses _redux-logger_ to allow for informative workflow from the devtools console.  
   * Uses _redux-devtools-extension_ to allow for a macro perspective picture of your current store's state.
-    - <img src="http://i.imgur.com/GD4VCkW.png" />
   * Airbnb Style Guide implemented.
 
 ## Setup:
