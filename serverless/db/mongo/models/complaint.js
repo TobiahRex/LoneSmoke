@@ -1,11 +1,12 @@
 /* eslint-disable no-use-before-define, no-console */
+import { Promise as bbPromise } from 'bluebird';
 import isEmail from 'validator/lib/isEmail';
 import complaintSchema from '../schemas/complaint';
 
 export default (db) => {
 /**
- * 1) Verifies email - 2) If valid, saved email to Complaint collection:
- * Purpose: Have a record of emails that have tagged this apps Emails as "Spam" so as to never send again.
+ * 1) Verifies input argument "email" format.
+ * 2) Finds all Complaint documents.
  *
  * @param {string} email - Email data.
  *
@@ -16,16 +17,14 @@ export default (db) => {
     if (!isEmail(email)) {
       reject({ type: 'error', problem: `${email} - Is not a valid email.` });
     }
-    Complaint.find({})
-    .exec()
-    .then(dbComplaints => dbComplaints
-      .emails
-      .push({ address: email, created: new Date() })
-      .save()
-    )
+    bbPromise.fromCallback(cb => Complaint.create({}, cb))
     .then(() => {
       console.log('Successfully saved ', email, ' to Complaints list.');
       resolve();
+    })
+    .catch((error) => {
+      console.log(`Could not create new Complaint document.  ERROR = ${error}`);
+      reject(`Could not create new Complaint document.  ERROR = ${error}`);
     });
   });
 

@@ -23,9 +23,9 @@ export default (db) => {
   /**
   * 1) Determines whether @param "tag" is an array or single string.
   * 2) Creates a tagInfo array, populates with "language" and "tag". (Langauge because we need to know immediately upon creating the lead for the first time, what language they speak for analytics purposes)
-  * 2) Calls MarketHero API, and creates new lead & adds tag(s) to new that lead.
-  * 3a) Returns resolved Promise.
-  * 3b) Returns error object { type: 'error', problem: {desc} }
+  * 3) create request body for MarketHero API.
+  * 4) Send POST request with data.
+  * 5) Resolve || Reject with MarketHero response.
   *
   * @param string userEmail - Email data.
   * @param string || [array] tag -  Tag data || Tags Data.
@@ -71,10 +71,9 @@ export default (db) => {
   });
 
   /**
-  * 1) Determines whether @param "tag" is an array or single string.
-  * 2) Creates new MarketHero document in Mongo Cluster..
-  * 3) Returns Resolved Promise.
-  * 3b) Returns
+  * 1) Determines whether @param "tag" is an array or single string and formats "tagInfo" accordingly.
+  * 2) Creates new MarketHero document in local db.
+  * 3) Resolves || Rejects result.
   *
   * @param {string} userEmail - Email data.
   * @param {string || array} tag - Tag data.
@@ -109,8 +108,10 @@ export default (db) => {
   });
 
   /**
-  * 1) Locates Lead Document using email.
-  * 2) Updates the tags array on the document.
+  * 1) Locates MarketHero Document in local DB using input argument "userEmail".
+  * 2) If found - updates Document's "tags" array with input argument "tag".
+  * 3) Saves the updated Document.
+  * 4) Resolve || Rejects the result.
   *
   * @param {string} userEmail - Email data.
   * @param {string || array} tag - Tag data.
