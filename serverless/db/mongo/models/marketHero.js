@@ -22,6 +22,7 @@ export default (db) => {
 
   /**
   * 1) Determines whether @param "tag" is an array or single string.
+  * 2) Creates a tagInfo array, populates with "language" and "tag". (Langauge because we need to know immediately upon creating the lead for the first time, what language they speak for analytics purposes)
   * 2) Calls MarketHero API, and creates new lead & adds tag(s) to new that lead.
   * 3a) Returns resolved Promise.
   * 3b) Returns error object { type: 'error', problem: {desc} }

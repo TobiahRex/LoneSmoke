@@ -136,15 +136,17 @@ export default (db) => {
   });
 
   /**
-  * 1) Determine if the userEmail has already been sent a discount by checking Market Hero collection.
-  * 2a) If found, send a Rejection Email.
-  * 2b) If not found, verify user has not added classified our application emails as "spam" since last message had been sent.
-  * 3a) If email has not been added to Complaint collection, send the user a Discount email.
+  * 1) Validate input email - "to" is in proper email format.
+  * 2) create emailRequest object per Ses requirements.
+  * 3) Send email.
+  * 4) If successfully sent - save email msgId to respective Email docs "sentEmails" array.
+  * 5) Save changes on Email doc.
+  * 6) Resolve with updated Email doc.
   *
   * @param {string} to - recipients email address.
   * @param {object} emailDoc - Mongo Email collection, Document.
   *
-  * @return {object} - Promise: resolved - email type sent.
+  * @return {object} - Promise: resolved - updated email doc.
   */
   emailSchema.statics.sendEmail = (to, emailDoc) =>
   new Promise((resolve, reject) => {
