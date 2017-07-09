@@ -33,5 +33,11 @@ Static Food Menu for Beach BBQ company in Japan.
   - Created.
 
 ## ScreenShots:
-* Menu Page
-  - <img src="foobar" alt="Menu"/>
+* Japanese Splash
+  - <img src="http://i.imgur.com/NmNrfc7.png" alt="Japanese-LoneSmoke"/>
+* Japanese Meat Blurb
+  - <img src="http://i.imgur.com/0jBMrdo.png" alt="Meat"/>
+* English Footer
+  - <img src="http://i.imgur.com/effFjvb.png" alt="English-Footer"/>
+* English Splash
+  - <img src="http://i.imgur.com/e7VpFUg.png" alt="Menu"/>
