@@ -55,8 +55,8 @@ const sendDiscountEmail = (complaintModel, emailModel, eventBody) => new Promise
     !complaintModel ||
     !emailModel ||
     !userEmail ||
-    !type ||
-    !language
+    !language ||
+    !type
   ) {
     console.log('Missing required arguments in "sendDiscountEmail".');
     reject('Missing required arguments in "sendDiscountEmail".');

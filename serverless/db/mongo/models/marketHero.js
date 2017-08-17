@@ -6,7 +6,7 @@ require('dotenv').load({ silent: true });
 
 export default (db) => {
   /**
-  * 1) Determines if email is already saved to MarketHero collection.
+  * 1) Determines if "lead" (email) is already saved to MarketHero collection.
   *
   * @param string userEmail - Email data.
   *

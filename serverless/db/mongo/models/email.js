@@ -4,7 +4,7 @@ import { Promise as bbPromise } from 'bluebird';
 import moment from 'moment';
 import isEmail from 'validator/lib/isEmail';
 import emailSchema from '../schemas/email';
-import config from '../../..//config.json';
+import config from '../../../config.json';
 
 AWS.config.update({
   accessKeyId: config.aws.accessKeyId,
